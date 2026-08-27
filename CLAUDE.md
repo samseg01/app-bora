@@ -140,7 +140,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — painel do curador (UI) | ⚠️ | tela pronta nas duas visualizações, **sem backend ligado** (precisa de login) |
 | Frontend — onboarding (`2a`,`2b`), login, confirmação de sinal (`2e`) | ❌ | |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
-| Frontend — painel do curador / do estabelecimento | ❌ | não há nem design pra essas telas ainda |
+| Frontend — painel do estabelecimento | ❌ | sem design e sem tela; só depois de haver comunidade |
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República) — ver R1 no `TODO.md` |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
 | Deploy de produção | ❌ | só `docker compose` local hoje |
@@ -193,10 +193,11 @@ contradisserem, o ADR ganha.
 - **Nenhuma curadoria de campo feita ainda** — o bairro está escolhido (República), mas nenhum
   lugar foi visitado. `backend/seed/republica.json` está esperando; enquanto isso o app só tem
   dado fictício de Vila Madalena, que é fictício de propósito para não ser confundido com real.
-- **Frontend com só 1 das 8 telas** — seguir o hi-fi (`Rolês - Telas hi-fi.dc.html`), não o
-  wireframe, apesar de o `README.md` do bundle mandar ler o wireframe primeiro: o hi-fi é posterior
-  e já resolve as variantes que o wireframe deixou abertas. Cruzamento tela-a-tela com a API em
-  `docs/plano-frontend.md`; progresso em `frontend/TODO.md`.
+- **Faltam onboarding, login e a confirmação de sinal (`2e`)** no frontend. Seguir o hi-fi
+  (`Rolês - Telas hi-fi.dc.html`), não o wireframe, apesar de o `README.md` do bundle mandar ler o
+  wireframe primeiro: o hi-fi é posterior e já resolve as variantes que o wireframe deixou
+  abertas. Cruzamento tela-a-tela com a API em `docs/plano-frontend.md`; progresso em
+  `frontend/TODO.md`.
 - **O painel do curador é a superfície desktop-native do produto** — decisão tomada e desenhada.
   A tela existe nas duas visualizações, mas **não está ligada ao backend**: o CRUD de
   `/curador/*` exige token e papel `curador`, e o login ainda não existe no frontend. A nav dele
