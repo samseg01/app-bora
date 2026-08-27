@@ -1,0 +1,33 @@
+# Segredos — nunca versionar. O backend tem um .env real no disco.
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.local.example
+
+# Python / backend
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / frontend
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Canvas de design gerado pelo Claude Design (~2,5 MB cada): é saída, não fonte.
+# A fonte editável são os .dc.html e o canvas.json ao lado, que ficam versionados.
+docs/front-end-ideias/desktop/roles-telas-desktop.html
+docs/front-end-ideias/conexoes/conexoes.html
+
+# SO / editor
+.DS_Store
+Thumbs.db

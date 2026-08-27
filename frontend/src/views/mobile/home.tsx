@@ -1,0 +1,77 @@
+import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { RoleCard } from "@/components/ui/role-card";
+import { MobileShell } from "./shell";
+import type { MapaPin, RoleDescoberta } from "@/lib/types";
+
+/**
+ * Tela 2c do hi-fi. As duas camadas empilhadas: a descoberta empurra em cima,
+ * o mapa puxa embaixo. A ordem vertical é a tese da tela (docs/conceito.md) —
+ * se a altura apertar, encolher o mapa, nunca virar abas.
+ */
+export function HomeMobile({
+  roles,
+  pins,
+  bairro,
+}: {
+  roles: RoleDescoberta[];
+  pins: MapaPin[];
+  bairro: string;
+}) {
+  return (
+    <MobileShell>
+      <header className="flex items-center justify-between px-5.5 pt-9 pb-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="rotulo text-muted-2">você está em</span>
+          <span className="flex items-center gap-1.5 text-[17px] font-bold">
+            <PinIcone />
+            {bairro}
+          </span>
+        </div>
+        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-magenta to-amber" />
+      </header>
+
+      <div className="flex items-baseline gap-2.5 px-5.5 pt-2 pb-3.5">
+        <h1 className="font-display text-[31px] leading-none tracking-[-.3px] uppercase">
+          Hoje à noite
+        </h1>
+        <span className="text-xs text-muted-2">
+          {roles.length} {roles.length === 1 ? "achado" : "achados"}
+        </span>
+      </div>
+
+      {roles.length > 0 ? (
+        <div className="flex gap-3.5 overflow-x-auto px-5.5 pt-0.5 pb-4.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {roles.map((role, i) => (
+            <div key={role.id} className="w-[206px] shrink-0">
+              <RoleCard role={role} indice={i} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="px-5.5 pb-4.5 text-[13px] leading-relaxed text-muted">
+          Nenhum rolê curado para hoje ainda. O curador ainda está na rua.
+        </p>
+      )}
+
+      <div className="flex items-center gap-3 px-5.5 pb-3.5">
+        <div className="h-px flex-1 bg-gradient-to-r from-magenta/45 to-amber/20" />
+        <span className="rotulo text-muted-2">ou explore a região</span>
+        <div className="h-px flex-1 bg-gradient-to-r from-amber/20 to-magenta/45" />
+      </div>
+
+      <MapaEstilizado
+        pins={pins}
+        etiqueta={`${bairro} · agora`}
+        className="mx-4 mb-3 min-h-45 flex-1 rounded-[22px] border border-white/7"
+      />
+    </MobileShell>
+  );
+}
+
+function PinIcone() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="#ff3d81">
+      <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
+    </svg>
+  );
+}

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f0eee9;font-family:'Patrick Hand',system-ui,sans-serif}
+a{color:#2a78d6}a:hover{color:#1b5fae}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px;max-width:320px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 12px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+.dv-opt:target .dv-oid{background:#e0246f;color:#fff}
+.dv-next{margin:26px 0 0;font:12px/1.6 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+.grp{font:600 11px/1 ui-monospace,Menlo,monospace;letter-spacing:1.4px;text-transform:uppercase;color:rgba(0,0,0,.4);margin:34px 0 14px;padding-bottom:6px;border-bottom:1px dashed rgba(0,0,0,.18)}
+.an{font:12px/1.45 'Patrick Hand',system-ui;color:#6f6a62;max-width:300px}
+.an b{color:#1a1a1a;font-weight:400;border-bottom:1.5px solid #f0a020}
+
+.fr{width:300px;background:#fff;border:2.5px solid #1a1a1a;border-radius:30px;padding:9px;box-shadow:4px 5px 0 rgba(0,0,0,.10)}
+.scr{height:610px;display:flex;flex-direction:column;border:1.5px solid #ddd9d1;border-radius:22px;overflow:hidden;background:#fdfdfb;position:relative}
+.sb{display:flex;justify-content:space-between;font-size:11px;color:#a8a39a;padding:8px 14px 4px}
+.px{padding:0 14px}
+.hw{font-family:'Architects Daughter',cursive;line-height:1.05;color:#1a1a1a;margin:0}
+.mut{font-size:12px;color:#8d8880;line-height:1.35}
+.box{background:#eceae5;border:1.5px dashed #bcb8af;display:flex;align-items:center;justify-content:center;font-size:11px;color:#94908880;color:#948f88;border-radius:8px;text-align:center}
+.pill{border:1.5px solid #1a1a1a;border-radius:20px;padding:3px 9px;font-size:11px;display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+.pill.gh{border-color:#c3bfb6;color:#8d8880}
+.pill.on{background:#1a1a1a;color:#fff}
+.dot{width:7px;height:7px;border-radius:50%;background:#e0246f;flex:none}
+.dot.w{background:#f0a020}.dot.n{background:#1a1a1a}
+.cd{border:1.5px solid #1a1a1a;border-radius:12px;overflow:hidden;flex:none;background:#fff}
+.btn{border:1.5px solid #1a1a1a;border-radius:11px;text-align:center;padding:9px 10px;font-size:13px;color:#1a1a1a}
+.btn.p{background:#e0246f;color:#fff}
+.btn.gh{border-color:#c3bfb6;color:#7d7870}
+.nav{margin-top:auto;border-top:1.5px solid #1a1a1a;display:flex;justify-content:space-around;padding:9px 4px 8px;font-size:10.5px;color:#a8a39a;background:#fff}
+.nav b{color:#1a1a1a;font-weight:400;border-bottom:2px solid #e0246f;padding-bottom:1px}
+.mp{border:1.5px solid #1a1a1a;border-radius:12px;background:#f4f2ee;background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);background-size:30px 30px;position:relative;overflow:hidden}
+.rd{position:absolute;background:#e4e0d8}
+.pn{position:absolute;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;border:1.5px solid #1a1a1a;background:#e0246f}
+.pn.w{background:#f0a020}.pn.d{background:#fff;width:10px;height:10px}
+.sm{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:#a8a39a}
+</style></helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Fluxo em wireframe — dia 1, um bairro (Vila Madalena)</span></div>
+
+<p class="an" style="max-width:620px;margin:0 0 4px">Premissas que assumi do documento: o app abre na <b>descoberta</b>, nunca no mapa; o mapa aparece mas com <b>pouco conteúdo assumido</b> (dia 1) e nunca como tela inicial; o sinal que importa é <b>estado agora</b>, não nota; e <b>salvar lugar</b> (permanente) precisa ficar visualmente distinto de <b>sinalizar rolê</b> (efêmero). Nome, copy e ícones são placeholders.</p>
+
+<div class="grp">A · Home — quatro relações possíveis entre as duas camadas</div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Empilhado — descoberta em cima, mapa recortado embaixo</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:04</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="display:flex;justify-content:space-between;align-items:center;padding-top:6px">
+<div><div class="sm">você está em</div><div class="hw" style="font-size:19px">◎ Vila Madalena</div></div>
+<div class="box" style="width:32px;height:32px;border-radius:50%">eu</div>
+</div>
+<div class="px" style="display:flex;align-items:baseline;gap:8px;margin:16px 0 10px">
+<h2 class="hw" style="font-size:26px;text-transform:uppercase">Hoje à noite</h2><span class="mut">3 achados</span>
+</div>
+<div style="display:flex;gap:12px;overflow:hidden;padding:0 14px 14px">
+<div class="cd" style="width:172px">
+<div class="box" style="height:96px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0;position:relative">foto do rolê
+<span class="pill" style="position:absolute;top:8px;left:8px;background:#fff"><i class="dot"></i>bombando</span></div>
+<div style="padding:9px 10px 11px">
+<div class="sm" style="color:#8d8880">balada</div>
+<div class="hw" style="font-size:15px;margin-top:3px">Selo aberto no rooftop</div>
+<div class="mut" style="margin-top:3px">Baixo Augusta · house</div>
+</div></div>
+<div class="cd" style="width:172px">
+<div class="box" style="height:96px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0;position:relative">foto do rolê
+<span class="pill" style="position:absolute;top:8px;left:8px;background:#fff"><i class="dot w"></i>enchendo</span></div>
+<div style="padding:9px 10px 11px">
+<div class="sm" style="color:#8d8880">bar</div>
+<div class="hw" style="font-size:15px;margin-top:3px">Samba de quinta</div>
+<div class="mut" style="margin-top:3px">Vila Madalena</div>
+</div></div>
+</div>
+<div class="px" style="display:flex;align-items:center;gap:10px;padding-bottom:10px">
+<div style="flex:1;height:1.5px;background:#ddd9d1"></div><span class="sm">ou explore a região</span><div style="flex:1;height:1.5px;background:#ddd9d1"></div>
+</div>
+<div class="px" style="flex:1;display:flex;padding-bottom:12px">
+<div class="mp" style="flex:1">
+<div class="rd" style="top:0;bottom:0;left:38%;width:8px"></div>
+<div class="rd" style="left:0;right:0;top:46%;height:7px"></div>
+<div class="pn" style="left:30%;top:34%"></div>
+<div class="pn w" style="left:60%;top:28%"></div>
+<div class="pn d" style="left:72%;top:62%"></div>
+<div style="position:absolute;bottom:10px;left:10px;right:10px;border:1.5px solid #1a1a1a;border-radius:10px;background:#fff;padding:8px 10px;display:flex;gap:9px;align-items:center">
+<div class="box" style="width:26px;height:26px;border-radius:50%;flex:none">av</div>
+<div style="font-size:11.5px;line-height:1.3">Marina e mais 4: <b>fila andando rápido</b> no bar da esquina</div>
+</div></div></div>
+<div class="nav"><b>Descobrir</b><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Fiel à prévia. Risco no dia 1: o recorte de mapa mostra <b>3 pinos</b> — exatamente o "mapa cruel com vazio" que o doc alerta.</p>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Gaveta — descoberta ocupa a tela, mapa sobe por gesto</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:04</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="display:flex;justify-content:space-between;align-items:center;padding-top:6px">
+<div class="hw" style="font-size:19px">◎ Vila Madalena</div><div class="box" style="width:32px;height:32px;border-radius:50%">eu</div>
+</div>
+<div class="px" style="margin:18px 0 12px">
+<h2 class="hw" style="font-size:30px;text-transform:uppercase">Hoje à<br>noite</h2>
+<div class="mut" style="margin-top:5px">3 achados curados no bairro</div>
+</div>
+<div class="px" style="display:flex;flex-direction:column;gap:12px">
+<div class="cd">
+<div class="box" style="height:120px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0;position:relative">foto grande
+<span class="pill" style="position:absolute;top:8px;left:8px;background:#fff"><i class="dot"></i>bombando agora</span></div>
+<div style="padding:10px 12px 12px">
+<div class="hw" style="font-size:17px">Selo aberto no rooftop</div>
+<div class="mut" style="margin-top:4px">Um motivo pra ir: o set começa às 23h30 e a entrada é livre até meia-noite.</div>
+</div></div>
+<div class="cd">
+<div class="box" style="height:60px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0">foto</div>
+<div style="padding:9px 12px 11px;display:flex;justify-content:space-between;align-items:center">
+<div><div class="hw" style="font-size:15px">Samba de quinta</div><div class="mut">a 6 min a pé</div></div>
+<span class="pill gh"><i class="dot w"></i>enchendo</span>
+</div></div>
+</div>
+<div style="margin-top:auto;border-top:1.5px solid #1a1a1a;border-radius:14px 14px 0 0;background:#f4f2ee;padding:8px 14px 12px">
+<div style="width:38px;height:4px;border-radius:3px;background:#c3bfb6;margin:0 auto 8px"></div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span class="hw" style="font-size:15px">Mapa do bairro</span><span class="mut">arraste ↑</span>
+</div></div>
+<div class="nav"><b>Descobrir</b><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Duas camadas separadas por <b>tempo</b>, não por espaço. Dia 1 fica honesto: o vazio do mapa nunca aparece sem pedido.</p>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Uma escolha por vez — baralho de rolês</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:04</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="display:flex;justify-content:space-between;align-items:center;padding-top:6px">
+<span class="sm">Vila Madalena · quinta</span><span class="sm">1 / 3</span>
+</div>
+<div class="px" style="margin:14px 0 10px">
+<h2 class="hw" style="font-size:23px">Sem plano? Olha esse.</h2>
+</div>
+<div class="px" style="flex:1;display:flex;flex-direction:column">
+<div class="cd" style="flex:1;display:flex;flex-direction:column;position:relative">
+<div style="position:absolute;top:-5px;left:8px;right:8px;height:10px;border:1.5px solid #c3bfb6;border-radius:12px;background:#f4f2ee;z-index:-1"></div>
+<div class="box" style="flex:1;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0;position:relative;min-height:150px">foto do rolê
+<span class="pill" style="position:absolute;top:10px;left:10px;background:#fff"><i class="dot"></i>bombando agora</span></div>
+<div style="padding:12px 13px 14px">
+<div class="sm" style="color:#8d8880">balada · 8 min a pé</div>
+<div class="hw" style="font-size:20px;margin-top:4px">Selo aberto no rooftop</div>
+<div class="mut" style="margin-top:6px">Curador Léo foi ontem: "fila curta, som bom, teto aberto".</div>
+</div></div>
+<div style="display:flex;gap:10px;margin:12px 0 14px">
+<div class="btn gh" style="flex:1">passar →</div><div class="btn p" style="flex:1.4">tô indo</div>
+</div>
+</div>
+<div class="nav"><b>Descobrir</b><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Máxima defesa contra o vazio: <b>3 rolês parecem um baralho, não um feed curto</b>. Custo: menos senso de panorama.</p>
+</div>
+
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Linha do tempo da noite</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:04</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="padding-top:8px;display:flex;justify-content:space-between;align-items:center">
+<div class="hw" style="font-size:19px">◎ Vila Madalena</div><span class="pill gh">mapa</span>
+</div>
+<div class="px" style="margin:16px 0 12px"><h2 class="hw" style="font-size:26px;text-transform:uppercase">A noite</h2></div>
+<div class="px" style="display:flex;flex-direction:column;gap:0">
+<div style="display:flex;gap:11px">
+<div style="width:44px;flex:none"><span class="pill on">agora</span></div>
+<div style="flex:1;border-left:1.5px solid #ddd9d1;padding:0 0 16px 11px">
+<div class="hw" style="font-size:16px">Selo aberto no rooftop</div>
+<div class="mut">bombando · 8 min a pé</div>
+</div></div>
+<div style="display:flex;gap:11px">
+<div style="width:44px;flex:none;font-size:12px;color:#8d8880">23h30</div>
+<div style="flex:1;border-left:1.5px solid #ddd9d1;padding:0 0 16px 11px">
+<div class="hw" style="font-size:16px">Samba de quinta</div>
+<div class="mut">começando a encher</div>
+</div></div>
+<div style="display:flex;gap:11px">
+<div style="width:44px;flex:none;font-size:12px;color:#8d8880">01h</div>
+<div style="flex:1;border-left:1.5px dashed #ddd9d1;padding:0 0 4px 11px">
+<div class="hw" style="font-size:16px">Sarau na garagem</div>
+<div class="mut">estreando hoje</div>
+</div></div>
+</div>
+<div class="px" style="margin-top:14px">
+<div class="box" style="height:64px;font-size:11.5px;padding:0 12px">depois disso o bairro dorme —<br>a gente avisa quando abrir algo</div>
+</div>
+<div class="nav"><b>Descobrir</b><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Estado em tempo real como <b>eixo do tempo</b>, não como selo. Encaixa no momento "em casa decidindo se sai".</p>
+</div>
+</div>
+
+<div class="grp">B · Favoritar lugar ≠ sinalizar rolê — três hipóteses (pergunta aberta nº4)</div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1e">
+<div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Dois gestos, dois lugares na tela</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:06</span><span>••• ⌁ ▮</span></div>
+<div class="box" style="height:150px;border-radius:0;border-left:0;border-right:0;border-top:0;position:relative">foto do rolê
+<span class="pill" style="position:absolute;bottom:10px;left:12px;background:#fff"><i class="dot"></i>bombando agora</span>
+<span class="pill" style="position:absolute;top:10px;left:12px;background:#fff">←</span></div>
+<div class="px" style="padding-top:12px">
+<div class="sm">rolê de hoje · termina 04h</div>
+<h2 class="hw" style="font-size:22px;margin:5px 0 0">Selo aberto no rooftop</h2>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:11px;border-top:1.5px solid #ddd9d1">
+<div><div class="hw" style="font-size:15px">Bar Aurora</div><div class="mut">o lugar · Vila Madalena</div></div>
+<span class="pill">♡ salvar lugar</span>
+</div>
+<div class="mut" style="margin-top:14px">Curador Léo validou em campo ontem. Entrada livre até meia-noite, set de house às 23h30.</div>
+<div class="box" style="height:52px;margin-top:14px;font-size:11.5px">6 pessoas sinalizaram nas últimas 2h</div>
+</div>
+<div class="px" style="margin-top:auto;padding-bottom:12px">
+<div class="btn p">tô indo — vale por 2h</div>
+<div class="mut" style="text-align:center;margin-top:6px;font-size:11px">expira sozinho. ninguém vê seu nome ainda.</div>
+</div>
+<div class="nav"><span>Descobrir</span><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Permanente é <b>ícone pequeno junto do lugar</b>; efêmero é <b>botão largo com prazo escrito</b>. A hierarquia ensina a diferença sem texto explicativo.</p>
+</div>
+
+<div class="dv-opt" id="1f">
+<div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Uma ação só, contextual</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:06</span><span>••• ⌁ ▮</span></div>
+<div class="box" style="height:150px;border-radius:0;border-left:0;border-right:0;border-top:0">foto do rolê</div>
+<div class="px" style="padding-top:12px">
+<div style="display:flex;gap:6px"><span class="pill"><i class="dot"></i>agora</span><span class="pill gh">até 04h</span></div>
+<h2 class="hw" style="font-size:22px;margin:10px 0 0">Selo aberto no rooftop</h2>
+<div class="mut" style="margin-top:4px">Bar Aurora · Vila Madalena</div>
+<div class="mut" style="margin-top:14px">Curador Léo validou em campo ontem. Entrada livre até meia-noite.</div>
+<div class="box" style="height:52px;margin-top:14px;font-size:11.5px">6 pessoas sinalizaram nas últimas 2h</div>
+<div class="box" style="height:44px;margin-top:10px;font-size:11px">o mesmo botão na tela do <i>lugar</i> diz "salvar"</div>
+</div>
+<div class="px" style="margin-top:auto;padding-bottom:12px">
+<div class="btn p">tô indo</div>
+</div>
+<div class="nav"><span>Descobrir</span><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Menos decisão pro usuário, mais ambiguidade pro produto: o app escolhe pela <b>natureza do card</b>. Mais simples de construir, mais difícil de ensinar.</p>
+</div>
+
+<div class="dv-opt" id="1g">
+<div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Sinalizar é a ação; salvar é rodapé</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:06</span><span>••• ⌁ ▮</span></div>
+<div class="box" style="height:120px;border-radius:0;border-left:0;border-right:0;border-top:0">foto do rolê</div>
+<div class="px" style="padding-top:14px">
+<h2 class="hw" style="font-size:22px;margin:0">Selo aberto no rooftop</h2>
+<div class="mut" style="margin-top:4px">Bar Aurora · 8 min a pé</div>
+<div class="cd" style="margin-top:14px;padding:14px 13px;text-align:center">
+<div class="hw" style="font-size:40px;line-height:1">12</div>
+<div class="mut">pessoas indo agora</div>
+<div class="btn p" style="margin-top:12px">tô indo também</div>
+<div class="mut" style="font-size:11px;margin-top:7px">seu sinal vale 2h e some sozinho</div>
+</div>
+<div class="mut" style="margin-top:14px">Curador Léo validou em campo ontem.</div>
+</div>
+<div class="px" style="margin-top:auto;padding-bottom:12px;display:flex;justify-content:center">
+<span class="pill gh">♡ salvar o lugar pra depois</span>
+</div>
+<div class="nav"><span>Descobrir</span><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Aposta no <b>frescor</b> como motor principal. Mas o doc marca presença como incentivo fraco no dia 1 — esse número pode nascer vazio.</p>
+</div>
+</div>
+
+<div class="grp">C · Resto do fluxo</div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1h">
+<div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>Onboarding — bairro primeiro, gosto depois</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>22:58</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="padding-top:22px">
+<div class="sm">passo 1 de 2</div>
+<h2 class="hw" style="font-size:27px;margin:8px 0 0">Por onde você<br>costuma sair?</h2>
+<div class="mut" style="margin-top:8px">Hoje a gente só conhece bem um pedaço de SP. Preferimos ser bons em um bairro a ruins em vinte.</div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:18px">
+<div class="cd" style="padding:11px 12px;display:flex;justify-content:space-between;align-items:center;border-width:2px">
+<div><div class="hw" style="font-size:16px">Vila Madalena</div><div class="mut">14 lugares · 3 rolês hoje</div></div><span class="dot"></span>
+</div>
+<div class="cd" style="padding:11px 12px;border-color:#c3bfb6">
+<div class="hw" style="font-size:16px;color:#8d8880">Pinheiros</div><div class="mut">em campo — chega em breve</div>
+</div>
+<div class="cd" style="padding:11px 12px;border-color:#c3bfb6">
+<div class="hw" style="font-size:16px;color:#8d8880">Baixo Augusta</div><div class="mut">em campo — chega em breve</div>
+</div>
+</div>
+<div class="box" style="height:44px;margin-top:14px;font-size:11.5px">avisar quando abrir meu bairro →</div>
+</div>
+<div class="px" style="margin-top:auto;padding-bottom:14px"><div class="btn p">continuar</div></div>
+</div></div>
+<p class="an">O recorte territorial vira <b>promessa</b>, não limitação. Passo 2: 6 chips de gosto (samba, house, sarau…) com "pular".</p>
+</div>
+
+<div class="dv-opt" id="1i">
+<div class="dv-olabel"><a class="dv-oid" href="#1i">1i</a>Mapa em tela cheia — camada social, não inventário</div>
+<div class="fr"><div class="scr" style="background:#f4f2ee">
+<div class="sb"><span>23:12</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="display:flex;gap:6px;padding-top:6px;padding-bottom:8px">
+<span class="pill on">comentado agora</span><span class="pill gh">novo</span><span class="pill gh">salvos</span>
+</div>
+<div style="flex:1;position:relative;margin:0 0 0;background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);background-size:34px 34px;border-top:1.5px solid #1a1a1a">
+<div class="rd" style="top:0;bottom:0;left:40%;width:10px"></div>
+<div class="rd" style="left:0;right:0;top:38%;height:9px"></div>
+<div class="rd" style="left:0;right:0;top:72%;height:7px"></div>
+<div class="pn" style="left:32%;top:30%"></div>
+<div class="pn w" style="left:64%;top:24%"></div>
+<div class="pn d" style="left:74%;top:56%"></div>
+<div class="pn d" style="left:22%;top:64%"></div>
+<div style="position:absolute;left:32%;top:30%;transform:translate(-50%,-160%);border:1.5px solid #1a1a1a;background:#fff;border-radius:9px;padding:4px 8px;font-size:11px;white-space:nowrap">"fila andando" · 12 min</div>
+<span class="pill" style="position:absolute;top:10px;left:10px;background:#fff">Vila Madalena · agora</span>
+<div class="cd" style="position:absolute;bottom:10px;left:10px;right:10px;padding:11px 12px">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div><div class="hw" style="font-size:16px">Bar Aurora</div><div class="mut">4 comentários na última hora</div></div>
+<span class="pill">♡</span></div>
+<div class="mut" style="margin-top:8px;padding-top:8px;border-top:1.5px dashed #ddd9d1">"chegou banda nova, tá cheio mas cabe" — Marina, 23h01</div>
+</div>
+</div>
+<div class="nav"><span>Descobrir</span><b>Mapa</b><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">Pinos brancos = lugar conhecido e quieto; coloridos = <b>algo mudou agora</b>. O filtro padrão é "comentado agora", não "tudo".</p>
+</div>
+
+<div class="dv-opt" id="1j">
+<div class="dv-olabel"><a class="dv-oid" href="#1j">1j</a>Salvos — o caderninho</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:20</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="padding-top:10px">
+<h2 class="hw" style="font-size:26px;text-transform:uppercase;margin:0">Meu caderninho</h2>
+<div class="mut" style="margin-top:4px">7 lugares salvos · só seus</div>
+<div style="display:flex;gap:6px;margin-top:12px"><span class="pill on">todos</span><span class="pill gh">abertos agora</span><span class="pill gh">nunca fui</span></div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+<div class="cd" style="display:flex;gap:10px;padding:9px;align-items:center">
+<div class="box" style="width:52px;height:52px;flex:none">foto</div>
+<div style="flex:1"><div class="hw" style="font-size:15px">Bar Aurora</div><div class="mut">bar · Vila Madalena</div></div>
+<span class="pill"><i class="dot"></i>tem rolê</span>
+</div>
+<div class="cd" style="display:flex;gap:10px;padding:9px;align-items:center">
+<div class="box" style="width:52px;height:52px;flex:none">foto</div>
+<div style="flex:1"><div class="hw" style="font-size:15px">Garagem 9</div><div class="mut">sarau · Pinheiros</div></div>
+<span class="pill gh">fechado</span>
+</div>
+<div class="cd" style="display:flex;gap:10px;padding:9px;align-items:center">
+<div class="box" style="width:52px;height:52px;flex:none">foto</div>
+<div style="flex:1"><div class="hw" style="font-size:15px">Boteco do Zé</div><div class="mut">nunca fui</div></div>
+<span class="pill gh">aberto</span>
+</div>
+</div>
+<div class="box" style="height:44px;margin-top:12px;font-size:11.5px">1 salvo virou rolê hoje — ver</div>
+</div>
+<div class="nav"><span>Descobrir</span><span>Mapa</span><b>Salvos</b><span>Perfil</span></div>
+</div></div>
+<p class="an">Salvar é egoísta por design: a tela é um <b>caderninho pessoal</b>. O agregado disso é o sinal de curadoria — mas isso o usuário nunca precisa saber.</p>
+</div>
+
+<div class="dv-opt" id="1k">
+<div class="dv-olabel"><a class="dv-oid" href="#1k">1k</a>Sinalizar presença — um toque, com prazo</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:34</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+<div class="hw" style="font-size:44px">✓</div>
+<h2 class="hw" style="font-size:24px;margin:10px 0 0">Tá marcado.</h2>
+<div class="mut" style="margin-top:8px">Você sinalizou <b style="color:#1a1a1a">Selo aberto no rooftop</b>. Seu sinal vale 2h e some sozinho.</div>
+<div class="cd" style="margin-top:18px;padding:12px 13px;text-align:left">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span class="mut">expira em</span><span class="hw" style="font-size:16px">1h 58min</span>
+</div>
+<div style="height:6px;border:1.5px solid #1a1a1a;border-radius:4px;margin-top:8px;overflow:hidden"><div style="width:96%;height:100%;background:#e0246f"></div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:16px">
+<div class="btn gh">contar como está lá dentro</div>
+<div class="btn gh">avisar meus amigos <span style="font-size:11px">(fase 2)</span></div>
+<div class="mut" style="font-size:11px">cancelar sinal</div>
+</div>
+</div>
+<div class="nav"><span>Descobrir</span><span>Mapa</span><span>Salvos</span><span>Perfil</span></div>
+</div></div>
+<p class="an">O prazo é a parte importante: o efêmero precisa <b>parecer efêmero</b>. Isso também é o que separa esse gesto do coração de salvar.</p>
+</div>
+
+<div class="dv-opt" id="1l">
+<div class="dv-olabel"><a class="dv-oid" href="#1l">1l</a>Perfil — histórico, não vitrine</div>
+<div class="fr"><div class="scr">
+<div class="sb"><span>23:40</span><span>••• ⌁ ▮</span></div>
+<div class="px" style="padding-top:14px;display:flex;gap:12px;align-items:center">
+<div class="box" style="width:56px;height:56px;border-radius:50%;flex:none">foto</div>
+<div><div class="hw" style="font-size:19px">Você</div><div class="mut">Vila Madalena · desde agosto</div></div>
+</div>
+<div class="px" style="display:flex;gap:10px;margin-top:16px">
+<div class="cd" style="flex:1;padding:10px 11px"><div class="hw" style="font-size:24px">7</div><div class="mut">salvos</div></div>
+<div class="cd" style="flex:1;padding:10px 11px"><div class="hw" style="font-size:24px">3</div><div class="mut">rolês que você foi</div></div>
+</div>
+<div class="px" style="margin-top:18px">
+<div class="sm">meu bairro</div>
+<div class="cd" style="padding:11px 12px;margin-top:7px;display:flex;justify-content:space-between;align-items:center">
+<div class="hw" style="font-size:16px">Vila Madalena</div><span class="pill gh">trocar</span>
+</div>
+<div class="sm" style="margin-top:18px">privacidade</div>
+<div class="cd" style="padding:11px 12px;margin-top:7px;display:flex;justify-content:space-between;align-items:center">
+<div><div style="font-size:13.5px">Meus sinais são anônimos</div><div class="mut">amigos entram na fase 2, com convite</div></div>
+<div style="width:32px;height:18px;border:1.5px solid #1a1a1a;border-radius:12px;background:#1a1a1a;position:relative;flex:none"><div style="position:absolute;right:2px;top:1.5px;width:13px;height:13px;border-radius:50%;background:#fff"></div></div>
+</div>
+<div class="box" style="height:46px;margin-top:16px;font-size:11.5px">tenho um bar / quero cadastrar um rolê →</div>
+</div>
+<div class="nav"><span>Descobrir</span><span>Mapa</span><span>Salvos</span><b>Perfil</b></div>
+</div></div>
+<p class="an">Perfil como <b>ajuste de contexto</b> (bairro, privacidade) e porta de entrada do estabelecimento — não como rede social.</p>
+</div>
+</div>
+
+<div class="grp">D · Estudos de copy — o "motivo pra ir" no mesmo card</div>
+<div class="dv-opts">
+<div class="dv-opt" id="1m">
+<div class="dv-olabel"><a class="dv-oid" href="#1m">1m</a>Factual</div>
+<div class="cd" style="width:260px">
+<div class="box" style="height:88px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0">foto</div>
+<div style="padding:11px 13px 13px">
+<span class="pill"><i class="dot"></i>bombando</span>
+<div class="hw" style="font-size:17px;margin-top:8px">Selo aberto no rooftop</div>
+<div class="mut" style="margin-top:5px">Entrada livre até meia-noite. Set de house às 23h30. 8 min a pé.</div>
+</div></div>
+<p class="an">Zero adjetivo. Informação que decide. Envelhece bem, mas não fisga quem só bateu o olho.</p>
+</div>
+<div class="dv-opt" id="1n">
+<div class="dv-olabel"><a class="dv-oid" href="#1n">1n</a>Voz do curador</div>
+<div class="cd" style="width:260px">
+<div class="box" style="height:88px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0">foto</div>
+<div style="padding:11px 13px 13px">
+<span class="pill"><i class="dot"></i>bombando</span>
+<div class="hw" style="font-size:17px;margin-top:8px">Selo aberto no rooftop</div>
+<div class="mut" style="margin-top:5px">"Fui ontem: fila curta, som bom, teto aberto. Vai antes das 00h." — Léo, curador</div>
+</div></div>
+<p class="an">Parece <b>recomendação</b>, não anúncio — exatamente o ativo que o doc quer proteger. Depende de campo pra escalar.</p>
+</div>
+<div class="dv-opt" id="1o">
+<div class="dv-olabel"><a class="dv-oid" href="#1o">1o</a>Sinal social</div>
+<div class="cd" style="width:260px">
+<div class="box" style="height:88px;border:0;border-bottom:1.5px solid #1a1a1a;border-radius:0">foto</div>
+<div style="padding:11px 13px 13px">
+<span class="pill"><i class="dot"></i>bombando</span>
+<div class="hw" style="font-size:17px;margin-top:8px">Selo aberto no rooftop</div>
+<div class="mut" style="margin-top:5px">12 pessoas sinalizaram na última hora. Ninguém aqui conhecia esse lugar semana passada.</div>
+</div></div>
+<p class="an">Mais forte quando tem gente; <b>vazio no dia 1</b>. Serve como camada que aparece só acima de um limite.</p>
+</div>
+</div>
+
+<p class="dv-next">Próximos passos: "leva <a class="dv-oid" href="#1b">1b</a> pra alta fidelidade" · "combina a home de <a class="dv-oid" href="#1d">1d</a> com o detalhe de <a class="dv-oid" href="#1e">1e</a>" · "desenha o painel do estabelecimento" · "mostra o mesmo fluxo num bairro maduro"</p>
+</section>
+</x-dc>
+</body>
+</html>

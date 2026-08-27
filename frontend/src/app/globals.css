@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* Tokens do sistema visual do hi-fi (Rolês - Telas hi-fi.dc.html).
+   Tailwind v4: o tema vive aqui, não em tailwind.config.js. */
+@theme {
+  --color-bg: #08060f;
+  --color-surface: #0d0a18;
+  --color-card: #181227;
+  --color-card-alt: #171223;
+  --color-sunken: #141024;
+  --color-nav: #0f0b1c;
+
+  --color-magenta: #ff3d81;
+  --color-magenta-soft: #ff6fa0;
+  --color-amber: #ffb443;
+  --color-amber-soft: #ffc774;
+  --color-cyan: #1fd0ff;
+  --color-violet: #7a1fff;
+  --color-plum: #26123f;
+
+  --color-text: #f3eefc;
+  --color-text-soft: #e8dfff;
+  --color-text-dim: #cfc6e2;
+  --color-text-faint: #b4a9cc;
+  --color-muted: #9083ad;
+  --color-muted-2: #8478a0;
+  --color-muted-3: #6f6690;
+  --color-pin-off: #6a5f88;
+
+  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* O pulse do estado "agora" — só no frescor live. Vem do design. */
+@keyframes pulse-agora {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 61, 129, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(255, 61, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 61, 129, 0);
+  }
+}
+
+@utility pulse-agora {
+  animation: pulse-agora 1.8s infinite;
+}
+
+/* Rótulo de seção: 600 10px, tracking largo, maiúsculas. Repete em 6 das 8 telas. */
+@utility rotulo {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+/* O app é dark-only por design — não há troca de tema. */
+html {
+  color-scheme: dark;
+  background: var(--color-bg);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Já vinha no design. Mantido. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

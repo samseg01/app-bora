@@ -1,0 +1,33 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Conexões · desktop", "x": 0, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Mobile.dc.html", "title": "Conexões · telefone", "x": 0, "y": 1160, "w": 390, "h": 844 },
+    { "file": "Vazio.dc.html", "title": "Estado vazio · sem conexões", "x": 510, "y": 1160, "w": 390, "h": 844 },
+    { "file": "Convite.dc.html", "title": "Convite · o que ela vê de você", "x": 1020, "y": 1160, "w": 390, "h": 844 },
+    { "file": "CheckIn.dc.html", "title": "Check-in feito", "x": 1530, "y": 1160, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "nota-aba",
+      "x": 0,
+      "y": -230,
+      "w": 760,
+      "text": "Aba de Conexões — plano em docs/plano-conexoes.md.\n\nA barra de navegação passa de 4 para 5 itens: Descobrir · Mapa · Conexões · Salvos · Perfil. Cinco é o teto confortável no telefone; não cabe um sexto depois.\n\nDois blocos na aba, nesta ordem: quem está fora agora (o check-in, que é o motor social) e salvos por quem você confia (a peça que serve à descoberta — um lugar que um amigo salvou e você não conhece).\n\nO selo de quantas conexões salvaram pode entrar nos cards da descoberta, mas SEM reordenar o feed: a descoberta é curatorial por decisão registrada."
+    },
+    {
+      "id": "nota-vazio",
+      "x": 510,
+      "y": 950,
+      "w": 700,
+      "text": "O estado vazio é o artboard mais importante da feature. O conceito.md nomeia o cold start dentro do grupo de amigos como o risco do motor social: se você é o único do grupo que usa, a aba não é \"pouco conteúdo\", é tela morta.\n\nPor isso ela não finge conteúdo — diz a condição em voz alta e coloca os salvos do curador do bairro no lugar, para nunca nascer vazia.\n\nA tela de convite existe para tornar a privacidade legível: lista o que a pessoa passa a ver e, principalmente, o que ela NÃO vê."
+    },
+    {
+      "id": "nota-copy",
+      "x": 1530,
+      "y": 950,
+      "w": 640,
+      "text": "Este artboard materializa a decisão pendente do item 23 do TODO.\n\nO app promete hoje, na tela: \"Ninguém vê seu nome\" (2d e 2h) e \"só seus, ninguém mais vê\" (2g). O check-in contradiz as duas.\n\nA saída desenhada aqui: o mapa público continua anônimo (você entra como número), e só as conexões veem que foi você. O copy antigo é substituído pela faixa ciano no rodapé.\n\nO botão \"avisar só o bairro\" está no v1 de propósito: é vida noturna, e transmitir posição exata não pode ser a única opção."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #08060f; font-family: 'Inter', system-ui, sans-serif; }
+    a { color: #ff6fa0; text-decoration: none; }
+    a:hover { color: #ffb443; }
+    @keyframes pulse-agora {
+      0%   { box-shadow: 0 0 0 0 rgba(255,61,129,.55); }
+      70%  { box-shadow: 0 0 0 9px rgba(255,61,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,61,129,0); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; display: flex; flex-direction: column; background: radial-gradient(110% 55% at 50% 18%, #3a0f2e 0%, rgba(58,15,46,0) 60%), #0d0a18; color: #f3eefc; overflow: hidden">
+
+  <div style="padding: 44px 24px 0; display: flex; flex-direction: column; align-items: center; text-align: center">
+    <div style="width: 76px; height: 76px; border-radius: 50%; background: #ff3d81; display: flex; align-items: center; justify-content: center; animation: pulse-agora 2.4s infinite">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div style="font-family: 'Anton', sans-serif; font-size: 33px; line-height: 1; text-transform: uppercase; margin-top: 22px">Tá marcado</div>
+    <div style="font-size: 13.5px; line-height: 1.55; color: #9083ad; margin-top: 11px; max-width: 280px; text-wrap: pretty">Você está no <b style="color: #f3eefc; font-weight: 600">Bar Aurora</b>, no selo aberto do rooftop.</div>
+  </div>
+
+  <!-- Quem vê: a resposta concreta à promessa de anonimato -->
+  <div style="margin: 24px 22px 0; display: flex; align-items: center; gap: 13px; padding: 15px 16px; border-radius: 18px; background: #171223; border: 1px solid rgba(255,255,255,.07)">
+    <div style="display: flex; flex: none">
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#7a1fff,#1fd0ff)"></div>
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#ffb443,#ff3d81); margin-left: -9px; border: 2px solid #171223"></div>
+      <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#1fd0ff,#7a1fff); margin-left: -9px; border: 2px solid #171223"></div>
+    </div>
+    <div style="flex: 1; font-size: 12.5px; line-height: 1.45; color: #b4a9cc"><b style="color: #f3eefc; font-weight: 600">3 conexões</b> veem que você está aqui. Mais ninguém.</div>
+  </div>
+
+  <div style="margin: 11px 22px 0; padding: 16px 18px; border-radius: 18px; background: #171223; border: 1px solid rgba(255,255,255,.07)">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #8478a0">some em</span>
+      <span style="font-family: 'Anton', sans-serif; font-size: 22px">1h 58min</span>
+    </div>
+    <div style="height: 6px; border-radius: 4px; background: rgba(255,255,255,.09); margin-top: 12px; overflow: hidden">
+      <div style="width: 96%; height: 100%; background: linear-gradient(90deg,#ff3d81,#ffb443)"></div>
+    </div>
+  </div>
+
+  <!-- Precisão é escolha, não padrão fixo: é vida noturna -->
+  <div style="margin: 11px 22px 0; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 16px; border-radius: 18px; background: #171223; border: 1px solid rgba(255,255,255,.07)">
+    <div>
+      <div style="font-size: 13.5px; font-weight: 600">Avisar só o bairro</div>
+      <div style="font-size: 11.5px; line-height: 1.4; color: #8478a0; margin-top: 4px">Some o lugar exato. Fica “na Vila Madalena”.</div>
+    </div>
+    <div style="width: 44px; height: 26px; border-radius: 16px; background: rgba(255,255,255,.12); position: relative; flex: none">
+      <div style="position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #8478a0"></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px; margin: 16px 22px 0">
+    <div style="border-radius: 16px; border: 1px solid rgba(255,255,255,.16); padding: 15px; font-size: 14px; font-weight: 600; color: #e8dfff; text-align: center">Contar como está lá dentro</div>
+    <div style="border-radius: 16px; border: 1px solid rgba(255,255,255,.08); padding: 15px; font-size: 14px; font-weight: 500; color: #6f6690; text-align: center">Cancelar meu sinal</div>
+  </div>
+
+  <!-- O copy corrigido: o antigo "ninguém vê seu nome" deixa de ser verdade -->
+  <div style="margin: 20px 22px 0; display: flex; gap: 11px; align-items: flex-start; padding: 14px 15px; border-radius: 16px; background: rgba(31,208,255,.07); border: 1px solid rgba(31,208,255,.18)">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1fd0ff" stroke-width="2" style="flex: none; margin-top: 1px"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+    <div style="font-size: 12px; line-height: 1.5; color: #b4a9cc">No mapa do bairro você entra como número, sem nome. Só as suas conexões veem que foi você.</div>
+  </div>
+
+  <div style="margin-top: auto; display: flex; justify-content: space-around; padding: 12px 6px 22px; border-top: 1px solid rgba(255,255,255,.07); background: #0f0b1c">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; color: #6f6690"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9z"/></svg>Descobrir</div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; color: #6f6690"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/></svg>Mapa</div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: #ff3d81"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.4"/><path d="M3 20c0-3.4 2.7-5.2 6-5.2s6 1.8 6 5.2"/><path d="M16.5 6.2a3.4 3.4 0 010 6.4"/><path d="M18.4 14.6c2 .7 3.6 2.3 3.6 5"/></svg>Conexões</div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; color: #6f6690"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>Salvos</div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; color: #6f6690"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

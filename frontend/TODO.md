@@ -1,0 +1,218 @@
+# TODO — frontend
+
+Tasks de implementação das 8 telas hi-fi. A análise que originou esta lista (cruzamento tela a tela
+com a API, lacunas, decisões pendentes) está em `../docs/plano-frontend.md` — ler antes de começar.
+Tasks de escopo do monorepo e as mudanças de backend que algumas telas pedem estão em `../TODO.md`.
+
+Convenções, tokens de cor e contratos da API: `CLAUDE.md` desta pasta.
+
+---
+
+## Fase 0 — scaffold e sistema visual ✅
+
+- [x] 1. **Criar o projeto Next.js.** Feito: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript,
+      ESLint, Turbopack, `src/`, alias `@/*`.
+- [x] 2. **Fontes e metadata em `app/layout.tsx`.** Anton 400 e Inter 400/500/600/700 via
+      `next/font/google` (`--font-anton`, `--font-inter`), `lang="pt-BR"`, `themeColor` `#08060f`,
+      `colorScheme: dark`.
+- [x] 3. **Tokens em `app/globals.css`.** Todos os tokens em `@theme`, mais os utilitários
+      `pulse-agora` e `rotulo` (o rótulo de seção repete em 6 das 8 telas) e o bloco
+      `prefers-reduced-motion`. Dark-only, sem troca de tema.
+- [x] 4. **Shell.** Mobile: `mx-auto w-full max-w-md`. Desktop: sidebar + conteúdo. Sem moldura de
+      telefone, notch ou barra de status falsa.
+- [x] 5. **`lib/types.ts`** — espelho dos schemas Pydantic, datas como `string` ISO.
+- [x] 6. **`lib/api.ts`** — fetch tipado, `ApiError` com status (401/403/409) e `ApiOffline`
+      separado. `.env.local.example` criado.
+- [x] 7. **`lib/frescor.ts`** — mapeamento único, `null` → sem badge.
+- [x] 8. **`lib/tempo.ts`** — `America/Sao_Paulo` fixo (também evita divergência de hidratação).
+- [x] 9. **Nav das duas visualizações** — `components/nav-items.tsx` (destinos e ícones, fonte
+      única), `views/mobile/bottom-nav.tsx` e `views/desktop/sidebar.tsx`.
+- [x] 10. **`components/ui/frescor-pill.tsx`** — ponto de 7px, pulse só no `live`.
+
+## Partição mobile / desktop ✅ infraestrutura
+
+Decisão registrada em `CLAUDE.md`: mesmo app, mesmas URLs, mesmos dados; só a composição muda,
+cortada por CSS em `lg`. `lib/` e `components/ui/` compartilhados, `views/` diverge.
+
+- [x] P1. `components/viewport.tsx` — `<Mobile>` e `<Desktop>`.
+- [x] P2. `app/page.tsx` busca uma vez e alimenta as duas visualizações. Verificado no HTML
+      servido: exatamente 2× cada card e cada pin, um por partição.
+- [x] P3. **Partição em todas as rotas existentes** (`/`, `/mapa`, `/role/[id]`, `/salvos`,
+      `/perfil`, `/curador`). Verificado no HTML servido: 6/6 respondem 200 com as duas árvores.
+      Toda tela nova continua precisando das duas composições.
+- [x] P4. **Design de desktop feito** — 5 artboards em `../docs/front-end-ideias/desktop/`. A
+      pergunta "o desktop é o app público ampliado ou o painel do curador?" foi respondida com
+      **os dois**: 4 telas do app público + o painel, que ganhou nav própria por ser outra
+      superfície.
+- [ ] P5. Reavaliar o custo do DOM duplicado quando o mapa virar client-side com pan e zoom. Saídas
+      registradas em `CLAUDE.md`: `<Activity mode="hidden">` do React 19.2, ou `proxy.ts` por
+      user-agent.
+
+## Fase 1 — as duas telas públicas (sem auth, sem backend novo)
+
+Fatia que prova a tese com dado real. Consome só rotas públicas — nenhuma mudança no backend.
+
+- [x] 11. **Tela `2c` — Home**, nas duas visualizações. Mobile (`views/mobile/home.tsx`): header,
+       "Hoje à noite" + contagem, rail horizontal de cards de 206px, seam "ou explore a região",
+       mini-mapa, bottom nav. Desktop (`views/desktop/home.tsx`): sidebar, grade de cards de 2–3
+       colunas e mapa fixo à direita ocupando a altura da tela. Card compartilhado em
+       `components/ui/role-card.tsx`. **Subtítulo usa `lugar_nome`**, não "8 min a pé".
+       ⚠️ Bairro ainda fixo no código — vira `localStorage` na fase 2.
+- [x] 12. **`components/ui/mapa-estilizado.tsx`** — grid, faixas inclinadas e pins reais
+       projetados na bbox dos `lat`/`lng`, com margem para não colar nas bordas e fallback para
+       centro quando há um pin só. Cor pelo `frescor` do `role_ativo`; sem rolê fica menor e em
+       `--color-pin-off`. Sem tiles e sem dependência externa.
+- [ ] 12b. **Verificar contra a artboard.** A home foi construída lendo o hi-fi, mas não foi
+       comparada lado a lado com ele. Conferir espaçamentos, pesos e tamanhos antes de considerar
+       a tela fechada.
+- [x] 13. **Card social da home** (só desktop). Cita **comentário**, não sinalização — decisão (ii)
+       do item 4a de `../TODO.md`, tomada. Só aparece com dado de exemplo: com a API real seria
+       preciso um `GET /comentarios/recentes?bairro=X` que não existe, e citar quem sinalizou
+       quebraria o anonimato prometido no `2d`.
+- [x] 14. **Tela `2f` — Mapa.** Pins selecionáveis, filtro Todos/Com rolê, cartão do lugar com
+       último comentário e CTA. Desktop: lista do bairro vira coluna permanente ao lado do mapa,
+       em vez de gaveta. **"Comentado agora" não foi implementado** — `total_comentarios` não tem
+       janela de tempo. Copy usa "4 comentários", não "na última hora".
+- [x] 15. **"Rota"** — link externo pro Google Maps, nas duas visualizações.
+- [x] 16. **Tela `2d` — Detalhe do rolê.** Hero, badges, título, lugar, comentários e stats. O
+       bloco de descrição renderiza **quando** `descricao` existir e mostra uma linha honesta
+       quando não existir (o campo não está no backend — item 15 de `../TODO.md`). O CTA "Tô indo"
+       aparece **desabilitado com explicação** ("Sinalizar ainda está com os curadores da Vila") —
+       decisão (i) do item 4a, tomada, alinhada ao ADR-0006.
+- [ ] 16b. **"Compartilhar" no `2d`** — Web Share API com fallback de copiar link. Não implementado.
+- [ ] 17. **Estados de carregamento e erro:** falta o skeleton no formato dos cards (não spinner)
+       via `loading.tsx`. O caso de API fora do ar já está coberto (`AvisoOffline` + `lib/fixtures`),
+       e `/role/[id]` já trata 404 com `notFound()`.
+- [ ] 18. **Estados vazios.** ⚠️ Não existem no design (item 4b de `../TODO.md`). Sem bairro
+       piloto e sem seed, é o estado que mais vai aparecer. Precisa de design antes de codar, mas
+       precisa de *algo* para a tela não quebrar: no mínimo um texto centrado no tom do produto.
+- [ ] 19. **Testar a altura das duas camadas em device real.** A ressalva de
+       `../docs/arquitetura-backend-frontend.md`: na artboard de 740px as duas camadas cabem sem
+       scroll; num telefone real (~650px úteis) provavelmente não. Se não couber, encolher o
+       mini-mapa — não virar abas.
+
+## Fase 2 — onboarding e perfil (client-side)
+
+- [ ] 20. **Tela `2a` — Onboarding, bairro.** Título "Bora?" em Anton 52px com o "?" em âmbar,
+       passo 1 de 2, lista de bairros. Bairro ativo hardcoded (o piloto ainda não foi escolhido —
+       item 1 de `../TODO.md`), demais com a pill âmbar "em breve". Contadores
+       ("14 lugares curados · 3 rolês hoje") derivam de `GET /mapa` e `GET /descoberta`, ou ficam
+       hardcoded até haver dado real. "Avisar quando abrir meu bairro" **não tem backend** — texto
+       inerte ou remover.
+- [ ] 21. **Tela `2b` — Onboarding, gostos.** Chips selecionáveis, passo 2 de 2, card do curador,
+       "Ver a noite de hoje" e "Pular por agora". Salvar em `localStorage` e **não usar para nada
+       ainda**: `/descoberta` não aceita filtro nem ordenação por gosto, e implementar ranking por
+       preferência contraria a decisão de a descoberta ser curatorial. Débito consciente, descrito
+       em `../docs/plano-frontend.md`.
+- [ ] 22. **`lib/bairro.ts` + guarda de rota.** Bairro escolhido em `localStorage`; quem chega sem
+       bairro definido vai para o onboarding. Toda chamada de API que exige `?bairro=` lê daqui.
+- [ ] 23. **Tela `2h` — Perfil, parcial.** Avatar, "Você", stats, bloco "meu bairro" com "trocar",
+       bloco de privacidade e card "para donos de casa". **Nome e "desde agosto" ficam de fora até
+       existir `GET /auth/me`** (item 18 de `../TODO.md`); "rolês que você foi" não tem rota e sai
+       do escopo. O toggle "Meus sinais são anônimos" vira **texto informativo, não controle** — um
+       toggle que não desliga nada promete um controle que não existe.
+
+## Painel do curador ⚠️ casca pronta, sem backend ligado
+
+Decisão tomada: **o painel do curador é a superfície mais desktop-native do produto** — é onde
+alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
+(`views/desktop/sidebar-curador.tsx`), e não é o app público esticado. Design:
+`../docs/front-end-ideias/desktop/Curador.dc.html`.
+
+- [x] C1. Rota `/curador` nas duas visualizações. Desktop: números da noite, lista do que está no
+      ar com ações, formulário de publicar à direita. Mobile: **inverte a prioridade** — publicar
+      primeiro (o curador está na rua, acabou de sair do lugar), lista depois; editar e tirar do ar
+      ficam só no desktop.
+- [x] C2. O campo "motivo pra ir" é o maior do formulário, de propósito.
+- [ ] C3. **Ligar no backend.** As rotas já existem inteiras (`POST/PATCH/DELETE /curador/lugares`
+      e `/curador/roles`), mas exigem token e papel `curador` — depende da fase 3. Hoje o
+      formulário não envia e a lista vem de exemplo.
+- [ ] C4. **`Role.descricao` no backend** (item 15 de `../TODO.md`) — sem ela o campo principal do
+      formulário não tem onde ser gravado.
+- [ ] C5. Sub-rotas `/curador/lugares` e `/curador/roles` — a nav já aponta para elas e **elas não
+      existem** (404). Ou criar, ou tirar da nav.
+- [ ] C6. Cadastro de lugar com seleção de ponto no mapa — hoje só há seleção de lugar existente.
+
+## Fase 3 — auth e salvar
+
+- [ ] 24. **Decidir e desenhar login/cadastro.** Não existem no bundle hi-fi (item 4b de
+       `../TODO.md`). Duas telas simples no mesmo sistema visual.
+- [ ] 25. **`lib/auth.ts`** — token em `localStorage`, decodificação client-side do payload do JWT
+       para ler `papel` e `exp` (sem verificar assinatura: é gating de UI, a autoridade é o
+       backend), e limpeza do token em 401.
+- [ ] 26. **Auth preguiçosa** (decisão (iii) do item 4a de `../TODO.md`): o app é público e
+       read-only; o login só aparece quando a pessoa tenta salvar pela primeira vez, preservando a
+       intenção para depois do login.
+- [ ] 27. **Salvar e dessalvar** no `2d` e no `2f`, com atualização otimista e reversão em erro.
+       `POST /salvos` devolve 409 se já salvo — tratar como sucesso idempotente, não como falha.
+- [ ] 28. **Tela `2g` — Salvos.** "Meu caderninho", contagem, filtros e lista. ⚠️ Com a API atual
+       custa uma chamada a `/lugares/{id}` por item — fazer a mudança 16 de `../TODO.md` antes, ou
+       aceitar o N+1 conscientemente. Os filtros "Abertos agora" e "Nunca fui" e os estados
+       "aberto"/"fechado" **não são implementáveis**: não há horário de funcionamento no schema nem
+       histórico de presença. Implementar só "Todos" e "Tem rolê" (derivável de `role_ativo`).
+
+## Fase 4 — contribuição
+
+- [ ] 29. **CTA de sinalizar no `2d`.** Depende da decisão (i) do item 4a de `../TODO.md`.
+       Recomendação registrada: mostrar desabilitado com explicação honesta para `papel=comum`,
+       porque `POST /sinalizacoes` responde **403** para quem não é curador ou dono (ADR-0006).
+       Tratar o 403 de verdade — não assumir que a UI sempre acerta o gating.
+- [ ] 30. **Tela `2e` — Sinal enviado.** Confirmação, contador "expira em" com barra de progresso
+       (`timestamp` + 120min, a janela warm do backend — deixar claro no código que é **convenção
+       de UI**, não prazo garantido pela API), "Contar como está lá dentro" (`POST /comentarios`) e
+       "Cancelar meu sinal" (⚠️ sem rota: item 20 de `../TODO.md`). Implementar como estado do
+       `2d`, não como rota nova.
+- [ ] 31. **Comentar** a partir do `2e` e do `LugarSheet` do `2f`.
+
+## Conexões — feature nova (plano em `../docs/plano-conexoes.md`)
+
+Aba de Conexões: amigos, check-in e os salvos deles. **Ler o plano antes** — ele decide a ordem
+(salvos das conexões antes do check-in) e por que o v1 é sem push. Depende da fase 3 (login) e do
+bairro piloto. Backend: itens 27–30 de `../TODO.md`.
+
+**Design pronto:** `../docs/front-end-ideias/conexoes/` — 5 artboards (aba em desktop e telefone,
+estado vazio, convite, confirmação de check-in). Seguir esses arquivos, como o resto do frontend
+segue o hi-fi.
+
+- [x] X1. **Quinto item na barra de navegação** — feito em `components/nav-items.tsx`, que serve as
+      duas navs de uma vez.
+- [x] X2. **Rota `/conexoes`** nas duas visualizações: quem está fora agora (incluindo o check-in
+      de bairro, sem lugar exato), salvos por quem você confia, e a coluna de conexões com o
+      pedido pendente. Componentes novos: `ui/avatar.tsx` (gradiente derivado do nome, mesma
+      pessoa sempre da mesma cor sem guardar nada) e `ui/lista-privacidade.tsx`.
+- [x] X3. **Estado vazio da aba** — implementado nas duas visualizações, com os salvos do curador
+      no lugar para a aba nunca nascer morta. Alcançável em `/conexoes?vazio=1` enquanto não há
+      API (com dado de exemplo seria inalcançável de outro jeito); esse parâmetro sai quando as
+      rotas existirem.
+- [x] X3b. **Rota `/conexoes/convite`** nas duas visualizações, com a lista do que a pessoa passa
+      **e não passa** a ver. O link em si fica pendente do backend — renderizar um link falso e
+      deixar copiar seria pior que mostrar o estado pendente.
+- [ ] X4. **Ligar o botão "Tô indo" do `2d`.** Ele já existe e está desabilitado com a explicação
+      de que sinalizar é restrito a curadores (`views/*/role.tsx`). Para usuário comum ele passa a
+      significar check-in visível às conexões. **Atualizar também o copy** "Ninguém vê seu nome",
+      que deixa de ser verdade como está escrito (item 23 de `../TODO.md`).
+- [ ] X5. **Tela `2e` — confirmação de check-in.** Já está desenhada no hi-fi e nunca foi
+      implementada: "Tá marcado", contador de expiração com barra, "Contar como está lá dentro" e
+      "Cancelar meu sinal". Implementar como estado do `2d`, não como rota nova.
+- [ ] X6. **Check-in por bairro** ("estou na Vila", sem lugar exato) — para quem quer avisar sem se
+      localizar. O plano recomenda ter isso **no v1**, não depois: é vida noturna, e transmitir
+      posição exata à noite não pode ser a única opção.
+- [ ] X7. **Selo "N conexões salvaram"** nos cards de descoberta. **Sem reordenar o feed** — a
+      descoberta é curatorial por decisão registrada, e reordenar por popularidade é exatamente o
+      que o `conceito.md` rejeita.
+- [ ] X8. **Ajustar o copy de privacidade** em `2g` ("só seus, ninguém mais vê") e `2h` ("seus
+      sinais são anônimos") para refletir a visibilidade opt-in. Hoje as duas frases ficam falsas
+      no minuto em que a feature entra.
+
+## Fase 5 — enriquecimento (depende do backend)
+
+- [ ] 32. Descrição do rolê no `2d`, quando existir `Role.descricao` (item 15 de `../TODO.md`) — é
+      o "motivo pra ir", a peça que mais falta para o `2d` cumprir a tese do produto.
+- [ ] 33. Card do curador ("VALIDOU EM CAMPO") e endereço do lugar (item 21 de `../TODO.md`).
+- [ ] 34. "N sinalizaram nas últimas 2h" no `2d`, quando `RolePublic` expuser a contagem (item 17).
+- [ ] 35. Distância "a pé" com geolocalização do browser, quando `RoleDescoberta` trouxer
+      `lat`/`lng` (item 19).
+- [ ] 36. **PWA de verdade:** `manifest.json` com ícones reais (não array vazio) e service worker
+      para cache offline. O argumento do PWA no `conceito.md` é não ter fricção de loja — sem ícone
+      e sem SW, "instalável" não funciona.
+- [ ] 37. Mapa com tiles reais (MapLibre) quando zoom e pan virarem necessidade medida.

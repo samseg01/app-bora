@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #08060f; font-family: 'Inter', system-ui, sans-serif; }
+    a { color: #ff6fa0; text-decoration: none; }
+    a:hover { color: #ffb443; }
+    @keyframes pulse-agora {
+      0%   { box-shadow: 0 0 0 0 rgba(255,61,129,.55); }
+      70%  { box-shadow: 0 0 0 9px rgba(255,61,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,61,129,0); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #0d0a18; color: #f3eefc; overflow: hidden">
+
+  <div style="width: 240px; flex: none; display: flex; flex-direction: column; gap: 40px; padding: 28px 20px; background: #0f0b1c; border-right: 1px solid rgba(255,255,255,.07)">
+    <div style="font-family: 'Anton', sans-serif; font-size: 30px; line-height: 1; text-transform: uppercase; padding: 0 14px">Bora<span style="color: #ffb443">?</span></div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: rgba(255,61,129,.15); color: #ff3d81; font-size: 14px; font-weight: 600">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9z"/></svg>
+        Descobrir
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; color: #8478a0; font-size: 14px; font-weight: 500">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/></svg>
+        Mapa
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; color: #8478a0; font-size: 14px; font-weight: 500">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>
+        Salvos
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; color: #8478a0; font-size: 14px; font-weight: 500">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Perfil
+      </div>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-width: 0; display: flex; gap: 30px; padding: 30px 34px">
+
+    <!-- Corpo do rolê -->
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600; color: #8478a0; margin-bottom: 18px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        Voltar para a noite de hoje
+      </div>
+
+      <div style="position: relative; height: 268px; border-radius: 22px; overflow: hidden; background: linear-gradient(150deg,#ff3d81,#7a1fff 68%,#26123f); flex: none">
+        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,10,24,.92) 2%, rgba(13,10,24,0) 58%)"></div>
+        <div style="position: absolute; bottom: 18px; left: 22px; display: flex; gap: 9px">
+          <div style="display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 20px; background: rgba(13,10,24,.8); font-size: 11.5px; font-weight: 600">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #ff3d81; animation: pulse-agora 1.8s infinite"></span>Bombando agora
+          </div>
+          <div style="padding: 7px 12px; border-radius: 20px; background: rgba(255,180,67,.16); color: #ffc774; font-size: 11.5px; font-weight: 600">termina 04h</div>
+        </div>
+      </div>
+
+      <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.3px; text-transform: uppercase; color: #ffb443; margin-top: 24px">rolê de hoje · balada</div>
+      <div style="font-family: 'Anton', sans-serif; font-size: 46px; line-height: 1.02; text-transform: uppercase; margin-top: 10px">Selo aberto no rooftop</div>
+      <div style="font-size: 15px; line-height: 1.6; color: #b4a9cc; margin-top: 14px; max-width: 560px; text-wrap: pretty">Entrada livre até meia-noite. Set de house às 23h30, teto aberto. Depois da meia-noite a fila dobra a esquina — vale chegar antes.</div>
+
+      <div style="display: flex; gap: 15px; padding: 18px; border-radius: 20px; background: #171223; border: 1px solid rgba(255,255,255,.06); margin-top: 22px">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#7a1fff,#1fd0ff); flex: none"></div>
+        <div>
+          <div style="font-size: 14px; line-height: 1.55; color: #cfc6e2">“Fui ontem: fila curta, som bom, teto aberto. Vai antes das 00h.”</div>
+          <div style="font-size: 11px; font-weight: 600; letter-spacing: .4px; color: #ffb443; margin-top: 9px">LÉO · CURADOR · VALIDOU EM CAMPO</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 13px; margin-top: 16px">
+        <div style="flex: 1; padding: 15px 16px; border-radius: 16px; background: #141024; border: 1px solid rgba(255,255,255,.06)">
+          <div style="font-family: 'Anton', sans-serif; font-size: 27px; line-height: 1">6</div>
+          <div style="font-size: 11.5px; line-height: 1.3; color: #8478a0; margin-top: 5px">sinalizaram nas últimas 2h</div>
+        </div>
+        <div style="flex: 1; padding: 15px 16px; border-radius: 16px; background: #141024; border: 1px solid rgba(255,255,255,.06)">
+          <div style="font-family: 'Anton', sans-serif; font-size: 27px; line-height: 1">R$ 30</div>
+          <div style="font-size: 11.5px; line-height: 1.3; color: #8478a0; margin-top: 5px">depois da meia-noite</div>
+        </div>
+        <div style="flex: 1; padding: 15px 16px; border-radius: 16px; background: #141024; border: 1px solid rgba(255,255,255,.06)">
+          <div style="font-family: 'Anton', sans-serif; font-size: 27px; line-height: 1">8 min</div>
+          <div style="font-size: 11.5px; line-height: 1.3; color: #8478a0; margin-top: 5px">a pé de onde você está</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Painel de ação -->
+    <div style="width: 356px; flex: none; display: flex; flex-direction: column; gap: 14px">
+
+      <div style="display: flex; flex-direction: column; gap: 15px; padding: 20px; border-radius: 22px; background: #181227; border: 1px solid rgba(255,255,255,.07)">
+        <div style="display: flex; gap: 13px; align-items: center">
+          <div style="width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(135deg,#1fd0ff,#7a1fff); flex: none"></div>
+          <div>
+            <div style="font-size: 16px; font-weight: 700">Bar Aurora</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 3px">o lugar · Rua Aspicuelta, 340</div>
+          </div>
+        </div>
+
+        <div style="border-radius: 16px; background: #ff3d81; color: #fff; text-align: center; padding: 15px; font-size: 15px; font-weight: 700">Tô indo — vale por 2h</div>
+        <div style="font-size: 11.5px; color: #6f6690; text-align: center; margin-top: -6px">Expira sozinho. Ninguém vê seu nome.</div>
+
+        <div style="display: flex; gap: 10px">
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 16px; border: 1px solid rgba(255,255,255,.18); padding: 13px; font-size: 13.5px; font-weight: 600; color: #e8dfff">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff6fa0" stroke-width="2.2"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>
+            Salvar
+          </div>
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 16px; border: 1px solid rgba(255,255,255,.18); padding: 13px; font-size: 13.5px; font-weight: 600; color: #e8dfff">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7h16v-7"/><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/></svg>
+            Compartilhar
+          </div>
+        </div>
+      </div>
+
+      <div style="position: relative; height: 176px; border-radius: 22px; overflow: hidden; background-color: #141024; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 38px 38px; border: 1px solid rgba(255,255,255,.07); flex: none">
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 11px; background: rgba(255,255,255,.05); transform: skewX(-11deg)"></div>
+        <div style="position: absolute; left: 0; right: 0; top: 52%; height: 9px; background: rgba(255,255,255,.05); transform: skewY(5deg)"></div>
+        <div style="position: absolute; left: 46%; top: 44%; transform: translate(-50%,-50%); width: 16px; height: 16px; border-radius: 50%; background: #ff3d81; animation: pulse-agora 1.8s infinite"></div>
+        <div style="position: absolute; bottom: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-radius: 14px; background: rgba(20,15,36,.92); border: 1px solid rgba(255,255,255,.09)">
+          <div style="font-size: 12px; color: #b4a9cc">Rua Aspicuelta, 340</div>
+          <div style="font-size: 12px; font-weight: 600; color: #ff6fa0">Rota</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; border-radius: 22px; background: #171223; border: 1px solid rgba(255,255,255,.06)">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: #6f6690">quem está lá agora</div>
+        <div style="display: flex; gap: 11px; align-items: flex-start">
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#7a1fff,#1fd0ff); flex: none"></div>
+          <div style="font-size: 12.5px; line-height: 1.45; color: #cfc6e2">“chegou banda nova, tá cheio mas cabe” — <span style="color: #fff; font-weight: 600">Marina, 23h01</span></div>
+        </div>
+        <div style="display: flex; gap: 11px; align-items: flex-start">
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#ffb443,#ff3d81); flex: none"></div>
+          <div style="font-size: 12.5px; line-height: 1.45; color: #cfc6e2">“fila andando rápido” — <span style="color: #fff; font-weight: 600">Rafa, 22h48</span></div>
+        </div>
+        <div style="padding: 12px 14px; border-radius: 14px; border: 1px dashed rgba(255,255,255,.14); font-size: 12.5px; color: #6f6690">Contar como está lá dentro…</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

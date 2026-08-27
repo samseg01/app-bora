@@ -1,0 +1,33 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Home · descoberta + mapa", "x": 0, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Mapa.dc.html", "title": "Mapa · lista + mapa", "x": 1560, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Role.dc.html", "title": "Detalhe do rolê", "x": 0, "y": 1060, "w": 1440, "h": 900 },
+    { "file": "Salvos.dc.html", "title": "Salvos · o caderninho", "x": 1560, "y": 1060, "w": 1440, "h": 900 },
+    { "file": "Curador.dc.html", "title": "Painel do curador", "x": 780, "y": 2120, "w": 1440, "h": 900 }
+  ],
+  "annotations": [
+    {
+      "id": "nota-desktop",
+      "x": 0,
+      "y": -190,
+      "w": 700,
+      "text": "Desktop do Bora? — 1440×900, complementando as 8 artboards de telefone.\n\nMesmo sistema visual do hi-fi: Anton nos títulos, Inter no corpo, magenta = agora, âmbar = enchendo, ciano = novo.\n\nO que muda em tela grande: a barra inferior vira coluna lateral; as duas camadas deixam de ser empilhadas e passam a conviver lado a lado (descoberta à esquerda, mapa fixo à direita); e o card do rail vira linha larga, com espaço para o motivo pra ir."
+    },
+    {
+      "id": "nota-dados",
+      "x": 1560,
+      "y": -190,
+      "w": 700,
+      "text": "Duas coisas desenhadas aqui ainda não existem no banco: a descrição do rolê (o motivo pra ir) e o endereço do lugar. São os itens 15 e 21 do TODO da raiz.\n\nEm Salvos, troquei o aberto/fechado do hi-fi por tem rolê / sem rolê hoje: horário de funcionamento não existe no schema, e o rolê ativo é derivável hoje."
+    },
+    {
+      "id": "nota-curador",
+      "x": 780,
+      "y": 1930,
+      "w": 700,
+      "text": "O painel do curador é a tela mais desktop-native do produto: é onde alguém trabalha sentado, depois de andar pelo bairro. As 4 telas acima são o app público em tela grande; esta é uma superfície de trabalho, com nav própria.\n\nO campo motivo pra ir é o maior do formulário de propósito — é o que faz alguém sair de casa, e é justamente a coluna que ainda não existe no banco.\n\nA API deste painel já existe inteira (CRUD de lugar e rolê em /curador); o que faltava era a tela."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #08060f; font-family: 'Inter', system-ui, sans-serif; }
+    a { color: #ff6fa0; text-decoration: none; }
+    a:hover { color: #ffb443; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; display: flex; flex-direction: column; background: radial-gradient(110% 45% at 50% 0%, #26123f 0%, rgba(38,18,63,0) 55%), #0d0a18; color: #f3eefc; overflow: hidden">
+
+  <div style="display: flex; align-items: center; gap: 12px; padding: 26px 22px 0">
+    <div style="width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.07); display: flex; align-items: center; justify-content: center; flex: none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e8dfff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <div style="font-size: 14px; font-weight: 600; color: #b4a9cc">Conexões</div>
+  </div>
+
+  <div style="padding: 26px 22px 0">
+    <div style="font-family: 'Anton', sans-serif; font-size: 30px; line-height: 1.04; text-transform: uppercase">Convidar quem<br>você sai</div>
+    <div style="font-size: 13.5px; line-height: 1.55; color: #9083ad; margin-top: 12px; text-wrap: pretty">O link vale uma pessoa e expira em 7 dias. Quando ela abrir, você aceita ou não.</div>
+  </div>
+
+  <div style="margin: 22px 22px 0; display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-radius: 16px; background: #141024; border: 1px solid rgba(255,255,255,.1)">
+    <div style="flex: 1; min-width: 0; font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #b4a9cc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">bora.app/c/k7f2-mtq9</div>
+    <div style="display: flex; align-items: center; gap: 7px; padding: 13px 14px; border-radius: 12px; background: rgba(255,61,129,.16); color: #ff6fa0; font-size: 12.5px; font-weight: 600; flex: none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+      Copiar
+    </div>
+  </div>
+
+  <div style="margin: 12px 22px 0">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 9px; border-radius: 16px; background: #ff3d81; color: #fff; padding: 16px; font-size: 15px; font-weight: 700">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7h16v-7"/><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/></svg>
+      Compartilhar
+    </div>
+  </div>
+
+  <!-- A parte que constrói confiança: dizer exatamente o que a pessoa passa a ver -->
+  <div style="margin: 32px 22px 0">
+    <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: #6f6690">o que ela vai ver de você</div>
+
+    <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 14px; border-radius: 18px; background: #171223; border: 1px solid rgba(255,255,255,.06); overflow: hidden">
+
+      <div style="display: flex; gap: 13px; align-items: flex-start; padding: 15px 16px">
+        <div style="width: 20px; height: 20px; border-radius: 50%; background: rgba(255,61,129,.18); display: flex; align-items: center; justify-content: center; flex: none">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ff6fa0" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 13.5px; font-weight: 600">Onde você está, quando você avisar</div>
+          <div style="font-size: 12px; line-height: 1.45; color: #8478a0; margin-top: 3px">Só quando você faz check-in. Some sozinho em 2h.</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 13px; align-items: flex-start; padding: 15px 16px; border-top: 1px solid rgba(255,255,255,.05)">
+        <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.16); display: flex; align-items: center; justify-content: center; flex: none">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6f6690" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 13.5px; font-weight: 600; color: #b4a9cc">Seus lugares salvos</div>
+          <div style="font-size: 12px; line-height: 1.45; color: #8478a0; margin-top: 3px">Desligado. Você liga no perfil, se quiser.</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 13px; align-items: flex-start; padding: 15px 16px; border-top: 1px solid rgba(255,255,255,.05)">
+        <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.16); display: flex; align-items: center; justify-content: center; flex: none">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6f6690" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 13.5px; font-weight: 600; color: #b4a9cc">Seu histórico</div>
+          <div style="font-size: 12px; line-height: 1.45; color: #8478a0; margin-top: 3px">Não existe. Nada fica guardado depois que expira.</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 13px; align-items: flex-start; padding: 15px 16px; border-top: 1px solid rgba(255,255,255,.05)">
+        <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.16); display: flex; align-items: center; justify-content: center; flex: none">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6f6690" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 13.5px; font-weight: 600; color: #b4a9cc">Sua localização em segundo plano</div>
+          <div style="font-size: 12px; line-height: 1.45; color: #8478a0; margin-top: 3px">O app não rastreia. Só o que você aponta.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top: auto; padding: 0 22px 30px">
+    <div style="font-size: 12.5px; line-height: 1.5; color: #6f6690; text-align: center">Dá pra desfazer a conexão a qualquer momento, e a pessoa não é avisada.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

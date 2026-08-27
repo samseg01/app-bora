@@ -1,0 +1,147 @@
+import Link from "next/link";
+import { FrescorPill } from "@/components/ui/frescor-pill";
+import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { DesktopShell } from "./shell";
+import { hora, idade } from "@/lib/tempo";
+import type { ComentarioResumo, LugarDetalhe, MapaPin, RolePublic } from "@/lib/types";
+
+/** Tela de detalhe, visualização desktop: o rolê à esquerda, o que fazer com ele à direita. */
+export function RoleDesktop({
+  role,
+  lugar,
+  comentarios,
+}: {
+  role: RolePublic;
+  lugar: LugarDetalhe | null;
+  comentarios: ComentarioResumo[];
+}) {
+  const pins: MapaPin[] = lugar
+    ? [{ lugar, role_ativo: null, total_comentarios: comentarios.length }]
+    : [];
+
+  return (
+    <DesktopShell>
+      <div className="flex min-w-0 flex-1 gap-7 px-8 py-7">
+        <section className="flex min-w-0 flex-1 flex-col">
+          <Link
+            href="/"
+            className="mb-4 flex items-center gap-2 text-[13px] font-semibold text-muted-2 hover:text-text"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            Voltar para a noite de hoje
+          </Link>
+
+          <div className="relative h-67 shrink-0 overflow-hidden rounded-[22px] bg-gradient-to-br from-magenta via-violet to-plum">
+            <div className="absolute inset-0 bg-gradient-to-t from-surface/92 to-transparent" />
+            <div className="absolute bottom-4.5 left-5.5 flex gap-2.5">
+              <FrescorPill frescor={role.frescor} />
+              <span className="rounded-full bg-amber/16 px-3 py-1.5 text-[11.5px] font-semibold text-amber-soft">
+                termina {hora(role.data_fim)}
+              </span>
+            </div>
+          </div>
+
+          <div className="rotulo mt-6 text-amber">rolê de hoje · {role.categoria}</div>
+          <h1 className="mt-2.5 font-display text-[46px] leading-[1.02] uppercase">{role.titulo}</h1>
+
+          {role.descricao ? (
+            <p className="mt-3.5 max-w-[560px] text-[15px] leading-relaxed text-text-faint text-pretty">
+              {role.descricao}
+            </p>
+          ) : (
+            <p className="mt-3.5 max-w-[560px] text-[13.5px] leading-relaxed text-muted-3">
+              Sem descrição — o campo do “motivo pra ir” ainda não existe no backend.
+            </p>
+          )}
+
+          <div className="mt-5.5 flex gap-3.5">
+            {typeof role.sinais_recentes === "number" && (
+              <Stat valor={String(role.sinais_recentes)} rotulo="sinalizaram nas últimas 2h" />
+            )}
+            <Stat valor={hora(role.data_inicio)} rotulo="começou" />
+            <Stat valor={hora(role.data_fim)} rotulo="termina" />
+          </div>
+        </section>
+
+        <aside className="flex w-[356px] shrink-0 flex-col gap-3.5">
+          <div className="flex flex-col gap-3.5 rounded-[22px] border border-white/7 bg-card p-5">
+            <div className="flex items-center gap-3">
+              <div className="h-11.5 w-11.5 shrink-0 rounded-[13px] bg-gradient-to-br from-cyan to-violet" />
+              <div className="min-w-0">
+                <div className="truncate text-base font-bold">{lugar?.nome ?? "Lugar"}</div>
+                <div className="mt-0.5 truncate text-xs text-muted-2">
+                  o lugar{lugar?.endereco ? ` · ${lugar.endereco}` : ""}
+                </div>
+              </div>
+            </div>
+
+            {/* POST /sinalizacoes responde 403 para papel comum (ADR-0006), e não há login
+                ainda. Mostrar desabilitado e dizer por quê é mais honesto que esconder. */}
+            <button
+              type="button"
+              disabled
+              className="cursor-not-allowed rounded-2xl bg-magenta/40 py-3.5 text-[15px] font-bold text-white/70"
+            >
+              Tô indo — vale por 2h
+            </button>
+            <p className="-mt-1.5 text-center text-[11.5px] leading-snug text-muted-3">
+              Sinalizar ainda está com os curadores da Vila.
+            </p>
+
+            <button
+              type="button"
+              disabled
+              className="cursor-not-allowed rounded-2xl border border-white/18 py-3 text-[13.5px] font-semibold text-text-soft opacity-45"
+            >
+              Salvar
+            </button>
+          </div>
+
+          {lugar && (
+            <MapaEstilizado pins={pins} className="h-44 shrink-0 rounded-[22px] border border-white/7">
+              <div className="absolute inset-x-3.5 bottom-3.5 flex items-center justify-between rounded-2xl border border-white/9 bg-sunken/92 px-3.5 py-2.5">
+                <span className="truncate text-xs text-text-faint">
+                  {lugar.endereco ?? lugar.bairro}
+                </span>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${lugar.lat},${lugar.lng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="shrink-0 text-xs font-semibold text-magenta-soft"
+                >
+                  Rota
+                </a>
+              </div>
+            </MapaEstilizado>
+          )}
+
+          {comentarios.length > 0 && (
+            <div className="flex flex-col gap-3.5 rounded-[22px] border border-white/6 bg-card-alt px-5 py-4.5">
+              <div className="rotulo text-muted-3">quem está lá agora</div>
+              {comentarios.map((c) => (
+                <div key={`${c.autor_nome}-${c.created_at}`} className="flex items-start gap-2.5">
+                  <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+                  <p className="text-[12.5px] leading-snug text-text-dim">
+                    “{c.texto}” — <span className="font-semibold text-white">{c.autor_nome}</span>,{" "}
+                    {idade(c.created_at)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </aside>
+      </div>
+    </DesktopShell>
+  );
+}
+
+function Stat({ valor, rotulo }: { valor: string; rotulo: string }) {
+  return (
+    <div className="flex-1 rounded-2xl border border-white/6 bg-sunken px-4 py-3.5">
+      <div className="font-display text-[27px] leading-none">{valor}</div>
+      <div className="mt-1.5 text-[11.5px] leading-tight text-muted-2">{rotulo}</div>
+    </div>
+  );
+}

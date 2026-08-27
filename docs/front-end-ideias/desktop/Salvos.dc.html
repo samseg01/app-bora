@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #08060f; font-family: 'Inter', system-ui, sans-serif; }
+    a { color: #ff6fa0; text-decoration: none; }
+    a:hover { color: #ffb443; }
+    @keyframes pulse-agora {
+      0%   { box-shadow: 0 0 0 0 rgba(255,61,129,.55); }
+      70%  { box-shadow: 0 0 0 9px rgba(255,61,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,61,129,0); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #0d0a18; color: #f3eefc; overflow: hidden">
+
+  <div style="width: 240px; flex: none; display: flex; flex-direction: column; gap: 40px; padding: 28px 20px; background: #0f0b1c; border-right: 1px solid rgba(255,255,255,.07)">
+    <div style="font-family: 'Anton', sans-serif; font-size: 30px; line-height: 1; text-transform: uppercase; padding: 0 14px">Bora<span style="color: #ffb443">?</span></div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; color: #8478a0; font-size: 14px; font-weight: 500">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9z"/></svg>
+        Descobrir
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; color: #8478a0; font-size: 14px; font-weight: 500">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/></svg>
+        Mapa
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: rgba(255,61,129,.15); color: #ff3d81; font-size: 14px; font-weight: 600">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>
+        Salvos
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; color: #8478a0; font-size: 14px; font-weight: 500">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Perfil
+      </div>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 34px 40px">
+
+    <div style="display: flex; justify-content: space-between; align-items: flex-end">
+      <div>
+        <div style="font-family: 'Anton', sans-serif; font-size: 46px; line-height: 1; text-transform: uppercase">Meu caderninho</div>
+        <div style="font-size: 13px; color: #8478a0; margin-top: 10px">6 lugares salvos · só seus, ninguém mais vê</div>
+      </div>
+      <div style="display: flex; gap: 9px">
+        <div style="padding: 9px 15px; border-radius: 20px; background: #ff3d81; color: #fff; font-size: 12.5px; font-weight: 600">Todos</div>
+        <div style="padding: 9px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,.12); color: #b4a9cc; font-size: 12.5px; font-weight: 600">Com rolê hoje</div>
+        <div style="padding: 9px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,.12); color: #b4a9cc; font-size: 12.5px; font-weight: 600">Salvos recentes</div>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 22px; border-radius: 20px; background: linear-gradient(135deg, rgba(255,61,129,.14), rgba(255,180,67,.07)); border: 1px solid rgba(255,61,129,.22); margin-top: 26px">
+      <div style="display: flex; align-items: center; gap: 14px">
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: #ff3d81; flex: none; animation: pulse-agora 1.8s infinite"></span>
+        <div style="font-size: 14px; line-height: 1.45; color: #e8dfff"><span style="font-weight: 600">3 salvos viraram rolê hoje.</span> Bar Aurora tem set de house às 23h30.</div>
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #ff6fa0; white-space: nowrap">ver o rolê →</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 22px">
+
+      <div style="border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,61,129,.35)">
+        <div style="height: 132px; background: linear-gradient(135deg,#ff3d81,#7a1fff)"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 15px 16px 17px">
+          <div>
+            <div style="font-size: 15.5px; font-weight: 700">Bar Aurora</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 4px">bar · Vila Madalena</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; background: rgba(255,61,129,.16); color: #ff6fa0; font-size: 11px; font-weight: 600; white-space: nowrap; flex: none">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #ff3d81; animation: pulse-agora 1.8s infinite"></span>tem rolê
+          </div>
+        </div>
+      </div>
+
+      <div style="border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,255,255,.07)">
+        <div style="height: 132px; background: linear-gradient(135deg,#ffb443,#ff3d81)"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 15px 16px 17px">
+          <div>
+            <div style="font-size: 15.5px; font-weight: 700">Garagem 9</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 4px">sarau · Vila Madalena</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; background: rgba(31,208,255,.14); color: #1fd0ff; font-size: 11px; font-weight: 600; white-space: nowrap; flex: none">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #1fd0ff"></span>tem rolê
+          </div>
+        </div>
+      </div>
+
+      <div style="border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,255,255,.07)">
+        <div style="height: 132px; background: linear-gradient(135deg,#7a1fff,#26123f)"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 15px 16px 17px">
+          <div>
+            <div style="font-size: 15.5px; font-weight: 700">Boteco do Zé</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 4px">boteco · Vila Madalena</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; background: rgba(255,180,67,.14); color: #ffc774; font-size: 11px; font-weight: 600; white-space: nowrap; flex: none">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #ffb443"></span>tem rolê
+          </div>
+        </div>
+      </div>
+
+      <div style="border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,255,255,.07)">
+        <div style="height: 132px; background: linear-gradient(135deg,#1fd0ff,#26123f)"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 15px 16px 17px">
+          <div>
+            <div style="font-size: 15.5px; font-weight: 700">Casa 47</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 4px">show ao vivo · Vila Madalena</div>
+          </div>
+          <div style="font-size: 11px; font-weight: 600; color: #6f6690; white-space: nowrap; padding-top: 6px">sem rolê hoje</div>
+        </div>
+      </div>
+
+      <div style="border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,255,255,.07)">
+        <div style="height: 132px; background: linear-gradient(135deg,#1fd0ff,#7a1fff)"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 15px 16px 17px">
+          <div>
+            <div style="font-size: 15.5px; font-weight: 700">Praça Benedito Calixto</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 4px">feira · Pinheiros</div>
+          </div>
+          <div style="font-size: 11px; font-weight: 600; color: #6f6690; white-space: nowrap; padding-top: 6px">sem rolê hoje</div>
+        </div>
+      </div>
+
+      <div style="border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,255,255,.07)">
+        <div style="height: 132px; background: linear-gradient(135deg,#26123f,#7a1fff)"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 15px 16px 17px">
+          <div>
+            <div style="font-size: 15.5px; font-weight: 700">Espaço Cru</div>
+            <div style="font-size: 12px; color: #8478a0; margin-top: 4px">galeria · Vila Madalena</div>
+          </div>
+          <div style="font-size: 11px; font-weight: 600; color: #6f6690; white-space: nowrap; padding-top: 6px">sem rolê hoje</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
