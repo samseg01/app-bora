@@ -185,6 +185,24 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        fictícia (14 lugares, 3 rolês, comentários, sinalizações recentes) faz o frontend ter contra
        o que rodar desde o primeiro dia, e reproduz os estados `live`/`warm`/`new` de propósito.
 
+### A escada bar simples → lugar com atração (refinamento de 27/08 no `conceito.md`)
+
+O degrau mais simples — bar aberto e com movimento, sem nada programado — hoje é **estruturalmente
+invisível** nas duas camadas, embora o backend já calcule o frescor dele.
+
+- [ ] 31. **`/mapa` expor o frescor do próprio lugar.** `MapaPin` só tem `role_ativo.frescor`, então
+       um bar cheio sem rolê fica com pin cinza para sempre. `frescor_de_lugar()` já existe e já é
+       usado em `GET /lugares/{id}` — falta só incluir no pin. É a menor mudança com mais efeito:
+       destrava a "camada social e de novidade" que o `conceito.md` diz ser o valor do mapa.
+- [ ] 32. **Decidir se `/descoberta` pode devolver lugar sem rolê.** Hoje ela parte de `Role`, então
+       um lugar sem nada publicado nunca aparece na descoberta. Duas saídas: (a) o curador escreve
+       um rolê mesmo para oferta simples — mantém um conceito só e é o que o piloto deve fazer; ou
+       (b) a descoberta passa a misturar lugares quentes sem rolê. Recomendo (a) agora e (b) só se
+       o campo mostrar que faz falta.
+- [ ] 33. **Vocabulário de categoria cobrindo a base da escada.** O design usa Balada, Bar, Sarau,
+       Show ao vivo — tudo do topo. Boteco, oferta e feira precisam ser cidadãos de primeira classe,
+       não exceção.
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`

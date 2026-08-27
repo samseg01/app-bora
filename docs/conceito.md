@@ -38,6 +38,23 @@ Não confundir **lugar** com **momento**:
 
 O **efêmero é o que faz a pessoa voltar.** O lugar permanente é a base; o rolê do dia é o motivo de reabrir o app. Se a pessoa abre o mapa da região três sextas seguidas e vê sempre os mesmos pinos, o hábito morre.
 
+### Refinamento (27/08/2026): a escada vai do bar simples ao lugar com atração
+
+O produto atende **evento e bar**, começando pelos mais simples e subindo. Isso importa porque a
+maior parte da oferta de um bairro não tem agenda: tem **oferta** ("chopp em dobro até 22h") e
+**estado** (aberto, cheio, com movimento). O exemplo canônico do documento — "hoje tem samba às
+20h" — é o topo da escada, não a base.
+
+Consequências:
+
+- **Oferta é rolê.** Cabe no modelo sem mudança: título, motivo pra ir, janela de horário. E passa
+  na regra de ouro — oferta boa em lugar que você não conhece é motivo legítimo para sair.
+- **O "motivo pra ir" fica mais decisivo, não menos.** Num evento o título já carrega a razão
+  ("Samba de quinta"); num bar simples o título é fraco e o texto do curador faz todo o trabalho.
+- **O frescor do lugar passa a valer sozinho.** Um boteco cheio numa terça é conteúdo, mesmo sem
+  nada programado. O backend já calcula isso (`frescor_de_lugar`, sinalização com `lugar_id`), mas
+  hoje nem a descoberta nem o mapa usam — ver os itens abertos no `TODO.md`.
+
 ---
 
 ## Motores de conteúdo e incentivo
