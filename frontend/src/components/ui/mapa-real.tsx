@@ -53,6 +53,7 @@ export function MapaReal({
   selecionadoId,
   onSelecionar,
 }: Props) {
+  const raiz = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
   const mapa = useRef<MapLibreMap | null>(null);
   const marcadores = useRef<Marker[]>([]);
@@ -62,6 +63,8 @@ export function MapaReal({
    * versão engolia o erro, o que tornava impossível depurar sem abrir o console.
    */
   const [erro, setErro] = useState<string | null>(null);
+  /** Diagnóstico de desenvolvimento: o que o ResizeObserver mediu e em que fase estamos. */
+  const [diag, setDiag] = useState("montando");
 
   // Guardados em ref para o efeito de inicialização não depender deles e reiniciar o
   // mapa a cada render. A sincronia vai num efeito próprio: escrever em ref durante o
@@ -75,13 +78,23 @@ export function MapaReal({
   });
 
   useEffect(() => {
-    const el = container.current;
-    if (!el) return;
+    // Observamos a RAIZ, não o filho `absolute inset-0`: a raiz é quem carrega as
+    // classes de dimensão (`h-dvh`, `flex-1`, `min-h-*`), e um filho absoluto pode
+    // reportar contentRect de altura 0 antes do layout assentar — foi exatamente o
+    // que aconteceu: "medido 836x0", e o mapa nunca inicializava.
+    const el = raiz.current;
+    const alvo = container.current;
+    if (!el || !alvo) return;
 
     let cancelado = false;
 
     async function iniciar() {
       if (mapa.current || cancelado || !container.current) return;
+      // O MapLibre exige container com altura; sem isso ele monta e não desenha nada.
+      if (container.current.getBoundingClientRect().height === 0) {
+        setDiag("container sem altura");
+        return;
+      }
       let MapaGL, AttributionControl, LngLatBounds;
       try {
         ({ Map: MapaGL, AttributionControl, LngLatBounds } = await import("maplibre-gl"));
@@ -91,6 +104,16 @@ export function MapaReal({
         return;
       }
       if (cancelado || !container.current || mapa.current) return;
+
+      // Sem WebGL o MapLibre monta e nunca desenha. Distinguir isso de um bug nosso
+      // importa: em ambiente headless/VM é comum não haver, e a degradação para o mapa
+      // abstrato é a resposta certa.
+      const teste = document.createElement("canvas");
+      if (!teste.getContext("webgl2") && !teste.getContext("webgl")) {
+        setDiag("sem WebGL neste navegador");
+        setErro("WebGL indisponível");
+        return;
+      }
 
       try {
         const m = new MapaGL({
@@ -102,17 +125,29 @@ export function MapaReal({
         });
         m.addControl(new AttributionControl({ compact: true }));
         mapa.current = m;
+        setDiag("construído, aguardando estilo");
+
+        m.on("styledata", () => setDiag("estilo carregado, aguardando render"));
+
+        const enquadrar = () => {
+          const atuais = pinsRef.current;
+          if (atuais.length === 0) return;
+          const b = new LngLatBounds();
+          atuais.forEach((p) => b.extend([p.lugar.lng, p.lugar.lat]));
+          m.fitBounds(b, { padding: 56, maxZoom: 16, animate: false });
+        };
 
         m.on("load", () => {
           if (cancelado) return;
-          const atuais = pinsRef.current;
-          if (atuais.length > 0) {
-            const b = new LngLatBounds();
-            atuais.forEach((p) => b.extend([p.lugar.lng, p.lugar.lat]));
-            m.fitBounds(b, { padding: 56, maxZoom: 16, animate: false });
-          }
+          enquadrar();
           setPronto(true);
         });
+
+        // Tentei revelar no primeiro evento `render` para não depender do `load`, que é
+        // mais exigente. Foi pior: em ambiente sem GPU o `render` dispara com o canvas
+        // ainda vazio, e o mapa abstrato — que é a degradação — sumia dando lugar a um
+        // retângulo em branco. `load` (estilo + primeiro render completo) é o único
+        // sinal que garante que há mapa desenhado. Mantido.
 
         // Estilo indisponível (rede ruim, CDN bloqueado): fica o mapa abstrato por baixo.
         m.on("error", (e) => {
@@ -137,14 +172,25 @@ export function MapaReal({
     // O gatilho é o tamanho: a partição escondida é 0×0 e nunca instancia mapa nenhum.
     const ro = new ResizeObserver(([entrada]) => {
       const { width, height } = entrada.contentRect;
+      setDiag(`medido ${Math.round(width)}x${Math.round(height)}`);
       if (width > 0 && height > 0) {
         if (mapa.current) mapa.current.resize();
-        else void iniciar();
+        else {
+          setDiag(`iniciando (${Math.round(width)}x${Math.round(height)})`);
+          void iniciar();
+        }
       } else if (mapa.current) {
         destruir();
       }
     });
     ro.observe(el);
+    // Fallback: se o RO não entregar nada, medir na mão logo após o primeiro frame.
+    requestAnimationFrame(() => {
+      if (mapa.current || cancelado) return;
+      const r = el.getBoundingClientRect();
+      setDiag(`rAF ${Math.round(r.width)}x${Math.round(r.height)}`);
+      if (r.width > 0 && r.height > 0) void iniciar();
+    });
 
     return () => {
       cancelado = true;
@@ -198,7 +244,7 @@ export function MapaReal({
   }, [pins, selecionadoId, onSelecionar, pronto]);
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div ref={raiz} className={`relative overflow-hidden ${className}`}>
       {/* Base: o mapa abstrato, visível até o real carregar — e permanentemente se ele falhar. */}
       <div className={`absolute inset-0 transition-opacity ${pronto ? "opacity-0" : "opacity-100"}`}>
         <MapaEstilizado pins={pins} className="h-full w-full" />
@@ -214,9 +260,10 @@ export function MapaReal({
 
       {children}
 
-      {erro && process.env.NODE_ENV !== "production" && (
-        <div className="absolute inset-x-3 bottom-3 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 text-[11px] leading-snug text-amber">
-          mapa não carregou: {erro}
+      {!pronto && process.env.NODE_ENV !== "production" && (
+        <div className="absolute inset-x-3 bottom-3 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 font-mono text-[11px] leading-snug text-amber">
+          [mapa] {diag}
+          {erro ? ` · erro: ${erro}` : ""}
         </div>
       )}
     </div>
