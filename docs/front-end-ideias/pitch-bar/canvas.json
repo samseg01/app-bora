@@ -1,0 +1,37 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Como ele aparece na descoberta", "x": 0, "y": 0, "w": 390, "h": 844 },
+    { "file": "Detalhe.dc.html", "title": "O que a pessoa lê antes de ir", "x": 510, "y": 0, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "para-que-serve",
+      "x": 0,
+      "y": -250,
+      "w": 900,
+      "text": "Para a conversa no Bar do China.\n\nDuas telas, feitas com o caso dele: bar comum, sem agenda, com oferta de drink. O hi-fi original mostra rooftop e samba na Vila Madalena — mostrar aquilo faria ele pensar \"isso não é o meu bar\".\n\nA oferta e a fala do curador são EXEMPLO. Troque pelo que ele disser que tem de verdade, ou diga em voz alta que é ilustração. O endereço veio de busca na internet — confirme com ele."
+    },
+    {
+      "id": "deixa-1",
+      "x": 0,
+      "y": 900,
+      "w": 390,
+      "text": "A ideia inteira em uma frase: quem não conhece o bar dele abre o app e vê isto — com um motivo pra entrar, e a distância a pé.\n\nRepare no que a tela NÃO faz: não tem estrela, não tem nota, não tem ranking. Não é o Google. É \"o que tá rolando agora perto de você\".\n\nA linha dos 4 lugares sendo visitados é verdade — o bairro está sendo curado esta semana. Ele seria o primeiro."
+    },
+    {
+      "id": "deixa-2",
+      "x": 510,
+      "y": 900,
+      "w": 390,
+      "text": "É esta tela que vende. O bloco do curador é o ativo do produto: alguém foi lá a pé e conta como é, inclusive o que o bar NÃO é (\"não tem música ao vivo, é bar de conversa\").\n\nIsso é o oposto de anúncio — parece recomendação, e é o que o Instagram pago não consegue.\n\nO trabalho dele é quase nenhum: ele avisa o que tem hoje, o curador escreve e publica."
+    },
+    {
+      "id": "o-que-perguntar",
+      "x": 1020,
+      "y": 0,
+      "w": 420,
+      "text": "O que trazer de volta — vale mais que a demonstração:\n\n1. Endereço exato e as coordenadas (Google Maps, botão direito no ponto).\n2. Como ele avisa hoje que tem algo? Instagram, nada, boca a boca?\n3. Quais são as noites fracas?\n4. Ele se daria ao trabalho de mandar \"hoje tem X\" para alguém?\n5. O que tem esta semana — mesmo que seja só uma oferta.\n\nOs itens 1 e 5 preenchem backend/seed/republica.json. Com eles, na segunda conversa o bar dele está no app de verdade.\n\nNÃO mostre o painel do estabelecimento: estaria zerado, e painel só vale quando já existe comunidade."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}
