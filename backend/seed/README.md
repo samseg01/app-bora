@@ -8,7 +8,7 @@ caderno e entra no app sem ninguém escrever SQL na mão.
 
 ```bash
 # com o docker compose no ar
-docker compose exec api python scripts/seed.py seed/anhangabau.json
+docker compose exec api python scripts/seed.py seed/republica.json
 ```
 
 O script é **idempotente por nome**: rodar duas vezes não duplica lugar nem rolê. Rodar de novo
@@ -19,7 +19,7 @@ depois de editar o JSON atualiza o que mudou.
 - **`exemplo-ficticio.json`** — dados **inventados**, da Vila Madalena, que servem só para ver o
   app preenchido em desenvolvimento. Os nomes são fictícios de propósito e o arquivo diz isso no
   próprio conteúdo. **Nunca use isto numa demonstração para alguém de fora.**
-- **`anhangabau.json`** — o bairro piloto de verdade. Nasce praticamente vazio: só se preenche com
+- **`republica.json`** — o bairro piloto de verdade. Nasce praticamente vazio: só se preenche com
   o que foi visto em campo. Um lugar que ninguém visitou não entra aqui.
 
 ## O formato

@@ -12,16 +12,24 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
 
 - [x] R1. **[decisão] Bairro piloto: Anhangabaú.** Primeiro estabelecimento a abordar:
       **Bar do China**. Decidido em 27/08/2026. ⚠️ Duas ressalvas registradas, nenhuma impede
-      começar: (a) "Anhangabaú" como recorte pode ser largo demais — a vida noturna do Centro é
-      concentrada em ruas específicas, e o `conceito.md` diz que fora do recorte certo "melhor o
-      mapa nem existir do que existir vazio", então vale fechar o recorte em poucas quadras no
-      R3; (b) o critério "dar pra validar a pé" pesa diferente no Centro à noite — pensar em
-      horário e companhia antes de sair curando.
+      começar. **Recorte recomendado após pesquisa: República / Largo do Arouche / Av. Vieira de
+      Carvalho**, não o entorno imediato do Bar do China. O bar fica na Av. Prestes Maia, 78,
+      colado no metrô São Bento (confirmar com o dono) — que é o núcleo financeiro e histórico, com
+      muito movimento de dia e quase nada à noite. A densidade noturna do Centro está ~1,2 km a
+      oeste, no eixo Arouche/Vieira de Carvalho: bares tradicionais, cena LGBT+ desde os anos 70,
+      preços até 40% abaixo da Vila Madalena e metrô República na porta. Um recorte ali se percorre
+      a pé em ~10 min, que é o critério do `conceito.md`. **O Bar do China fica fora desse recorte —
+      e tudo bem:** ele é a primeira conversa (R9, ensaio), não a âncora do piloto. Ressalva de
+      campo: o critério "validar a pé" pesa diferente no Centro à noite; Arouche tem a vantagem de
+      ser movimentado, que é melhor que deserto.
 - [ ] R2. ⏳ **Criar o remote e dar push.** Bloqueado: não há `gh` instalado nem credencial do
       GitHub nesta máquina, então o repositório precisa ser criado por você (**privado**). Depois:
       `git remote add origin <url> && git push -u origin master`. Pré-requisito técnico do deploy (R7): Railway e Vercel
       publicam a partir do GitHub. Também tira o projeto de "existe só nesta máquina".
-- [ ] R3. **[campo] Curar 10 a 15 lugares a pé no bairro escolhido.** O passo mais importante da
+- [ ] R3. **[campo] Curar 10 a 15 lugares a pé no recorte República/Arouche.** Primeira noite
+      serve também para fechar o recorte: andar de Praça da República até o Largo do Arouche pela
+      Vieira de Carvalho e contar quantos lugares têm algo acontecendo. Se der 10+, o recorte está
+      certo; se der 3, o problema é o Centro, não o desenho do recorte. O passo mais importante da
       lista e o único sem linha de código. Caderno ou planilha serve. O `conceito.md` diz que o
       campo não serve só pra popular o mapa — serve pra **descobrir qual é o processo antes de
       codificá-lo**. Efeito colateral que vale mais que o app: você chega na conversa como alguém
@@ -35,8 +43,8 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
 - [x] R5. **Seed** (item 22). `backend/scripts/seed.py` lê um JSON de curadoria e popula o banco,
       idempotente por nome. Dois arquivos em `backend/seed/`: `exemplo-ficticio.json` (Vila
       Madalena inventada, para desenvolvimento — o próprio arquivo avisa que não serve para demo) e
-      `anhangabau.json`, que nasce quase vazio de propósito: **só entra o que foi visto a pé**.
-      Bar do China já está lá sem endereço nem coordenadas, esperando o R3.
+      `republica.json`, que nasce quase vazio de propósito: **só entra o que foi visto a pé**.
+      Bar do China está lá sem coordenadas, esperando o R3.
       ⚠️ **Não executado** — depende do Docker no ar.
 - [x] R6. **As quatro rotas com dado inventado agora dependem do ambiente.** Em produção
       `/salvos`, `/perfil`, `/curador` e `/conexoes` mostram "precisa entrar" em vez de dado de

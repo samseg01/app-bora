@@ -1,0 +1,20 @@
+{
+  "_leia": "Bairro piloto (recorte República/Largo do Arouche/Vieira de Carvalho). Só entra aqui o que foi visto a pé (passo R3 do TODO). Um lugar que ninguém visitou não entra — o valor do app é a curadoria ter acontecido de verdade.",
+  "bairro": "República",
+  "curador": {
+    "nome": "PREENCHER",
+    "email": "PREENCHER@exemplo.com",
+    "senha": "PREENCHER-uma-senha-de-pelo-menos-8-chars"
+  },
+  "lugares": [
+    {
+      "_leia": "Fica na Av. Prestes Maia, 78 (metrô São Bento), FORA do recorte República/Arouche — mantido aqui só se a conversa com o dono levar a incluí-lo. Campos vazios de propósito: preencher com o que for verificado na visita, não de memória nem de internet.",
+      "nome": "Bar do China",
+      "categoria": "forró",
+      "endereco": "",
+      "lat": null,
+      "lng": null,
+      "roles": []
+    }
+  ]
+}
