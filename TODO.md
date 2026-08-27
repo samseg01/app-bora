@@ -1,21 +1,69 @@
 # TODO — bora-roles (visão geral)
 
 Tasks de escopo do monorepo (produto, decisões cross-cutting). Para tasks internas de cada parte,
-ver `backend/TODO.md` (esqueleto já 100% completo) e `frontend/TODO.md` (37 tasks em 6 fases,
-nada implementado ainda).
+ver `backend/TODO.md` (esqueleto completo) e `frontend/TODO.md` (8 rotas no ar, faltam
+onboarding, login e a confirmação de sinal).
+
+## Roteiro até a primeira conversa com um estabelecimento
+
+Plano ativo. O objetivo não é terminar o app — é ter algo palpável para mostrar a um dono de casa,
+que é o **único motor do `conceito.md` que não depende de já ter usuários**. Itens marcados
+`[campo]` e `[decisão]` não são código.
+
+- [x] R1. **[decisão] Bairro piloto: Anhangabaú.** Primeiro estabelecimento a abordar:
+      **Bar do China**. Decidido em 27/08/2026. ⚠️ Duas ressalvas registradas, nenhuma impede
+      começar: (a) "Anhangabaú" como recorte pode ser largo demais — a vida noturna do Centro é
+      concentrada em ruas específicas, e o `conceito.md` diz que fora do recorte certo "melhor o
+      mapa nem existir do que existir vazio", então vale fechar o recorte em poucas quadras no
+      R3; (b) o critério "dar pra validar a pé" pesa diferente no Centro à noite — pensar em
+      horário e companhia antes de sair curando.
+- [ ] R2. ⏳ **Criar o remote e dar push.** Bloqueado: não há `gh` instalado nem credencial do
+      GitHub nesta máquina, então o repositório precisa ser criado por você (**privado**). Depois:
+      `git remote add origin <url> && git push -u origin master`. Pré-requisito técnico do deploy (R7): Railway e Vercel
+      publicam a partir do GitHub. Também tira o projeto de "existe só nesta máquina".
+- [ ] R3. **[campo] Curar 10 a 15 lugares a pé no bairro escolhido.** O passo mais importante da
+      lista e o único sem linha de código. Caderno ou planilha serve. O `conceito.md` diz que o
+      campo não serve só pra popular o mapa — serve pra **descobrir qual é o processo antes de
+      codificá-lo**. Efeito colateral que vale mais que o app: você chega na conversa como alguém
+      que conhece o pedaço, não como alguém vendendo software.
+- [x] R4. **`Role.descricao` no backend** (item 15). Coluna `Text` nullable, migration
+      `0002_role_descricao.py` escrita à mão, propagada por `RoleCreate`/`RoleUpdate`/`RolePublic`/
+      `RoleDescoberta`, pelo serializador e pelo CRUD do curador. Também entra em `/descoberta`,
+      para a home não precisar de uma chamada por card.
+      ⚠️ **Não verificado:** sem `uv` e sem Docker no ar nesta máquina, não rodaram ruff, mypy,
+      pytest, nem a migration contra um banco. Só checagem de sintaxe. **Rodar antes de confiar.**
+- [x] R5. **Seed** (item 22). `backend/scripts/seed.py` lê um JSON de curadoria e popula o banco,
+      idempotente por nome. Dois arquivos em `backend/seed/`: `exemplo-ficticio.json` (Vila
+      Madalena inventada, para desenvolvimento — o próprio arquivo avisa que não serve para demo) e
+      `anhangabau.json`, que nasce quase vazio de propósito: **só entra o que foi visto a pé**.
+      Bar do China já está lá sem endereço nem coordenadas, esperando o R3.
+      ⚠️ **Não executado** — depende do Docker no ar.
+- [x] R6. **As quatro rotas com dado inventado agora dependem do ambiente.** Em produção
+      `/salvos`, `/perfil`, `/curador` e `/conexoes` mostram "precisa entrar" em vez de dado de
+      exemplo; em desenvolvimento seguem preenchidas. Verificado com o build de produção: zero
+      vazamento de exemplo nas quatro. Ficaram na navegação de propósito — mostrar que a parte
+      existe é melhor que escondê-la. Quando o login chegar, a condição vira "sem token".
+- [ ] R7. **Deploy** (item 12). Backend + Postgres gerenciado **com PostGIS** (essa extensão é o
+      detalhe que costuma dar trabalho — nem todo provedor entrega), frontend na Vercel,
+      `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.
+- [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Resolve de uma vez a ressalva
+      de altura das duas camadas na home, pendente desde o começo (item 19 do `frontend/TODO.md`).
+- [ ] R9. **[decisão] Definir como um estabelecimento é cadastrado** (item 3). Não existe endpoint
+      nenhum; hoje só dá pra inserir no Postgres na mão. É a primeira coisa necessária se o dono
+      disser sim. **A conversa com o dono que você já conhece pode acontecer antes de tudo isso** —
+      como ensaio, mostrando o canvas de design no celular. Não vira o bairro piloto por isso, e
+      ensina como a conversa corre sem custar nenhuma semana.
+- [ ] R10. **A conversa.** Mostrar a tela de descoberta com o bar dele e o pin aceso no mapa.
+      **Não** mostrar o painel do estabelecimento: vai estar zerado, e o `conceito.md` diz que esse
+      painel só tem valor porque a comunidade existe.
 
 ## Correções críticas
 
-- [ ] 1. **Commitar o backend.** `backend/.git` existe mas tem **zero commits** — os ~50 arquivos
-      do esqueleto (src, tests, alembic, ADRs, docker) estão todos untracked. Fazer o commit
-      inicial antes de qualquer outra coisa: conferir que `.gitignore` cobre `.env`, `.venv/`,
-      `__pycache__/` e os caches de ferramenta (cobre — mas confirmar com `git status` que nenhum
-      `.env` real entrou no stage), e então `git add . && git commit`. É o débito mais barato de
-      quitar e o de maior perda potencial.
-- [ ] 2. **Escolher o bairro piloto.** Pergunta 1 de `docs/conceito.md`, ainda em aberto. Critério
-      já definido: proximidade + densidade de rolê + dar pra validar a pé. Sem isso, curadoria de
-      campo não começa de verdade e o resto do roadmap (frontend, painel do estabelecimento) fica
-      testando contra dado sintético.
+- [x] 1. **Versionar o projeto.** Feito: repositório único na raiz, commit inicial `d44aa40` com
+      161 arquivos. O `.git` vazio do backend foi retirado (não tinha commits nem remotes).
+      Conferido que `.env` real, `node_modules`, `.next` e os canvas gerados ficaram de fora.
+- [ ] 1b. **Criar o remote e dar push.** É o item R2 do roteiro acima.
+- [x] 2. **Bairro piloto: Anhangabaú.** Pergunta 1 de `docs/conceito.md`, respondida. Ver R1.
 - [ ] 3. **Decidir o fluxo de criação de `Estabelecimento`.** Hoje não existe endpoint — só rotas
       de leitura pro dono (`backend/CLAUDE.md`, seção "Gap conhecido"). Decisão de produto: curador
       cadastra em campo? Dono faz onboarding self-service (contraria ADR-0007 de promoção manual de
@@ -26,9 +74,8 @@ nada implementado ainda).
 - [ ] 4. **Implementar o frontend público (PWA, Next.js).** A pasta `frontend/` já existe com
       `CLAUDE.md` (convenções, tokens, contratos da API) e `TODO.md` (**as 37 tasks detalhadas, em
       6 fases — é lá que o trabalho é acompanhado**). Análise que originou tudo:
-      `docs/plano-frontend.md`. Resumo: fase 1 = `2c` home + `2f` mapa + `2d` detalhe em leitura,
-      tudo público e sem nenhuma mudança no backend. Nada de código ainda — a task 1 de
-      `frontend/TODO.md` é o scaffold do Next.js.
+      `docs/plano-frontend.md`. ⚠️ Em andamento: 8 rotas no ar nas duas visualizações. Faltam
+      onboarding (`2a`/`2b`), login e a confirmação de sinal (`2e`).
 - [ ] 4a. **Decidir os 3 pontos travados de design ↔ backend** antes da fase 4 do plano: (i) o que
       o usuário comum vê no lugar do CTA "Tô indo", já que `POST /sinalizacoes` dá 403 pra ele
       (recomendação no plano: CTA desabilitado com explicação honesta); (ii) o card social da home

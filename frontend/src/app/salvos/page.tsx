@@ -1,4 +1,5 @@
 import { Desktop, Mobile } from "@/components/viewport";
+import { TelaPrecisaEntrar, usarDadoDeExemplo } from "@/components/ui/precisa-entrar";
 import { SalvosDesktop, type ItemSalvo } from "@/views/desktop/salvos";
 import { SalvosMobile } from "@/views/mobile/salvos";
 import { PINS_EXEMPLO, SALVOS_EXEMPLO } from "@/lib/fixtures";
@@ -13,6 +14,16 @@ export default function SalvosPage() {
     lugar,
     role: PINS_EXEMPLO.find((p) => p.lugar.id === lugar.id)?.role_ativo ?? null,
   }));
+
+  // Sem login, esta tela só tem dado de exemplo — que não pode aparecer em produção.
+  if (!usarDadoDeExemplo()) {
+    return (
+      <TelaPrecisaEntrar
+        titulo="Seus lugares salvos"
+        descricao="O caderninho é só seu — ninguém mais vê. Para isso, ele precisa saber quem é você."
+      />
+    );
+  }
 
   return (
     <>

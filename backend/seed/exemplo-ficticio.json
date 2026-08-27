@@ -1,0 +1,75 @@
+{
+  "_leia": "DADOS INVENTADOS, para ver o app preenchido em desenvolvimento. Nenhum destes lugares foi visitado e alguns não existem. NUNCA use este arquivo numa demonstração para alguém de fora — para isso existe o anhangabau.json, que só recebe o que foi curado a pé.",
+  "bairro": "Vila Madalena",
+  "curador": {
+    "nome": "Curador de exemplo",
+    "email": "curador@exemplo.local",
+    "senha": "exemplo-local-8"
+  },
+  "lugares": [
+    {
+      "nome": "Bar Aurora",
+      "categoria": "bar",
+      "endereco": "Rua Aspicuelta, 340",
+      "lat": -23.5541,
+      "lng": -46.6902,
+      "roles": [
+        {
+          "titulo": "Selo aberto no rooftop",
+          "descricao": "Entrada livre até meia-noite. Set de house às 23h30, teto aberto. Depois da meia-noite a fila dobra a esquina.",
+          "categoria": "Balada",
+          "inicio": "22:00",
+          "fim": "04:00"
+        }
+      ]
+    },
+    {
+      "nome": "Boteco do Zé",
+      "categoria": "boteco",
+      "endereco": "Rua Fidalga, 112",
+      "lat": -23.5563,
+      "lng": -46.6871,
+      "roles": [
+        {
+          "titulo": "Samba de quinta no boteco",
+          "descricao": "Roda de samba na calçada desde as 21h. Sem couvert, cerveja a 12. Cabe pouca gente sentada.",
+          "categoria": "Bar",
+          "inicio": "21:00",
+          "fim": "02:00"
+        }
+      ]
+    },
+    {
+      "nome": "Garagem 9",
+      "categoria": "sarau",
+      "endereco": "Rua Harmonia, 9",
+      "lat": -23.5528,
+      "lng": -46.6858,
+      "roles": [
+        {
+          "titulo": "Sarau na garagem",
+          "descricao": "Microfone aberto à meia-noite. Cabem 40 pessoas, chega cedo se quiser ler.",
+          "categoria": "Sarau",
+          "inicio": "23:00",
+          "fim": "03:00"
+        }
+      ]
+    },
+    {
+      "nome": "Casa 47",
+      "categoria": "show ao vivo",
+      "endereco": "Rua Girassol, 47",
+      "lat": -23.5575,
+      "lng": -46.6925,
+      "roles": []
+    },
+    {
+      "nome": "Espaço Cru",
+      "categoria": "galeria",
+      "endereco": "Rua Wisard, 88",
+      "lat": -23.5519,
+      "lng": -46.6935,
+      "roles": []
+    }
+  ]
+}

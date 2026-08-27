@@ -17,7 +17,7 @@ desconhecido de hoje) é o filtro de escopo do produto inteiro.
 ## Estrutura do repositório
 
 ```
-bora-roles/                          # raiz NÃO é repo git; só backend/ tem .git (sem commits ainda)
+bora-roles/                          # repositório git único na raiz (backend + frontend + docs)
 ├── CLAUDE.md, TODO.md               # este arquivo — visão geral do monorepo
 ├── docs/
 │   ├── conceito.md                  # tese de produto, motores de incentivo, monetização (118 linhas)
@@ -131,7 +131,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | API pronta; UI não existe |
 | Backend: serviço de frescor | ✅ | ADR-0001 — a aposta técnica central do produto |
 | Backend: testes (28, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
-| Backend: código versionado em git | ❌ | repo inicializado, **zero commits** — todo o trabalho está untracked |
+| Código versionado em git | ✅ | repositório único na raiz; commit inicial `d44aa40`. Sem remote ainda |
 | Backend: criação de `Estabelecimento` via API | ❌ | não existe endpoint — só leitura pro dono; hoje só dá pra inserir direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + `frontend/TODO.md` |
 | Frontend — scaffold, sistema visual e camada de dados | ✅ | Next 16.3.3 + React 19 + Tailwind v4; `npm run build` e `lint` limpos |
@@ -141,7 +141,8 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — onboarding (`2a`,`2b`), login, confirmação de sinal (`2e`) | ❌ | |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
 | Frontend — painel do curador / do estabelecimento | ❌ | não há nem design pra essas telas ainda |
-| Bairro piloto | ❌ | pergunta 1 de `docs/conceito.md`, ainda em aberto — destrava testar curadoria de campo |
+| Bairro piloto | ⚠️ | dois candidatos em mente; sondagem para decidir é o item R1 do roteiro em `TODO.md` |
+| Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
 | Deploy de produção | ❌ | só `docker compose` local hoje |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | telas prontas nas duas visualizações (`/conexoes`, `/conexoes/convite`), **nenhuma rota no backend** |
@@ -185,9 +186,8 @@ contradisserem, o ADR ganha.
 
 ## Issues conhecidos / débitos
 
-- **Backend inteiro sem commit.** `backend/.git` existe mas não tem nenhum commit; todos os
-  arquivos aparecem como untracked. Qualquer `git clean`, reset ou acidente perde o esqueleto
-  completo. É o débito mais barato de quitar e o de maior perda potencial.
+- **Sem remote.** O repositório existe só na máquina local — um HD ruim ainda leva tudo. Criar o
+  remote (GitHub) e dar push é o passo que falta para o trabalho estar de fato salvo.
 - **Sem fluxo de criação de `Estabelecimento`** — decisão de produto em aberto (curador cria? dono
   faz onboarding próprio?), não lacuna técnica a preencher às pressas. Ver `backend/CLAUDE.md`.
 - **Bairro piloto indefinido** — trava testar o processo de curadoria de campo de verdade e deixa

@@ -122,6 +122,10 @@ class Role(Base):
         UUID(as_uuid=True), ForeignKey("lugar.id"), nullable=False
     )
     titulo: Mapped[str] = mapped_column(String(160), nullable=False)
+    # O "motivo pra ir": o que o curador viu em campo e faz alguém sair de casa.
+    # Nullable porque os rolês criados antes desta coluna não têm como preenchê-la —
+    # e porque um rolê sem motivo ainda é publicável, só é pior.
+    descricao: Mapped[str | None] = mapped_column(Text, nullable=True)
     categoria: Mapped[str] = mapped_column(String(60), index=True, nullable=False)
     data_inicio: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     data_fim: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field, model_validator
 class RoleCreate(BaseModel):
     lugar_id: uuid.UUID
     titulo: str = Field(min_length=1, max_length=160)
+    # O "motivo pra ir" — opcional, mas é o que faz alguém sair de casa.
+    descricao: str | None = Field(default=None, max_length=2000)
     categoria: str = Field(min_length=1, max_length=60)
     data_inicio: datetime
     data_fim: datetime
@@ -20,6 +22,7 @@ class RoleCreate(BaseModel):
 
 class RoleUpdate(BaseModel):
     titulo: str | None = Field(default=None, min_length=1, max_length=160)
+    descricao: str | None = Field(default=None, max_length=2000)
     categoria: str | None = Field(default=None, min_length=1, max_length=60)
     data_inicio: datetime | None = None
     data_fim: datetime | None = None
@@ -29,6 +32,7 @@ class RolePublic(BaseModel):
     id: uuid.UUID
     lugar_id: uuid.UUID
     titulo: str
+    descricao: str | None
     categoria: str
     data_inicio: datetime
     data_fim: datetime
@@ -41,6 +45,7 @@ class RoleDescoberta(BaseModel):
 
     id: uuid.UUID
     titulo: str
+    descricao: str | None
     categoria: str
     data_inicio: datetime
     data_fim: datetime

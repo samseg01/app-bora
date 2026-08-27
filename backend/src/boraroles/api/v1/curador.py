@@ -97,6 +97,7 @@ async def criar_role(body: RoleCreate, usuario: CuradorUser, db: DbSession) -> R
     role = Role(
         lugar_id=body.lugar_id,
         titulo=body.titulo,
+        descricao=body.descricao,
         categoria=body.categoria,
         data_inicio=body.data_inicio,
         data_fim=body.data_fim,
