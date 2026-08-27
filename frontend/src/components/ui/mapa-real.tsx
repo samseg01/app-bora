@@ -87,6 +87,7 @@ export function MapaReal({
     if (!el || !alvo) return;
 
     let cancelado = false;
+    let limpezaGlobal: (() => void) | null = null;
 
     async function iniciar() {
       if (mapa.current || cancelado || !container.current) return;
@@ -115,6 +116,11 @@ export function MapaReal({
         return;
       }
 
+      // Erros globais durante a subida do mapa (o `map.on("error")` não pega tudo).
+      const onErro = (ev: ErrorEvent) => setErro((a) => a ?? `erro: ${ev.message.slice(0, 120)}`);
+      window.addEventListener("error", onErro);
+      limpezaGlobal = () => window.removeEventListener("error", onErro);
+
       try {
         const m = new MapaGL({
           container: container.current,
@@ -127,7 +133,26 @@ export function MapaReal({
         mapa.current = m;
         setDiag("construído, aguardando estilo");
 
+        // O MapLibre mede o container na construção e, se der zero, cai num fallback
+        // interno de 400x300 — foi o que aconteceu (canvas 836x300). Como o layout do
+        // filho `absolute inset-0` só assenta depois, remedimos no frame seguinte.
+        requestAnimationFrame(() => {
+          if (!cancelado && mapa.current) mapa.current.resize();
+        });
+
         m.on("styledata", () => setDiag("estilo carregado, aguardando render"));
+
+        // Sonda: depois de alguns segundos, reporta o estado INTERNO do mapa. Olhar de
+        // fora (eventos, console) não estava dizendo nada; o canvas e as flags dizem.
+        setTimeout(() => {
+          if (cancelado || !mapa.current) return;
+          const c = mapa.current.getCanvas();
+          const cont = container.current;
+          console.log(
+            `[mapa] canvas ${c.width}x${c.height} · container ${cont?.clientWidth}x${cont?.clientHeight} · ` +
+              `styleLoaded=${mapa.current.isStyleLoaded()}`,
+          );
+        }, 5000);
 
         const enquadrar = () => {
           const atuais = pinsRef.current;
@@ -195,6 +220,7 @@ export function MapaReal({
     return () => {
       cancelado = true;
       ro.disconnect();
+      limpezaGlobal?.();
       destruir();
     };
   }, []);
@@ -250,7 +276,10 @@ export function MapaReal({
         <MapaEstilizado pins={pins} className="h-full w-full" />
       </div>
 
-      <div ref={container} className="absolute inset-0" />
+      {/* `absolute inset-0` sozinho estava resolvendo para clientHeight 0, e o MapLibre
+          então caía no fallback interno de 400x300 e nunca terminava de carregar.
+          `h-full w-full` dá altura explícita a partir da raiz, que tem dimensão. */}
+      <div ref={container} className="absolute inset-0 h-full w-full" />
 
       {etiqueta && (
         <span className="pointer-events-none absolute top-3 left-3 z-3 rounded-full bg-surface/80 px-2.5 py-1 text-[11px] font-semibold text-text-faint backdrop-blur-sm">
