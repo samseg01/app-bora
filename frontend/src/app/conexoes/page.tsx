@@ -29,7 +29,7 @@ async function carregar(vazio: boolean): Promise<DadosConexoes> {
     conexoes: vazio ? [] : CONEXOES_EXEMPLO.filter((c) => c.status === "aceita"),
     pendentes: vazio ? [] : CONEXOES_EXEMPLO.filter((c) => c.status === "pendente"),
     salvosDoCurador: SALVOS_DO_CURADOR_EXEMPLO,
-    curador: "Léo",
+    curador: "o curador do bairro",
     bairro: BAIRRO_EXEMPLO,
     // Lido aqui, fora de qualquer componente: `Date.now()` durante o render é impuro.
     agora: Date.now(),

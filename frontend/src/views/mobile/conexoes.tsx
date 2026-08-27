@@ -168,9 +168,7 @@ function ConexoesVaziasMobile({ salvosDoCurador, curador, bairro }: DadosConexoe
       <div className="mx-5.5 mt-4.5 flex items-center gap-3.5 rounded-[18px] border border-white/6 bg-card-alt p-3.5">
         <Avatar nome={curador} tamanho={40} />
         <p className="text-[12.5px] leading-relaxed text-text-faint">
-          <span className="font-semibold text-text">
-            {curador} cura a {bairro} a pé.
-          </span>{" "}
+          <span className="font-semibold text-text">Quem cura {bairro} vai a pé.</span>{" "}
           Enquanto seu grupo não chega, os salvos dele ficam aqui.
         </p>
       </div>

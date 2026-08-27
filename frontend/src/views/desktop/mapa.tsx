@@ -35,13 +35,23 @@ export function MapaDesktop({
       <section className="flex w-[348px] shrink-0 flex-col border-r border-white/7">
         <div className="px-6 pt-7 pb-4">
           <h1 className="font-display text-[30px] leading-none uppercase">O bairro agora</h1>
-          <p className="mt-2 text-[12.5px] text-muted-2">
-            {pins.length} {pins.length === 1 ? "lugar curado" : "lugares curados"} · {comRole} com
-            movimento
-          </p>
+          {pins.length > 0 ? (
+            <p className="mt-2 text-[12.5px] text-muted-2">
+              {pins.length} {pins.length === 1 ? "lugar curado" : "lugares curados"} · {comRole} com
+              movimento
+            </p>
+          ) : (
+            <p className="mt-2 text-[12.5px] text-muted-2">nenhum lugar curado ainda</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2 px-4">
+          {pins.length === 0 && (
+            <p className="px-2 text-[13px] leading-relaxed text-muted text-pretty">
+              O mapa fica vazio até alguém andar por aqui. É de propósito: pino sem visita
+              não é informação.
+            </p>
+          )}
           {pins.map((pin) => {
             const ui = frescorUI(pin.role_ativo?.frescor ?? null);
             const ativo = pin.lugar.id === selecionadoId;

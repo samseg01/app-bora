@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { api } from "@/lib/api";
+import { useSessao } from "@/lib/auth";
 
 /**
  * Nav do painel do curador. Deliberadamente diferente da do app público: aqui não se
@@ -41,6 +44,27 @@ const ITENS = [
 ];
 
 export function SidebarCurador() {
+  const sessao = useSessao();
+  const [nome, setNome] = useState<string | null>(null);
+  const token = sessao?.token;
+
+  // Quem está logado, de verdade. Antes havia um nome fixo aqui, que era invenção.
+  useEffect(() => {
+    if (!token) return;
+    let vivo = true;
+    void api
+      .eu(token)
+      .then((u) => {
+        if (vivo) setNome(u.nome);
+      })
+      .catch(() => {
+        /* sem nome é melhor que nome errado */
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [token]);
+
   return (
     <aside className="sticky top-0 flex h-dvh w-60 shrink-0 flex-col gap-8 border-r border-white/7 bg-nav px-5 py-7">
       <div className="px-3.5">
@@ -69,13 +93,15 @@ export function SidebarCurador() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3">
-        <div className="flex items-center gap-2.5 rounded-[18px] border border-white/6 bg-card-alt p-4">
-          <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
-          <div>
-            <div className="text-[13px] font-semibold">Léo</div>
-            <div className="mt-0.5 text-[11px] text-muted-3">curador · Vila Madalena</div>
+        {nome && (
+          <div className="flex items-center gap-2.5 rounded-[18px] border border-white/6 bg-card-alt p-4">
+            <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+            <div className="min-w-0">
+              <div className="truncate text-[13px] font-semibold">{nome}</div>
+              <div className="mt-0.5 text-[11px] text-muted-3">curador</div>
+            </div>
           </div>
-        </div>
+        )}
         <Link
           href="/"
           className="flex items-center gap-2 px-3.5 text-[12.5px] font-semibold text-muted-2 hover:text-text"

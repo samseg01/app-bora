@@ -34,9 +34,11 @@ export function HomeMobile({
         <h1 className="font-display text-[31px] leading-none tracking-[-.3px] uppercase">
           Hoje à noite
         </h1>
-        <span className="text-xs text-muted-2">
-          {roles.length} {roles.length === 1 ? "achado" : "achados"}
-        </span>
+        {roles.length > 0 && (
+          <span className="text-xs text-muted-2">
+            {roles.length} {roles.length === 1 ? "achado" : "achados"}
+          </span>
+        )}
       </div>
 
       {roles.length > 0 ? (
@@ -48,9 +50,15 @@ export function HomeMobile({
           ))}
         </div>
       ) : (
-        <p className="px-5.5 pb-4.5 text-[13px] leading-relaxed text-muted">
-          Nenhum rolê curado para hoje ainda. O curador ainda está na rua.
-        </p>
+        <div className="mx-5.5 mb-4.5 rounded-[20px] border border-white/7 bg-card px-5 py-5.5">
+          <h2 className="font-display text-[22px] leading-tight uppercase">
+            Ainda não tem nada aqui
+          </h2>
+          <p className="mt-2.5 text-[13px] leading-relaxed text-muted text-pretty">
+            Um rolê só aparece depois que alguém foi até lá e viu. Em {bairro} isso ainda não
+            aconteceu — e a gente prefere a tela vazia a encher de lugar que ninguém visitou.
+          </p>
+        </div>
       )}
 
       <div className="flex items-center gap-3 px-5.5 pb-3.5">

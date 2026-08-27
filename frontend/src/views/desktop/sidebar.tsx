@@ -38,15 +38,14 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto flex flex-col gap-2.5 rounded-[18px] border border-white/6 bg-card-alt p-4">
-        <div className="flex items-center gap-2.5">
-          <div className="h-[30px] w-[30px] shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
-          <div className="text-[13px] font-semibold">Léo</div>
-        </div>
-        <p className="text-xs leading-relaxed text-muted">
-          Curador da Vila. Validou 14 lugares a pé esta semana.
-        </p>
-      </div>
+      {/* Declaração de propósito, não afirmação sobre alguém. O card com nome e
+          contagem de lugares validados era inventado — some. */}
+      <p className="mt-auto text-xs leading-relaxed text-muted-3">
+        Curadoria de campo, a pé.
+        <br />
+        Um bairro por vez.
+      </p>
+
     </aside>
   );
 }
