@@ -26,7 +26,7 @@ depois de editar o JSON atualiza o que mudou.
 
 ```json
 {
-  "bairro": "Anhangabaú",
+  "bairro": "República",
   "curador": { "nome": "...", "email": "...", "senha": "..." },
   "lugares": [
     {
