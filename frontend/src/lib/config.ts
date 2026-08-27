@@ -13,5 +13,10 @@
  *
  * Vira `localStorage` + escolha no onboarding (telas 2a/2b) quando houver mais de um
  * bairro. Enquanto é um só, constante é mais honesto que um seletor de uma opção.
+ *
+ * `NEXT_PUBLIC_BAIRRO` sobrescreve — serve para desenvolver contra o seed fictício
+ * (`NEXT_PUBLIC_BAIRRO="Vila Madalena" npm run dev`) enquanto o recorte real ainda
+ * não tem curadoria. É configuração, não dado inventado: o que a tela mostra continua
+ * vindo da API.
  */
-export const BAIRRO_PILOTO = "República";
+export const BAIRRO_PILOTO = process.env.NEXT_PUBLIC_BAIRRO ?? "República";

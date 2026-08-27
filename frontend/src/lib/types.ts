@@ -14,6 +14,8 @@ export type TipoSinalizacao = "presenca" | "fila" | "lotado";
 export interface RoleDescoberta {
   id: string;
   titulo: string;
+  /** O "motivo pra ir" — vem de /descoberta desde a migration 0002. */
+  descricao: string | null;
   categoria: string;
   data_inicio: string;
   data_fim: string;

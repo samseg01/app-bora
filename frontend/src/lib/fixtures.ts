@@ -47,6 +47,8 @@ export const ROLES_EXEMPLO: RoleDescoberta[] = [
   {
     id: ID.roleAurora,
     titulo: "Selo aberto no rooftop",
+    descricao:
+      "Entrada livre até meia-noite. Set de house às 23h30, teto aberto. Depois da meia-noite a fila dobra a esquina — vale chegar antes.",
     categoria: "Balada",
     data_inicio: emHoras(-1),
     data_fim: emHoras(5),
@@ -57,6 +59,8 @@ export const ROLES_EXEMPLO: RoleDescoberta[] = [
   {
     id: ID.roleBoteco,
     titulo: "Samba de quinta no boteco",
+    descricao:
+      "Roda de samba na calçada desde as 21h. Sem couvert, cerveja a 12. Cabe pouca gente sentada.",
     categoria: "Bar",
     data_inicio: emHoras(-2),
     data_fim: emHoras(3),
@@ -67,6 +71,8 @@ export const ROLES_EXEMPLO: RoleDescoberta[] = [
   {
     id: ID.roleGaragem,
     titulo: "Sarau na garagem",
+    descricao:
+      "Microfone aberto à meia-noite. Cabem 40 pessoas, chega cedo se quiser ler.",
     categoria: "Sarau",
     data_inicio: emHoras(1),
     data_fim: emHoras(4),

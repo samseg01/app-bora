@@ -19,13 +19,11 @@ export function HomeDesktop({
   roles,
   pins,
   bairro,
-  motivos,
   comentario,
 }: {
   roles: RoleDescoberta[];
   pins: MapaPin[];
   bairro: string;
-  motivos?: Record<string, string>;
   comentario?: ComentarioResumo;
 }) {
   return (
@@ -58,7 +56,7 @@ export function HomeDesktop({
         {roles.length > 0 ? (
           <div className="mt-6 flex flex-col gap-3.5">
             {roles.map((role, i) => (
-              <RoleRow key={role.id} role={role} indice={i} motivo={motivos?.[role.id]} />
+              <RoleRow key={role.id} role={role} indice={i} />
             ))}
           </div>
         ) : (

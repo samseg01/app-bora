@@ -19,15 +19,7 @@ const GRADIENTES = [
   "from-violet to-plum",
 ];
 
-export function RoleRow({
-  role,
-  motivo,
-  indice,
-}: {
-  role: RoleDescoberta;
-  motivo?: string | null;
-  indice: number;
-}) {
+export function RoleRow({ role, indice }: { role: RoleDescoberta; indice: number }) {
   return (
     <div
       className={`flex gap-[18px] rounded-[20px] border bg-card p-4 ${
@@ -48,8 +40,10 @@ export function RoleRow({
           {role.titulo}
         </Link>
 
-        {/* Só aparece quando existir; o backend ainda não devolve (../TODO.md item 15). */}
-        {motivo && <p className="text-[13px] leading-relaxed text-text-dim">{motivo}</p>}
+        {/* Nem todo rolê tem motivo escrito — a coluna é nullable de propósito. */}
+        {role.descricao && (
+          <p className="text-[13px] leading-relaxed text-text-dim">{role.descricao}</p>
+        )}
 
         <div className="mt-auto flex gap-4 text-[12.5px] text-muted-2">
           <span>{role.lugar_nome}</span>

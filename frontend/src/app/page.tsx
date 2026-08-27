@@ -7,7 +7,6 @@ import { BAIRRO_PILOTO } from "@/lib/config";
 import {
   BAIRRO_EXEMPLO,
   COMENTARIOS_EXEMPLO,
-  MOTIVO_EXEMPLO,
   PINS_EXEMPLO,
   ROLES_EXEMPLO,
 } from "@/lib/fixtures";
@@ -67,10 +66,9 @@ export default async function Home() {
           roles={roles}
           pins={pins}
           bairro={bairro}
-          // O motivo pra ir e o card social só existem no dado de exemplo: a coluna
-          // `descricao` não existe no backend, e citar quem sinalizou quebraria o
-          // anonimato prometido no detalhe (ver ../TODO.md item 4a).
-          motivos={offline ? MOTIVO_EXEMPLO : undefined}
+          // O motivo pra ir agora vem da API (coluna `descricao`). O card social
+          // continua só no exemplo: citar quem sinalizou quebraria o anonimato
+          // prometido no detalhe (ver ../TODO.md item 4a).
           comentario={offline ? COMENTARIOS_EXEMPLO[0] : undefined}
         />
       </Desktop>
