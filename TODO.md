@@ -54,11 +54,12 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       exemplo; em desenvolvimento seguem preenchidas. Verificado com o build de produção: zero
       vazamento de exemplo nas quatro. Ficaram na navegação de propósito — mostrar que a parte
       existe é melhor que escondê-la. Quando o login chegar, a condição vira "sem token".
-- [ ] R6b. **Mapa real (MapLibre + CARTO dark-matter, sem chave de API).** Não estava no roteiro
-      original; entra porque o piloto virou República. Num centro denso, pin sobre grade abstrata
-      não localiza ninguém — e ver o bar fixado na rua dele é o que convence na conversa. Detalhes
-      e o custo a resolver junto (dois contextos WebGL, um por partição) no item 37 do
-      `frontend/TODO.md`.
+- [x] R6b. **Mapa real (MapLibre + CARTO dark-matter, sem chave de API).** Feito nas 5 telas com
+      mapa. Os dois contextos WebGL foram resolvidos travando a inicialização por tamanho do
+      container (a partição escondida é 0×0 e nunca instancia). O mapa abstrato ficou como
+      degradação para sinal ruim. Detalhes no item 37 do `frontend/TODO.md`.
+      ⚠️ **Não visto em navegador** — build, lint e tipos limpos, e o estilo da CARTO responde 200,
+      mas ninguém abriu a tela para conferir se o mapa desenha. Conferir antes de confiar.
 - [ ] R7. **Deploy** (item 12). Backend + Postgres gerenciado **com PostGIS** (essa extensão é o
       detalhe que costuma dar trabalho — nem todo provedor entrega), frontend na Vercel,
       `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.

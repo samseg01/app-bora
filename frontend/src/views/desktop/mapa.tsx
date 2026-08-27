@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { MapaReal } from "@/components/ui/mapa-real";
 import { DesktopShell } from "./shell";
 import { frescorUI } from "@/lib/frescor";
 import { hora, idade } from "@/lib/tempo";
@@ -74,7 +74,7 @@ export function MapaDesktop({
       </section>
 
       <section className="relative min-w-0 flex-1">
-        <MapaEstilizado
+        <MapaReal
           pins={pins}
           etiqueta={`${bairro} · agora`}
           className="h-dvh"

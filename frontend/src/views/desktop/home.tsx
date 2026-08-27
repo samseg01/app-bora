@@ -1,4 +1,4 @@
-import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleRow } from "@/components/ui/role-row";
 import { DesktopShell } from "./shell";
 import { LegendaFrescor } from "./legenda-frescor";
@@ -67,7 +67,7 @@ export function HomeDesktop({
       </section>
 
       <section className="w-[400px] shrink-0 py-8 pr-7">
-        <MapaEstilizado
+        <MapaReal
           pins={pins}
           etiqueta={`${bairro} · agora`}
           className="sticky top-8 h-[calc(100dvh-4rem)] rounded-[22px] border border-white/7"
@@ -84,7 +84,7 @@ export function HomeDesktop({
             )}
             <LegendaFrescor comBorda={Boolean(comentario)} />
           </div>
-        </MapaEstilizado>
+        </MapaReal>
       </section>
     </DesktopShell>
   );

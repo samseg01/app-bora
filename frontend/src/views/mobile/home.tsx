@@ -1,4 +1,4 @@
-import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleCard } from "@/components/ui/role-card";
 import { MobileShell } from "./shell";
 import type { MapaPin, RoleDescoberta } from "@/lib/types";
@@ -59,7 +59,7 @@ export function HomeMobile({
         <div className="h-px flex-1 bg-gradient-to-r from-amber/20 to-magenta/45" />
       </div>
 
-      <MapaEstilizado
+      <MapaReal
         pins={pins}
         etiqueta={`${bairro} · agora`}
         className="mx-4 mb-3 min-h-45 flex-1 rounded-[22px] border border-white/7"

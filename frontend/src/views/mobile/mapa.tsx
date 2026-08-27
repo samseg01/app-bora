@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { MapaReal } from "@/components/ui/mapa-real";
 import { MobileShell } from "./shell";
 import { frescorUI } from "@/lib/frescor";
 import { hora, idade } from "@/lib/tempo";
@@ -35,7 +35,7 @@ export function MapaMobile({
   return (
     <MobileShell>
       <div className="relative flex-1">
-        <MapaEstilizado
+        <MapaReal
           pins={visiveis}
           className="h-full min-h-100"
           selecionadoId={selecionadoId}

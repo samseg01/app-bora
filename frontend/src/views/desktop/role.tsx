@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FrescorPill } from "@/components/ui/frescor-pill";
-import { MapaEstilizado } from "@/components/ui/mapa-estilizado";
+import { MapaReal } from "@/components/ui/mapa-real";
 import { DesktopShell } from "./shell";
 import { hora, idade } from "@/lib/tempo";
 import type { ComentarioResumo, LugarDetalhe, MapaPin, RolePublic } from "@/lib/types";
@@ -100,7 +100,7 @@ export function RoleDesktop({
           </div>
 
           {lugar && (
-            <MapaEstilizado pins={pins} className="h-44 shrink-0 rounded-[22px] border border-white/7">
+            <MapaReal pins={pins} className="h-44 shrink-0 rounded-[22px] border border-white/7">
               <div className="absolute inset-x-3.5 bottom-3.5 flex items-center justify-between rounded-2xl border border-white/9 bg-sunken/92 px-3.5 py-2.5">
                 <span className="truncate text-xs text-text-faint">
                   {lugar.endereco ?? lugar.bairro}
@@ -114,7 +114,7 @@ export function RoleDesktop({
                   Rota
                 </a>
               </div>
-            </MapaEstilizado>
+            </MapaReal>
           )}
 
           {comentarios.length > 0 && (
