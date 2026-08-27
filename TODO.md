@@ -25,10 +25,10 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       na direção do Largo do Paissandu — não até São Bento.
       Ressalva de campo: "validar a pé" pesa diferente no Centro à noite. Arouche tem a vantagem
       de ser movimentado, que é melhor que rua deserta.
-- [ ] R2. ⏳ **Criar o remote e dar push.** Bloqueado: não há `gh` instalado nem credencial do
-      GitHub nesta máquina, então o repositório precisa ser criado por você (**privado**). Depois:
-      `git remote add origin <url> && git push -u origin master`. Pré-requisito técnico do deploy (R7): Railway e Vercel
-      publicam a partir do GitHub. Também tira o projeto de "existe só nesta máquina".
+- [x] R2. **Remote criado e push feito.** `https://github.com/samseg01/app-bora.git` (privado),
+      14 commits na `master`, tracking configurado. Histórico varrido antes: nenhum `.env` real,
+      chave ou token em nenhum commit. Destrava o R7 — Railway e Vercel publicam a partir do
+      GitHub.
 - [ ] R3. **[campo] Curar 10 a 15 lugares a pé no recorte República/Arouche.** Primeira noite
       serve também para fechar o recorte: andar de Praça da República até o Largo do Arouche pela
       Vieira de Carvalho e contar quantos lugares têm algo acontecendo. Se der 10+, o recorte está

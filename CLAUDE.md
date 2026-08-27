@@ -131,7 +131,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | API pronta; UI não existe |
 | Backend: serviço de frescor | ✅ | ADR-0001 — a aposta técnica central do produto |
 | Backend: testes (28, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
-| Código versionado em git | ✅ | repositório único na raiz; commit inicial `d44aa40`. Sem remote ainda |
+| Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: criação de `Estabelecimento` via API | ❌ | não existe endpoint — só leitura pro dono; hoje só dá pra inserir direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + `frontend/TODO.md` |
 | Frontend — scaffold, sistema visual e camada de dados | ✅ | Next 16.3.3 + React 19 + Tailwind v4; `npm run build` e `lint` limpos |
@@ -186,8 +186,6 @@ contradisserem, o ADR ganha.
 
 ## Issues conhecidos / débitos
 
-- **Sem remote.** O repositório existe só na máquina local — um HD ruim ainda leva tudo. Criar o
-  remote (GitHub) e dar push é o passo que falta para o trabalho estar de fato salvo.
 - **Sem fluxo de criação de `Estabelecimento`** — decisão de produto em aberto (curador cria? dono
   faz onboarding próprio?), não lacuna técnica a preencher às pressas. Ver `backend/CLAUDE.md`.
 - **Nenhuma curadoria de campo feita ainda** — o bairro está escolhido (República), mas nenhum
