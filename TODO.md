@@ -10,18 +10,21 @@ Plano ativo. O objetivo não é terminar o app — é ter algo palpável para mo
 que é o **único motor do `conceito.md` que não depende de já ter usuários**. Itens marcados
 `[campo]` e `[decisão]` não são código.
 
-- [x] R1. **[decisão] Bairro piloto: Anhangabaú.** Primeiro estabelecimento a abordar:
-      **Bar do China**. Decidido em 27/08/2026. ⚠️ Duas ressalvas registradas, nenhuma impede
-      começar. **Recorte recomendado após pesquisa: República / Largo do Arouche / Av. Vieira de
-      Carvalho**, não o entorno imediato do Bar do China. O bar fica na Av. Prestes Maia, 78,
-      colado no metrô São Bento (confirmar com o dono) — que é o núcleo financeiro e histórico, com
-      muito movimento de dia e quase nada à noite. A densidade noturna do Centro está ~1,2 km a
-      oeste, no eixo Arouche/Vieira de Carvalho: bares tradicionais, cena LGBT+ desde os anos 70,
-      preços até 40% abaixo da Vila Madalena e metrô República na porta. Um recorte ali se percorre
-      a pé em ~10 min, que é o critério do `conceito.md`. **O Bar do China fica fora desse recorte —
-      e tudo bem:** ele é a primeira conversa (R9, ensaio), não a âncora do piloto. Ressalva de
-      campo: o critério "validar a pé" pesa diferente no Centro à noite; Arouche tem a vantagem de
-      ser movimentado, que é melhor que deserto.
+- [x] R1. **[decisão] Bairro piloto: recorte República.** Eixo **Largo do Arouche / Av. Vieira de
+      Carvalho / Praça da República**. Decidido em 27/08/2026, depois de pesquisar onde fica o
+      Bar do China. Por que aqui: é onde está a densidade noturna real do Centro (bares
+      tradicionais, casas de música, cena LGBT+ com história desde os anos 70), atravessa-se a pé
+      em ~10 min — o critério do `conceito.md` —, tem metrô República na porta e preços bem abaixo
+      da Vila Madalena.
+      **Por que não Anhangabaú/São Bento:** o Bar do China fica na Av. Prestes Maia, 78, colado no
+      metrô São Bento (confirmar com o dono) — núcleo financeiro e histórico, cheio de dia e quase
+      deserto à noite. Recorte ali cairia no cenário que o conceito chama de fatal: "fora do
+      recorte, melhor o mapa nem existir do que existir vazio".
+      **O Bar do China fica fora do recorte, e tudo bem:** ele é a primeira conversa (R9, ensaio),
+      não a âncora do piloto. Se depois fizer sentido incluí-lo, esticar pela Vieira de Carvalho
+      na direção do Largo do Paissandu — não até São Bento.
+      Ressalva de campo: "validar a pé" pesa diferente no Centro à noite. Arouche tem a vantagem
+      de ser movimentado, que é melhor que rua deserta.
 - [ ] R2. ⏳ **Criar o remote e dar push.** Bloqueado: não há `gh` instalado nem credencial do
       GitHub nesta máquina, então o repositório precisa ser criado por você (**privado**). Depois:
       `git remote add origin <url> && git push -u origin master`. Pré-requisito técnico do deploy (R7): Railway e Vercel

@@ -3,6 +3,7 @@ import { HomeDesktop } from "@/views/desktop/home";
 import { HomeMobile } from "@/views/mobile/home";
 import { AvisoOffline } from "@/components/ui/aviso-offline";
 import { api, ApiOffline } from "@/lib/api";
+import { BAIRRO_PILOTO } from "@/lib/config";
 import {
   BAIRRO_EXEMPLO,
   COMENTARIOS_EXEMPLO,
@@ -27,45 +28,45 @@ import type { MapaPin, RoleDescoberta } from "@/lib/types";
  */
 export const dynamic = "force-dynamic";
 
-const BAIRRO = BAIRRO_EXEMPLO;
-
 interface Dados {
   roles: RoleDescoberta[];
   pins: MapaPin[];
+  /** O bairro real quando a API responde; o do exemplo quando ela não responde. */
+  bairro: string;
   offline: boolean;
 }
 
 async function carregar(): Promise<Dados> {
   try {
     const [roles, pins] = await Promise.all([
-      api.descoberta(BAIRRO),
-      api.mapa(BAIRRO),
+      api.descoberta(BAIRRO_PILOTO),
+      api.mapa(BAIRRO_PILOTO),
     ]);
-    return { roles, pins, offline: false };
+    return { roles, pins, bairro: BAIRRO_PILOTO, offline: false };
   } catch (erro) {
     // Só a API fora do ar cai em dado de exemplo, e só fora de produção. Qualquer
     // outro erro (4xx, 5xx) é problema de verdade e deve estourar.
     if (erro instanceof ApiOffline && process.env.NODE_ENV !== "production") {
-      return { roles: ROLES_EXEMPLO, pins: PINS_EXEMPLO, offline: true };
+      return { roles: ROLES_EXEMPLO, pins: PINS_EXEMPLO, bairro: BAIRRO_EXEMPLO, offline: true };
     }
     throw erro;
   }
 }
 
 export default async function Home() {
-  const { roles, pins, offline } = await carregar();
+  const { roles, pins, bairro, offline } = await carregar();
 
   return (
     <>
       {offline && <AvisoOffline />}
       <Mobile>
-        <HomeMobile roles={roles} pins={pins} bairro={BAIRRO} />
+        <HomeMobile roles={roles} pins={pins} bairro={bairro} />
       </Mobile>
       <Desktop>
         <HomeDesktop
           roles={roles}
           pins={pins}
-          bairro={BAIRRO}
+          bairro={bairro}
           // O motivo pra ir e o card social só existem no dado de exemplo: a coluna
           // `descricao` não existe no backend, e citar quem sinalizou quebraria o
           // anonimato prometido no detalhe (ver ../TODO.md item 4a).

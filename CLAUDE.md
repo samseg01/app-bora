@@ -141,7 +141,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — onboarding (`2a`,`2b`), login, confirmação de sinal (`2e`) | ❌ | |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
 | Frontend — painel do curador / do estabelecimento | ❌ | não há nem design pra essas telas ainda |
-| Bairro piloto | ⚠️ | dois candidatos em mente; sondagem para decidir é o item R1 do roteiro em `TODO.md` |
+| Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República) — ver R1 no `TODO.md` |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
 | Deploy de produção | ❌ | só `docker compose` local hoje |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
@@ -190,8 +190,9 @@ contradisserem, o ADR ganha.
   remote (GitHub) e dar push é o passo que falta para o trabalho estar de fato salvo.
 - **Sem fluxo de criação de `Estabelecimento`** — decisão de produto em aberto (curador cria? dono
   faz onboarding próprio?), não lacuna técnica a preencher às pressas. Ver `backend/CLAUDE.md`.
-- **Bairro piloto indefinido** — trava testar o processo de curadoria de campo de verdade e deixa
-  o frontend sem dado real pra consumir.
+- **Nenhuma curadoria de campo feita ainda** — o bairro está escolhido (República), mas nenhum
+  lugar foi visitado. `backend/seed/republica.json` está esperando; enquanto isso o app só tem
+  dado fictício de Vila Madalena, que é fictício de propósito para não ser confundido com real.
 - **Frontend com só 1 das 8 telas** — seguir o hi-fi (`Rolês - Telas hi-fi.dc.html`), não o
   wireframe, apesar de o `README.md` do bundle mandar ler o wireframe primeiro: o hi-fi é posterior
   e já resolve as variantes que o wireframe deixou abertas. Cruzamento tela-a-tela com a API em
