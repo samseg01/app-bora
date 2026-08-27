@@ -1,13 +1,13 @@
 import { Desktop, Mobile } from "@/components/viewport";
-import { TelaPrecisaEntrar, usarDadoDeExemplo } from "@/components/ui/precisa-entrar";
+import { Porta } from "@/components/ui/porta";
 import { SalvosDesktop, type ItemSalvo } from "@/views/desktop/salvos";
 import { SalvosMobile } from "@/views/mobile/salvos";
 import { PINS_EXEMPLO, SALVOS_EXEMPLO } from "@/lib/fixtures";
 
 /**
- * Tela 2g. Ainda inteiramente com dado de exemplo: `GET /salvos` exige token e o
- * login só chega na fase 3 (ver ../TODO.md). Quando existir, a lista virá da API —
- * e de preferência já enriquecida (item 16), senão são N chamadas a /lugares/{id}.
+ * Tela 2g. Atrás da porta desde que o login existe, mas o conteúdo ainda é de
+ * exemplo: `GET /salvos` devolve só `lugar_id`, então montar a lista de verdade custa
+ * uma chamada por item (item 16 de ../TODO.md). Ligar na API depois de enriquecer a rota.
  */
 export default function SalvosPage() {
   const itens: ItemSalvo[] = SALVOS_EXEMPLO.map((lugar) => ({
@@ -15,24 +15,17 @@ export default function SalvosPage() {
     role: PINS_EXEMPLO.find((p) => p.lugar.id === lugar.id)?.role_ativo ?? null,
   }));
 
-  // Sem login, esta tela só tem dado de exemplo — que não pode aparecer em produção.
-  if (!usarDadoDeExemplo()) {
-    return (
-      <TelaPrecisaEntrar
-        titulo="Seus lugares salvos"
-        descricao="O caderninho é só seu — ninguém mais vê. Para isso, ele precisa saber quem é você."
-      />
-    );
-  }
-
   return (
-    <>
+    <Porta
+      titulo="Seus lugares salvos"
+      descricao="O caderninho é só seu — ninguém mais vê. Para isso, ele precisa saber quem é você."
+    >
       <Mobile>
         <SalvosMobile itens={itens} />
       </Mobile>
       <Desktop>
         <SalvosDesktop itens={itens} />
       </Desktop>
-    </>
+    </Porta>
   );
 }

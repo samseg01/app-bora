@@ -1,0 +1,24 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Entrar · telefone", "x": 0, "y": 0, "w": 390, "h": 844 },
+    { "file": "Criar.dc.html", "title": "Criar conta · telefone", "x": 510, "y": 0, "w": 390, "h": 844 },
+    { "file": "Desktop.dc.html", "title": "Entrar · desktop", "x": 1020, "y": 0, "w": 1440, "h": 900 }
+  ],
+  "annotations": [
+    {
+      "id": "auth-preguicosa",
+      "x": 0,
+      "y": -240,
+      "w": 880,
+      "text": "Telas de entrar e criar conta — as únicas do fluxo público que nunca tiveram design.\n\nA decisão que molda tudo aqui é a auth preguiçosa: o app é público e read-only, e o login só aparece quando a pessoa tenta salvar. Por isso as três telas mostram O QUE ela estava fazendo. Sem esse bloco, entrar vira pedágio sem motivo — e o app perde a pessoa ali.\n\nNo desktop isso vira o layout inteiro: o card que ela ia salvar fica ao lado do formulário, em tamanho real."
+    },
+    {
+      "id": "o-que-nao-pedimos",
+      "x": 1020,
+      "y": -240,
+      "w": 700,
+      "text": "Duas mensagens deliberadas no copy.\n\n\"Email e senha, só. Sem telefone, sem rede social, sem localização em segundo plano.\" — o app vive de confiança, e o que NÃO se pede diz tanto quanto o que se pede.\n\n\"Curador é convite\" — reflete o ADR-0007, promoção de papel é sempre manual. Dizer isso no cadastro evita que a pergunta \"como viro curador?\" vire um formulário que não existe."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

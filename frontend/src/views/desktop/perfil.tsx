@@ -9,15 +9,25 @@ import { DesktopShell } from "./shell";
  * desligar, e as sinalizações já são anônimas de fato — nenhum endpoint expõe o
  * autor. Um controle que não controla nada promete o que não existe.
  */
-export function PerfilDesktop({ bairro, salvos }: { bairro: string; salvos: number }) {
+export function PerfilDesktop({
+  bairro,
+  salvos,
+  nome,
+  desde,
+}: {
+  bairro: string;
+  salvos: number;
+  nome: string;
+  desde: string;
+}) {
   return (
     <DesktopShell>
       <section className="min-w-0 flex-1 px-10 py-8">
         <div className="flex items-center gap-4.5">
           <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-br from-magenta to-amber" />
           <div>
-            <h1 className="font-display text-[34px] leading-none uppercase">Você</h1>
-            <p className="mt-1.5 text-[12.5px] text-muted-2">{bairro}</p>
+            <h1 className="font-display text-[34px] leading-none uppercase">{nome}</h1>
+            <p className="mt-1.5 text-[12.5px] text-muted-2">{bairro} · desde {desde}</p>
           </div>
         </div>
 

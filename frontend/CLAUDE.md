@@ -21,6 +21,12 @@ Contexto de produto: `../docs/conceito.md`. Backend: `../backend/CLAUDE.md`.
 | `/curador` | painel do curador | só exemplo — CRUD exige papel curador |
 | `/conexoes` | aba de Conexões + estado vazio | só exemplo — **nenhuma rota existe no backend** |
 | `/conexoes/convite` | convite por link | idem; o link fica pendente |
+| `/entrar`, `/criar-conta` | login e cadastro | **API real** — cria conta, entra e guarda o token |
+
+**Sessão:** token em `localStorage` (`lib/auth.ts`). O `papel` vem dentro do JWT e é lido sem
+verificar assinatura — é só gating de UI, quem autoriza é o backend. As telas protegidas passam
+por `components/ui/porta.tsx`, que usa `useSyncExternalStore` porque ler `localStorage` durante o
+render é impuro e num efeito com `setState` o React Compiler recusa.
 
 Faltam o onboarding (`2a`/`2b`), o login e a confirmação de sinalização (`2e`). Detalhe em `TODO.md`.
 

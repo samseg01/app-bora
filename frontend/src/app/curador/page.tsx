@@ -1,5 +1,5 @@
 import { Desktop, Mobile } from "@/components/viewport";
-import { TelaPrecisaEntrar, usarDadoDeExemplo } from "@/components/ui/precisa-entrar";
+import { Porta } from "@/components/ui/porta";
 import { CuradorDesktop } from "@/views/desktop/curador";
 import { CuradorMobile } from "@/views/mobile/curador";
 import { BAIRRO_EXEMPLO, LUGARES_EXEMPLO, ROLES_EXEMPLO } from "@/lib/fixtures";
@@ -30,19 +30,8 @@ async function carregar() {
 export default async function CuradorPage() {
   const { lugares, terminandoLogo } = await carregar();
 
-  // Sem login, esta tela só tem dado de exemplo — que não pode aparecer em produção.
-  if (!usarDadoDeExemplo()) {
-    return (
-      <TelaPrecisaEntrar
-        titulo="Painel do curador"
-        descricao="Publicar rolê é coisa de quem valida em campo. Precisa entrar como curador."
-        curador
-      />
-    );
-  }
-
   return (
-    <>
+    <Porta titulo="Painel do curador" descricao="Publicar rolê é coisa de quem valida em campo. Precisa entrar como curador." curador>
       <Mobile>
         <CuradorMobile roles={ROLES_EXEMPLO} lugares={lugares} bairro={BAIRRO_EXEMPLO} />
       </Mobile>
@@ -54,6 +43,6 @@ export default async function CuradorPage() {
           terminandoLogo={terminandoLogo}
         />
       </Desktop>
-    </>
+    </Porta>
   );
 }

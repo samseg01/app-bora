@@ -92,6 +92,7 @@ export interface UsuarioPublic {
   nome: string;
   email: string;
   papel: PapelUsuario;
+  created_at: string;
 }
 
 /** GET /salvos — cru: só o id do lugar (ver ../TODO.md item 16). */

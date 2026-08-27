@@ -2,14 +2,24 @@ import Link from "next/link";
 import { MobileShell } from "./shell";
 
 /** Tela 2h. Mesmas ressalvas da visualização desktop (ver views/desktop/perfil.tsx). */
-export function PerfilMobile({ bairro, salvos }: { bairro: string; salvos: number }) {
+export function PerfilMobile({
+  bairro,
+  salvos,
+  nome,
+  desde,
+}: {
+  bairro: string;
+  salvos: number;
+  nome: string;
+  desde: string;
+}) {
   return (
     <MobileShell>
       <div className="flex items-center gap-4 px-5.5 pt-9.5">
         <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-br from-magenta to-amber" />
         <div>
-          <div className="font-display text-[26px] leading-none uppercase">Você</div>
-          <div className="mt-1.5 text-[12.5px] text-muted-2">{bairro}</div>
+          <div className="font-display text-[26px] leading-none uppercase">{nome}</div>
+          <div className="mt-1.5 text-[12.5px] text-muted-2">{bairro} · desde {desde}</div>
         </div>
       </div>
 

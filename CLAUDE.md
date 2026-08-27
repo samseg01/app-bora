@@ -124,7 +124,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Área | Status | Nota |
 |---|---|---|
 | Backend: modelo de dados + migration inicial | ✅ | `backend/alembic/versions/0001_initial_schema.py`, escrita à mão |
-| Backend: auth (signup/login JWT) | ✅ | ADR-0003 |
+| Backend: auth (signup/login/me JWT) | ✅ | ADR-0003; `GET /auth/me` adicionado junto com o login do frontend |
 | Backend: API de leitura (`/descoberta`, `/mapa`) | ✅ | curatorial, sem ranking algorítmico (decisão registrada) |
 | Backend: API de contribuição (salvar, sinalizar, comentar) | ✅ | sinalização restrita — ver ADR-0006/backend TODO |
 | Backend: painel do curador (CRUD lugar/role) | ✅ | API pronta; UI não existe |
@@ -138,7 +138,8 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — partição mobile/desktop | ✅ | mesmo app e mesmas URLs, composições separadas cortadas por CSS em `lg` |
 | Frontend — `2c` home, `2d` detalhe, `2f` mapa, `2g` salvos, `2h` perfil | ✅ | 6 rotas, cada uma nas duas visualizações |
 | Frontend — painel do curador (UI) | ⚠️ | tela pronta nas duas visualizações, **sem backend ligado** (precisa de login) |
-| Frontend — onboarding (`2a`,`2b`), login, confirmação de sinal (`2e`) | ❌ | |
+| Frontend — login e criar conta | ✅ | `/entrar` e `/criar-conta`, desenhados e implementados; sessão em `localStorage` |
+| Frontend — onboarding (`2a`,`2b`) e confirmação de sinal (`2e`) | ❌ | |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
 | Frontend — painel do estabelecimento | ❌ | sem design e sem tela; só depois de haver comunidade |
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República) — ver R1 no `TODO.md` |

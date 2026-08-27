@@ -135,12 +135,14 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
 
 ## Fase 3 — auth e salvar
 
-- [ ] 24. **Decidir e desenhar login/cadastro.** Não existem no bundle hi-fi (item 4b de
-       `../TODO.md`). Duas telas simples no mesmo sistema visual.
-- [ ] 25. **`lib/auth.ts`** — token em `localStorage`, decodificação client-side do payload do JWT
+- [x] 24. **Login e cadastro desenhados e implementados.** Design em
+       `../docs/front-end-ideias/entrar/` (telefone e desktop). A auth preguiçosa aparece no
+       layout: a tela mostra o que a pessoa estava salvando, e no desktop isso vira a coluna da
+       esquerda inteira.
+- [x] 25. **`lib/auth.ts`** — token em `localStorage`, decodificação client-side do payload do JWT
        para ler `papel` e `exp` (sem verificar assinatura: é gating de UI, a autoridade é o
        backend), e limpeza do token em 401.
-- [ ] 26. **Auth preguiçosa** (decisão (iii) do item 4a de `../TODO.md`): o app é público e
+- [x] 26. **Auth preguiçosa** (decisão (iii) do item 4a de `../TODO.md`): o app é público e
        read-only; o login só aparece quando a pessoa tenta salvar pela primeira vez, preservando a
        intenção para depois do login.
 - [ ] 27. **Salvar e dessalvar** no `2d` e no `2f`, com atualização otimista e reversão em erro.

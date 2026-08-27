@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
 
-from boraroles.api.deps import DbSession
+from boraroles.api.deps import CurrentUser, DbSession
 from boraroles.core.security import create_access_token, hash_password, verify_password
 from boraroles.db.models import PapelUsuario, Usuario
 from boraroles.schemas.auth import LoginRequest, SignupRequest, TokenResponse, UsuarioPublic
@@ -38,3 +38,14 @@ async def login(body: LoginRequest, db: DbSession) -> TokenResponse:
         )
     token = create_access_token(usuario.id, usuario.papel)
     return TokenResponse(access_token=token)
+
+
+@router.get("/me", response_model=UsuarioPublic)
+async def me(usuario: CurrentUser) -> Usuario:
+    """Quem está logado.
+
+    O papel já viaja dentro do JWT e o frontend o decodifica para decidir o que mostrar,
+    então esta rota não existe para autorização — existe porque nome e data de cadastro
+    não cabem no token e o perfil precisa deles.
+    """
+    return usuario

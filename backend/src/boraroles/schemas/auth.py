@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -26,5 +27,7 @@ class UsuarioPublic(BaseModel):
     nome: str
     email: EmailStr
     papel: PapelUsuario
+    # O perfil mostra "desde agosto"; sem isto não há de onde tirar.
+    created_at: datetime
 
     model_config = {"from_attributes": True}

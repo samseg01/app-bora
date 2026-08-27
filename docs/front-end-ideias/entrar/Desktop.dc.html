@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: #08060f; font-family: 'Inter', system-ui, sans-serif; }
+    a { color: #ff6fa0; text-decoration: none; }
+    a:hover { color: #ffb443; }
+    @keyframes pulse-agora {
+      0%   { box-shadow: 0 0 0 0 rgba(255,61,129,.55); }
+      70%  { box-shadow: 0 0 0 9px rgba(255,61,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,61,129,0); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; display: flex; background: #0d0a18; color: #f3eefc; overflow: hidden">
+
+  <!-- Esquerda: o que a pessoa estava fazendo. Em tela grande cabe o card inteiro,
+       então o motivo de estar logando fica literalmente visível ao lado do formulário. -->
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 80px; background: radial-gradient(90% 60% at 20% 30%, #26123f 0%, rgba(38,18,63,0) 62%), #0d0a18">
+    <div style="font-family: 'Anton', sans-serif; font-size: 34px; text-transform: uppercase; line-height: 1">Bora<span style="color: #ffb443">?</span></div>
+
+    <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: #6f6690; margin-top: 54px">você estava salvando</div>
+
+    <div style="margin-top: 16px; width: 340px; border-radius: 20px; overflow: hidden; background: #181227; border: 1px solid rgba(255,61,129,.35)">
+      <div style="height: 130px; background: linear-gradient(135deg,#ff3d81,#7a1fff); position: relative">
+        <div style="position: absolute; top: 11px; left: 11px; display: flex; align-items: center; gap: 6px; background: rgba(13,10,24,.78); padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: #ff3d81; animation: pulse-agora 1.8s infinite"></span>Bombando agora
+        </div>
+      </div>
+      <div style="padding: 13px 15px 16px">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: #ffb443">Balada</div>
+        <div style="font-size: 16px; font-weight: 700; margin: 5px 0 4px">Selo aberto no rooftop</div>
+        <div style="font-size: 12px; color: #9083ad">Bar Aurora · termina 04h</div>
+      </div>
+    </div>
+
+    <div style="font-size: 13.5px; line-height: 1.6; color: #9083ad; margin-top: 30px; max-width: 340px">O caderninho é seu e só seu. Por isso precisa de conta — e por isso a gente pede o mínimo possível.</div>
+  </div>
+
+  <!-- Direita: o formulário, numa coluna estreita para não virar campo largo demais -->
+  <div style="width: 520px; flex: none; display: flex; flex-direction: column; justify-content: center; padding: 0 72px; background: #0f0b1c; border-left: 1px solid rgba(255,255,255,.07)">
+    <h1 style="font-family: 'Anton', sans-serif; font-size: 42px; line-height: 1; text-transform: uppercase; margin: 0">Entrar</h1>
+
+    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px">
+      <label style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 10px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: #6f6690">email</span>
+        <div style="padding: 15px 16px; border-radius: 16px; background: #141024; border: 1px solid rgba(255,255,255,.1); font-size: 14.5px; color: #6f6690">voce@email.com</div>
+      </label>
+      <label style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 10px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: #6f6690">senha</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 16px; border-radius: 16px; background: #141024; border: 1.5px solid #ff3d81">
+          <span style="font-size: 15px; letter-spacing: 3px; color: #cfc6e2">••••••••</span>
+          <span style="font-size: 12px; font-weight: 600; color: #8478a0">mostrar</span>
+        </div>
+      </label>
+    </div>
+
+    <div style="border-radius: 16px; background: #ff3d81; color: #fff; text-align: center; padding: 16px; font-size: 15px; font-weight: 700; margin-top: 24px">Entrar e salvar</div>
+
+    <div style="display: flex; align-items: center; gap: 12px; margin-top: 28px">
+      <div style="flex: 1; height: 1px; background: rgba(255,255,255,.08)"></div>
+      <span style="font-size: 11px; color: #6f6690">ainda não tem conta?</span>
+      <div style="flex: 1; height: 1px; background: rgba(255,255,255,.08)"></div>
+    </div>
+
+    <div style="border-radius: 16px; border: 1px solid rgba(255,255,255,.16); text-align: center; padding: 15px; font-size: 14.5px; font-weight: 600; color: #e8dfff; margin-top: 16px">Criar conta</div>
+
+    <div style="display: flex; gap: 11px; align-items: flex-start; padding: 14px 15px; border-radius: 16px; background: rgba(31,208,255,.06); border: 1px solid rgba(31,208,255,.16); margin-top: 34px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1fd0ff" stroke-width="2" style="flex: none; margin-top: 1px"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+      <div style="font-size: 12px; line-height: 1.5; color: #b4a9cc">Email e senha, só. Sem telefone, sem rede social, sem localização em segundo plano.</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

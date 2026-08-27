@@ -1,5 +1,5 @@
 import { Desktop, Mobile } from "@/components/viewport";
-import { TelaPrecisaEntrar, usarDadoDeExemplo } from "@/components/ui/precisa-entrar";
+import { Porta } from "@/components/ui/porta";
 import { ConexoesDesktop, type DadosConexoes } from "@/views/desktop/conexoes";
 import { ConexoesMobile } from "@/views/mobile/conexoes";
 import {
@@ -40,24 +40,14 @@ export default async function ConexoesPage({ searchParams }: PageProps<"/conexoe
   const { vazio } = await searchParams;
   const dados = await carregar(vazio === "1");
 
-  // Sem login, esta tela só tem dado de exemplo — que não pode aparecer em produção.
-  if (!usarDadoDeExemplo()) {
-    return (
-      <TelaPrecisaEntrar
-        titulo="Suas conexões"
-        descricao="Ver onde as pessoas com quem você sai estão exige saber quem é você."
-      />
-    );
-  }
-
   return (
-    <>
+    <Porta titulo="Suas conexões" descricao="Ver onde as pessoas com quem você sai estão exige saber quem é você.">
       <Mobile>
         <ConexoesMobile {...dados} />
       </Mobile>
       <Desktop>
         <ConexoesDesktop {...dados} />
       </Desktop>
-    </>
+    </Porta>
   );
 }

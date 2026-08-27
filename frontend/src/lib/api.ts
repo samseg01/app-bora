@@ -1,4 +1,11 @@
-import type { LugarDetalhe, MapaPin, RoleDescoberta, RolePublic } from "./types";
+import type {
+  LugarDetalhe,
+  MapaPin,
+  RoleDescoberta,
+  RolePublic,
+  SalvoPublic,
+  UsuarioPublic,
+} from "./types";
 
 const BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
@@ -76,4 +83,21 @@ export const api = {
     ),
 
   lugar: (id: string) => req<LugarDetalhe>(`/lugares/${id}`),
+
+  entrar: (email: string, senha: string) =>
+    req<{ access_token: string }>("/auth/login", {
+      metodo: "POST",
+      corpo: { email, senha },
+    }),
+
+  criarConta: (nome: string, email: string, senha: string) =>
+    req<UsuarioPublic>("/auth/signup", {
+      metodo: "POST",
+      corpo: { nome, email, senha },
+    }),
+
+  eu: (token: string) => req<UsuarioPublic>("/auth/me", { token }),
+
+  /** ⚠️ Devolve só lugar_id e created_at — montar a tela exige N chamadas (../TODO.md item 16). */
+  salvos: (token: string) => req<SalvoPublic[]>("/salvos", { token }),
 };
