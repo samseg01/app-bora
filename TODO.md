@@ -58,8 +58,8 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       mapa. Os dois contextos WebGL foram resolvidos travando a inicialização por tamanho do
       container (a partição escondida é 0×0 e nunca instancia). O mapa abstrato ficou como
       degradação para sinal ruim. Detalhes no item 37 do `frontend/TODO.md`.
-      ⚠️ **Não visto em navegador** — build, lint e tipos limpos, e o estilo da CARTO responde 200,
-      mas ninguém abriu a tela para conferir se o mapa desenha. Conferir antes de confiar.
+      ✅ **Confirmado em navegador.** Levou uma caçada: o container `absolute inset-0` resolvia
+      para altura 0 e o MapLibre caía num fallback interno de 400x300, sem emitir erro nenhum.
 - [ ] R7. **Deploy** (item 12). Backend + Postgres gerenciado **com PostGIS** (essa extensão é o
       detalhe que costuma dar trabalho — nem todo provedor entrega), frontend na Vercel,
       `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.
