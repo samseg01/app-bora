@@ -57,6 +57,11 @@ export function MapaReal({
   const mapa = useRef<MapLibreMap | null>(null);
   const marcadores = useRef<Marker[]>([]);
   const [pronto, setPronto] = useState(false);
+  /**
+   * Só em desenvolvimento: mostra na tela por que o mapa não subiu. A primeira
+   * versão engolia o erro, o que tornava impossível depurar sem abrir o console.
+   */
+  const [erro, setErro] = useState<string | null>(null);
 
   // Guardados em ref para o efeito de inicialização não depender deles e reiniciar o
   // mapa a cada render. A sincronia vai num efeito próprio: escrever em ref durante o
@@ -77,32 +82,48 @@ export function MapaReal({
 
     async function iniciar() {
       if (mapa.current || cancelado || !container.current) return;
-      const { Map: MapaGL, AttributionControl, LngLatBounds } = await import("maplibre-gl");
+      let MapaGL, AttributionControl, LngLatBounds;
+      try {
+        ({ Map: MapaGL, AttributionControl, LngLatBounds } = await import("maplibre-gl"));
+      } catch (e) {
+        console.error("[mapa] falha ao carregar maplibre-gl", e);
+        setErro(`import maplibre-gl: ${e instanceof Error ? e.message : String(e)}`);
+        return;
+      }
       if (cancelado || !container.current || mapa.current) return;
 
-      const m = new MapaGL({
-        container: container.current,
-        style: ESTILO,
-        center: [-46.6417, -23.5445], // centro de SP; o fitBounds abaixo corrige
-        zoom: 14,
-        attributionControl: false,
-      });
-      m.addControl(new AttributionControl({ compact: true }));
-      mapa.current = m;
+      try {
+        const m = new MapaGL({
+          container: container.current,
+          style: ESTILO,
+          center: [-46.6417, -23.5445], // centro de SP; o fitBounds abaixo corrige
+          zoom: 14,
+          attributionControl: false,
+        });
+        m.addControl(new AttributionControl({ compact: true }));
+        mapa.current = m;
 
-      m.on("load", () => {
-        if (cancelado) return;
-        const atuais = pinsRef.current;
-        if (atuais.length > 0) {
-          const b = new LngLatBounds();
-          atuais.forEach((p) => b.extend([p.lugar.lng, p.lugar.lat]));
-          m.fitBounds(b, { padding: 56, maxZoom: 16, animate: false });
-        }
-        setPronto(true);
-      });
+        m.on("load", () => {
+          if (cancelado) return;
+          const atuais = pinsRef.current;
+          if (atuais.length > 0) {
+            const b = new LngLatBounds();
+            atuais.forEach((p) => b.extend([p.lugar.lng, p.lugar.lat]));
+            m.fitBounds(b, { padding: 56, maxZoom: 16, animate: false });
+          }
+          setPronto(true);
+        });
 
-      // Estilo indisponível (rede ruim, CDN bloqueado): fica o mapa abstrato por baixo.
-      m.on("error", () => setPronto(false));
+        // Estilo indisponível (rede ruim, CDN bloqueado): fica o mapa abstrato por baixo.
+        m.on("error", (e) => {
+          const msg = (e as { error?: { message?: string } }).error?.message ?? "erro desconhecido";
+          console.error("[mapa] maplibre:", msg, e);
+          setErro(msg);
+        });
+      } catch (e) {
+        console.error("[mapa] falha ao instanciar", e);
+        setErro(`new Map: ${e instanceof Error ? e.message : String(e)}`);
+      }
     }
 
     function destruir() {
@@ -192,6 +213,12 @@ export function MapaReal({
       )}
 
       {children}
+
+      {erro && process.env.NODE_ENV !== "production" && (
+        <div className="absolute inset-x-3 bottom-3 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 text-[11px] leading-snug text-amber">
+          mapa não carregou: {erro}
+        </div>
+      )}
     </div>
   );
 }
