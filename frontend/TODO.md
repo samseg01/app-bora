@@ -215,4 +215,20 @@ segue o hi-fi.
 - [ ] 36. **PWA de verdade:** `manifest.json` com ícones reais (não array vazio) e service worker
       para cache offline. O argumento do PWA no `conceito.md` é não ter fricção de loja — sem ícone
       e sem SW, "instalável" não funciona.
-- [ ] 37. Mapa com tiles reais (MapLibre) quando zoom e pan virarem necessidade medida.
+- [ ] 37. **Mapa real com MapLibre + basemap CARTO dark-matter.** Decidido usar o mesmo stack do
+      `projeto-D/drone-ground-station`: `maplibre-gl` com o estilo
+      `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json`. Três motivos: o
+      dark-matter é escuro e dessaturado, então combina com o `#08060f` do app e faz magenta/âmbar/
+      ciano dos pins saltarem; **não exige chave de API**, o que tira uma credencial do deploy
+      (R7); e já está provado em outro projeto da casa, então é um desconhecido a menos.
+      **Passa a fazer sentido agora** porque o piloto é República: num centro denso, saber que o
+      lugar é "na Vieira de Carvalho, duas quadras acima" só se lê num mapa com ruas — o mapa
+      abstrato bastava para 5 pins espalhados na Vila Madalena, não basta para 15 num quadrilátero.
+      E na conversa com o dono, ver o bar dele fixado na rua dele convence muito mais.
+      ⚠️ **Custo real a resolver junto:** MapLibre é ~200 KB e client-side, e hoje as duas
+      partições renderizam o mapa — viraria **dois contextos WebGL na mesma página**. Hoje isso é
+      barato porque o mapa é `div`. É exatamente o caso que o `CLAUDE.md` prevê para trocar o
+      `hidden` por `<Activity mode="hidden">` do React 19.2, ou renderizar o mapa só na partição
+      visível. Resolver isso **antes** de trocar, não depois.
+      A troca cabe atrás da fronteira atual: `MapaEstilizado` já recebe pins com lat/lng e trata
+      seleção — a implementação real entra com os mesmos props.
