@@ -1,5 +1,5 @@
 {
-  "_leia": "DADOS INVENTADOS, para ver o app preenchido em desenvolvimento. Nenhum destes lugares foi visitado e alguns não existem. NUNCA use este arquivo numa demonstração para alguém de fora — para isso existe o anhangabau.json, que só recebe o que foi curado a pé.",
+  "_leia": "DADOS INVENTADOS, para ver o app preenchido em desenvolvimento. Nenhum destes lugares foi visitado e alguns não existem. NUNCA use este arquivo numa demonstração para alguém de fora — para isso existe o anhangabau.json, que só recebe o que foi curado a pé. Inclui sinais e comentários para exercitar os três estados de frescor (live, warm, new), impossíveis de ver sem eles.",
   "bairro": "Vila Madalena",
   "curador": {
     "nome": "Curador de exemplo",
@@ -19,7 +19,24 @@
           "descricao": "Entrada livre até meia-noite. Set de house às 23h30, teto aberto. Depois da meia-noite a fila dobra a esquina.",
           "categoria": "Balada",
           "inicio": "22:00",
-          "fim": "04:00"
+          "fim": "04:00",
+          "sinais": {
+            "quantos": 5,
+            "ha_minutos": 22,
+            "passo_minutos": 4
+          }
+        }
+      ],
+      "comentarios": [
+        {
+          "autor": "Marina",
+          "texto": "chegou banda nova, tá cheio mas cabe",
+          "ha_minutos": 24
+        },
+        {
+          "autor": "Rafa",
+          "texto": "fila andando rápido",
+          "ha_minutos": 42
         }
       ]
     },
@@ -35,7 +52,19 @@
           "descricao": "Roda de samba na calçada desde as 21h. Sem couvert, cerveja a 12. Cabe pouca gente sentada.",
           "categoria": "Bar",
           "inicio": "21:00",
-          "fim": "02:00"
+          "fim": "02:00",
+          "sinais": {
+            "quantos": 2,
+            "ha_minutos": 75,
+            "passo_minutos": 10
+          }
+        }
+      ],
+      "comentarios": [
+        {
+          "autor": "Bia",
+          "texto": "roda de samba começou, calçada cheia",
+          "ha_minutos": 55
         }
       ]
     },
@@ -61,7 +90,14 @@
       "endereco": "Rua Girassol, 47",
       "lat": -23.5575,
       "lng": -46.6925,
-      "roles": []
+      "roles": [],
+      "comentarios": [
+        {
+          "autor": "Marina",
+          "texto": "fechado hoje, passei na frente",
+          "ha_minutos": 180
+        }
+      ]
     },
     {
       "nome": "Espaço Cru",
@@ -70,6 +106,23 @@
       "lat": -23.5519,
       "lng": -46.6935,
       "roles": []
+    }
+  ],
+  "usuarios": [
+    {
+      "nome": "Marina",
+      "email": "marina@exemplo.local",
+      "senha": "exemplo-local-8"
+    },
+    {
+      "nome": "Rafa",
+      "email": "rafa@exemplo.local",
+      "senha": "exemplo-local-8"
+    },
+    {
+      "nome": "Bia",
+      "email": "bia@exemplo.local",
+      "senha": "exemplo-local-8"
     }
   ]
 }
