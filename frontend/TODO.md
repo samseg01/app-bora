@@ -93,19 +93,21 @@ Fatia que prova a tese com dado real. Consome só rotas públicas — nenhuma mu
 
 ## Fase 2 — onboarding e perfil (client-side)
 
-- [ ] 20. **Tela `2a` — Onboarding, bairro.** Título "Bora?" em Anton 52px com o "?" em âmbar,
-       passo 1 de 2, lista de bairros. Bairro ativo hardcoded (o piloto ainda não foi escolhido —
-       item 1 de `../TODO.md`), demais com a pill âmbar "em breve". Contadores
-       ("14 lugares curados · 3 rolês hoje") derivam de `GET /mapa` e `GET /descoberta`, ou ficam
-       hardcoded até haver dado real. "Avisar quando abrir meu bairro" **não tem backend** — texto
-       inerte ou remover.
+- [x] 20. **Abertura — escolha de bairro** (`/abertura`, era a tela `2a`). Duas diferenças
+       deliberadas em relação ao hi-fi: **não há etiqueta "em breve"**, porque prometer bairro
+       futuro é afirmar roadmap que ninguém decidiu; e **as contagens vêm da API**, então quando
+       não há curadoria a tela diz "curadoria começando" em vez de número inventado.
+       Recortes reais: República (piloto) e Pinheiros.
+       **A escolha vive em cookie, não `localStorage`** — a home e o mapa renderizam no servidor e
+       precisam do bairro antes de mandar HTML. Sem cookie, `/` e `/mapa` redirecionam para cá.
+       Não implementei o passo 2 (gostos): ver item 21, que segue sem uso funcional.
 - [ ] 21. **Tela `2b` — Onboarding, gostos.** Chips selecionáveis, passo 2 de 2, card do curador,
        "Ver a noite de hoje" e "Pular por agora". Salvar em `localStorage` e **não usar para nada
        ainda**: `/descoberta` não aceita filtro nem ordenação por gosto, e implementar ranking por
        preferência contraria a decisão de a descoberta ser curatorial. Débito consciente, descrito
        em `../docs/plano-frontend.md`.
-- [ ] 22. **`lib/bairro.ts` + guarda de rota.** Bairro escolhido em `localStorage`; quem chega sem
-       bairro definido vai para o onboarding. Toda chamada de API que exige `?bairro=` lê daqui.
+- [x] 22. **`lib/bairros.ts` + guarda de rota.** Feito com cookie (ver item 20). `bairro-servidor.ts`
+       lê no servidor e valida contra a lista — cookie é entrada do usuário.
 - [ ] 23. **Tela `2h` — Perfil, parcial.** Avatar, "Você", stats, bloco "meu bairro" com "trocar",
        bloco de privacidade e card "para donos de casa". **Nome e "desde agosto" ficam de fora até
        existir `GET /auth/me`** (item 18 de `../TODO.md`); "rolês que você foi" não tem rota e sai

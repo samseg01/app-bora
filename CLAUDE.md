@@ -139,10 +139,11 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — `2c` home, `2d` detalhe, `2f` mapa, `2g` salvos, `2h` perfil | ✅ | 6 rotas, cada uma nas duas visualizações |
 | Frontend — painel do curador (UI) | ⚠️ | tela pronta nas duas visualizações, **sem backend ligado** (precisa de login) |
 | Frontend — login e criar conta | ✅ | `/entrar` e `/criar-conta`, desenhados e implementados; sessão em `localStorage` |
-| Frontend — onboarding (`2a`,`2b`) e confirmação de sinal (`2e`) | ❌ | |
+| Frontend — abertura com escolha de bairro (`2a`) | ✅ | `/abertura`, com contagens reais e sem prometer bairro futuro |
+| Frontend — onboarding de gostos (`2b`) e confirmação de sinal (`2e`) | ❌ | o `2b` segue sem uso funcional por decisão |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
 | Frontend — painel do estabelecimento | ❌ | sem design e sem tela; só depois de haver comunidade |
-| Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República) — ver R1 no `TODO.md` |
+| Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
 | Deploy de produção | ❌ | só `docker compose` local hoje |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |

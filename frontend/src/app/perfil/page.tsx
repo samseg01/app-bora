@@ -7,7 +7,7 @@ import { PerfilDesktop } from "@/views/desktop/perfil";
 import { PerfilMobile } from "@/views/mobile/perfil";
 import { api } from "@/lib/api";
 import { limparSessao, useSessao } from "@/lib/auth";
-import { BAIRRO_PILOTO } from "@/lib/config";
+import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
 import type { UsuarioPublic } from "@/lib/types";
 
 /**
@@ -72,10 +72,10 @@ function PerfilCarregado() {
   return (
     <>
       <Mobile>
-        <PerfilMobile bairro={BAIRRO_PILOTO} salvos={salvos} nome={eu.nome} desde={desde} />
+        <PerfilMobile bairro={bairroDoCookie() ?? BAIRROS[0].nome} salvos={salvos} nome={eu.nome} desde={desde} />
       </Mobile>
       <Desktop>
-        <PerfilDesktop bairro={BAIRRO_PILOTO} salvos={salvos} nome={eu.nome} desde={desde} />
+        <PerfilDesktop bairro={bairroDoCookie() ?? BAIRROS[0].nome} salvos={salvos} nome={eu.nome} desde={desde} />
       </Desktop>
     </>
   );

@@ -3,7 +3,8 @@ import { HomeDesktop } from "@/views/desktop/home";
 import { HomeMobile } from "@/views/mobile/home";
 import { AvisoOffline } from "@/components/ui/aviso-offline";
 import { api, ApiOffline } from "@/lib/api";
-import { BAIRRO_PILOTO } from "@/lib/config";
+import { redirect } from "next/navigation";
+import { bairroEscolhido } from "@/lib/bairro-servidor";
 import {
   BAIRRO_EXEMPLO,
   COMENTARIOS_EXEMPLO,
@@ -35,13 +36,13 @@ interface Dados {
   offline: boolean;
 }
 
-async function carregar(): Promise<Dados> {
+async function carregar(bairro: string): Promise<Dados> {
   try {
     const [roles, pins] = await Promise.all([
-      api.descoberta(BAIRRO_PILOTO),
-      api.mapa(BAIRRO_PILOTO),
+      api.descoberta(bairro),
+      api.mapa(bairro),
     ]);
-    return { roles, pins, bairro: BAIRRO_PILOTO, offline: false };
+    return { roles, pins, bairro, offline: false };
   } catch (erro) {
     // Só a API fora do ar cai em dado de exemplo, e só fora de produção. Qualquer
     // outro erro (4xx, 5xx) é problema de verdade e deve estourar.
@@ -53,7 +54,11 @@ async function carregar(): Promise<Dados> {
 }
 
 export default async function Home() {
-  const { roles, pins, bairro, offline } = await carregar();
+  // Sem bairro escolhido não há o que consultar: a abertura é o primeiro passo.
+  const escolhido = await bairroEscolhido();
+  if (!escolhido) redirect("/abertura");
+
+  const { roles, pins, bairro, offline } = await carregar(escolhido);
 
   return (
     <>

@@ -43,7 +43,7 @@ export function PerfilMobile({
             </svg>
             {bairro}
           </span>
-          <span className="text-xs font-semibold text-muted-3">único no piloto</span>
+          <Link href="/abertura" className="text-xs font-semibold text-magenta-soft">trocar</Link>
         </div>
       </div>
 
