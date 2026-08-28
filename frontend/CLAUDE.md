@@ -216,6 +216,12 @@ Rótulos de seção: `600 10px`, `letter-spacing:1.6px`, `text-transform:upperca
 
 ## Convenções
 
+**Barra inferior (mobile):** o `<nav>` é filho direto da coluna flex do `MobileShell` e leva
+`mt-auto sticky bottom-0`. Sem `mt-auto` ela para logo abaixo do conteúdo em vez de ir ao rodapé —
+home e mapa escondem isso porque têm um filho `flex-1`, mas salvos, perfil e conexões deixavam a
+barra flutuando no meio da tela. O padding de baixo soma `env(safe-area-inset-bottom)`: instalado
+como PWA não há barra de navegador, e a barra de gestos do sistema fica em cima dos rótulos.
+
 **Shell:** na visualização mobile, container `mx-auto w-full max-w-md` — ocupa a largura toda no
 celular e vira coluna central em tablet. Na desktop, sidebar fixa de 15rem + área de conteúdo. Ver
 "Partição mobile / desktop" acima.
