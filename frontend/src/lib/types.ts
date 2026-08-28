@@ -78,6 +78,13 @@ export interface MapaPin {
   total_comentarios: number;
 }
 
+/** GET /lugares/proximos — o pin do mapa mais a distância, em metros. */
+export interface LugarProximo {
+  lugar: LugarPublic;
+  distancia_m: number;
+  role_ativo: RolePin | null;
+}
+
 export interface ComentarioResumo {
   autor_nome: string;
   texto: string;

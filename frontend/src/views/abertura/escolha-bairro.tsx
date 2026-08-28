@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BuscarPorLocalizacao } from "@/components/ui/buscar-por-localizacao";
 import { BAIRROS, salvarBairro } from "@/lib/bairros";
 
 /**
@@ -13,6 +14,10 @@ import { BAIRROS, salvarBairro } from "@/lib/bairros";
  * inventado aqui contaminaria a primeira impressão do produto inteiro.
  *
  * Zero curado não é defeito a esconder — é a prova de que só entra o que foi visitado.
+ *
+ * "Buscar pela minha localização" é atalho, não substituto: ele pré-seleciona um recorte
+ * na lista, que continua ali inteira. Quem está em casa às 18h decidindo aonde ir mais
+ * tarde tem, na localização atual, a informação menos útil da tela.
  */
 export function EscolhaBairro({
   contagens,
@@ -107,6 +112,8 @@ export function EscolhaBairro({
           );
         })}
       </div>
+
+      <BuscarPorLocalizacao aoEncontrar={setEscolhido} />
 
       <div className="mt-auto pt-9">
         <button

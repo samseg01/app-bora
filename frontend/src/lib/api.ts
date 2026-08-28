@@ -2,6 +2,7 @@ import type {
   EngajamentoEstabelecimento,
   EstabelecimentoPublic,
   LugarDetalhe,
+  LugarProximo,
   MapaPin,
   RoleDescoberta,
   LugarPublic,
@@ -100,6 +101,12 @@ export const api = {
       metodo: "POST",
       corpo: { nome, email, senha },
     }),
+
+  /** Lugares curados mais próximos de um ponto. Público: perguntar "o que tem perto de
+      mim" é o primeiro toque de quem nunca usou o app, e exigir login ali seria atrito
+      exatamente no pior lugar. */
+  proximos: (lat: number, lng: number, raio_m = 20000) =>
+    req<LugarProximo[]>(`/lugares/proximos?lat=${lat}&lng=${lng}&raio_m=${raio_m}`),
 
   eu: (token: string) => req<UsuarioPublic>("/auth/me", { token }),
 

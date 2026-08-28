@@ -56,6 +56,18 @@ class MapaPin(BaseModel):
     total_comentarios: int
 
 
+class LugarProximo(BaseModel):
+    """Item de GET /lugares/proximos — o mesmo pin do mapa, mais a distância.
+
+    `distancia_m` é em metros sobre a esfera (cast para `geography` no PostGIS), não
+    graus: a tela mostra "a 700 m" para uma pessoa decidindo se vai a pé.
+    """
+
+    lugar: LugarPublic
+    distancia_m: int
+    role_ativo: RolePin | None
+
+
 class ComentarioResumo(BaseModel):
     autor_nome: str
     texto: str
