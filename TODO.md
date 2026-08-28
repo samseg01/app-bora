@@ -306,6 +306,23 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        mais próximo e não até a fronteira do bairro (item 38) — alguém pode estar dentro da Vila
        Madalena e a 1 km do lugar mais próximo que a gente visitou.
 
+### O motor de contribuição — quatro decisões que são a mesma (28/08)
+
+Estavam soltas sob a subseção da "escada", que trata de outro assunto. Ficam juntas porque **não se
+decidem separadas**: as quatro respondem quem pode afirmar o quê no app, e mexer numa move as
+outras.
+
+O nó é este. O `conceito.md` classifica o frescor como o motor de incentivo **mais fraco** ("começar
+só com curadores e engajados — já, com cautela"), e o ADR-006 implementou essa cautela. A
+consequência apareceu no uso: quem entra com conta comum acha um app onde entrar não muda nada
+(item 40). Liberar sem mais nada devolveria o problema que o item 34 já mostrou ser real — sinal
+forjável. As duas hipóteses registradas hoje (ADR-008 e ADR-009) são tentativas de sair desse
+impasse por caminhos diferentes: uma tira a dependência do curador para a **oferta**, a outra
+ancora o **sinal** em estar lá.
+
+Ordem sugerida de decisão: 43 primeiro (ele destrava o 40 e resolve o 41 de graça), depois 42, que
+depende do R9 e da conversa com o dono.
+
 - [ ] 40. **[decisão] O que uma conta comum ganha ao entrar?** Hoje: salvar lugar e comentar. Não
        sinalizar (ADR-0006). Testado em 28/08 com conta comum de verdade — salvar 201, comentar
        201, sinalizar 403. Comentar acabou de ser destravado na interface, mas a pergunta de
