@@ -91,7 +91,7 @@ de assumir que funciona como desenhado.
 | Camada | Tecnologia | Status |
 |---|---|---|
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, 42 testes |
-| Frontend | Next.js + React + PWA — **decisão de stack, nada escrito ainda** | ❌ não iniciado |
+| Frontend | Next 16 + React 19 + Tailwind v4 + PWA instalável (manifest, ícones, service worker) | ✅ |
 | Infra | Docker Compose local (api + postgres/postgis); produção planejada: Railway/Fly.io/Render (backend) + Vercel (Next.js) | ⚠️ só local, nada de produção configurado |
 
 ## Modelo de dados (resumo — schema completo em `backend/src/boraroles/db/models.py`)

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08060f" />
+    <title>Bora? — sem conexão</title>
+    <!--
+      Página servida pelo service worker quando a navegação falha.
+
+      Ela não mostra rolê nenhum de propósito. O app responde "o que está rolando
+      agora", e qualquer conteúdo guardado aqui estaria velho — dizer "não sei" é a
+      única resposta honesta sem rede. Estilo embutido porque, offline, o CSS do app
+      pode não ter sido cacheado ainda.
+    -->
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.15rem;
+        padding: 2rem 1.75rem;
+        text-align: center;
+        background: #08060f;
+        color: #f3eefc;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      .pin {
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: 50%;
+        background: #ff3d81;
+        opacity: 0.28;
+        box-shadow: 0 0 0 0.75rem rgba(255, 61, 129, 0.12);
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.6rem;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      p {
+        margin: 0;
+        max-width: 21rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #9083ad;
+        text-wrap: pretty;
+      }
+      button {
+        margin-top: 0.4rem;
+        padding: 0.85rem 1.9rem;
+        border: 0;
+        border-radius: 1rem;
+        background: #ff3d81;
+        color: #fff;
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button:focus-visible {
+        outline: 2px solid #ff6fa0;
+        outline-offset: 3px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pin"></div>
+    <h1>Sem conexão</h1>
+    <p>
+      O que está rolando agora só faz sentido ao vivo, então preferimos não mostrar nada a
+      mostrar algo velho. Assim que o sinal voltar, a noite volta com ele.
+    </p>
+    <button type="button" onclick="location.reload()">Tentar de novo</button>
+  </body>
+</html>

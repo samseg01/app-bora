@@ -90,9 +90,8 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
 
 ## Diferenciais / features principais
 
-- [~] 4. **Implementar o frontend público (PWA, Next.js).** O app está de pé (9 rotas, dado real);
-       o **PWA em si não existe** — sem manifest, ícones ou service worker. Ver item 11 e ADR-001.
-       Descrição original: A pasta `frontend/` já existe com
+- [x] 4. **Implementar o frontend público (PWA, Next.js).** App de pé (9 rotas, dado real) e PWA
+       instalável desde 28/08 (item 11). Descrição original: A pasta `frontend/` já existe com
       `CLAUDE.md` (convenções, tokens, contratos da API) e `TODO.md` (**as 37 tasks detalhadas, em
       6 fases — é lá que o trabalho é acompanhado**). Análise que originou tudo:
       `docs/plano-frontend.md`. ⚠️ Em andamento: 8 rotas no ar nas duas visualizações. Faltam
@@ -163,9 +162,10 @@ e o **bairro piloto** (item 2 daqui) — sem concentração geográfica a rede d
        (efêmero)** — pergunta 4 em aberto no `docs/conceito.md`. O hi-fi aposta na hipótese `1e`
        (dois gestos, dois lugares na tela); validar em campo se isso resolve de fato na cabeça do
        usuário, ou se as hipóteses `1f`/`1g` do wireframe voltam à mesa.
-- [ ] 11. **Ícones do PWA e service worker** (ver ADR-001 do frontend: o PWA é o produto até a
-       validação; nativo é o destino, não o próximo passo) — sem ícone real e sem SW,
-       "instalável" e cache offline não funcionam de verdade.
+- [x] 11. **Ícones do PWA e service worker** — feito em 28/08 (item 36 do frontend). O app agora
+       é instalável de fato. A regra que vale registrar: o service worker cacheia a casca
+       (JS/CSS/fontes/ícones) e **nunca o dado** — cache de rolê é cache de mentira num produto
+       que responde "o que está rolando agora".
 
 ## Backend — lacunas que o design revelou
 

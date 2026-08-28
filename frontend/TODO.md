@@ -233,24 +233,12 @@ segue o hi-fi.
 - [ ] 34. "N sinalizaram nas últimas 2h" no `2d`, quando `RolePublic` expuser a contagem (item 17).
 - [ ] 35. Distância "a pé" com geolocalização do browser, quando `RoleDescoberta` trouxer
       `lat`/`lng` (item 19).
-- [ ] 36. **PWA de verdade — subiu de prioridade em 28/08.** O ADR-001 (`docs/adr/`) fixou que
-      nativo é o destino, mas depois da validação; até lá o PWA é o produto, e hoje ele não
-      existe: `public/` só tem os SVGs do scaffold. É perto de um dia de trabalho e entrega
-      ícone na tela inicial, abertura em tela cheia e tolerância a sinal ruim — que é o
-      cenário de rua. Detalhe original:
-      **PWA de verdade:** `manifest.json` com ícones reais (não array vazio) e service worker
-      para cache offline. O argumento do PWA no `conceito.md` é não ter fricção de loja — sem ícone
-      e sem SW, "instalável" não funciona.
-- [x] 37. **Mapa real com MapLibre + basemap CARTO dark-matter.** `components/ui/mapa-real.tsx`,
-      trocado nas 5 telas que tinham mapa. Estilo
-      `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json` — verificado: responde
-      200, tiles vetoriais, **sem chave de API**.
-      **Os dois contextos WebGL foram resolvidos por tamanho, não por media query:** o mapa só
-      inicializa quando o container tem largura e altura, e um `ResizeObserver` destrói quando
-      zera. A partição escondida está em `display:none`, logo é 0×0, logo nunca instancia nada —
-      e atravessar o breakpoint redimensionando faz um morrer e o outro nascer sozinhos. Isso
-      evita escolher a partição em JS, que traria de volta o flash de hidratação que a partição
-      por CSS existe para evitar.
-      **Degradação:** o mapa abstrato continua por baixo, visível até o estilo carregar e
-      permanentemente se ele falhar — num app de rua, sinal ruim não pode virar retângulo vazio.
-      A atribuição CARTO/OpenStreetMap fica em modo compacto e **não pode ser removida** (licença).
+- [x] 36. **PWA de verdade** — feito em 28/08. `app/manifest.ts`, ícones reais gerados
+      (`public/icons/`, o pin magenta pulsando — sem palavra escrita, porque rasterizar uma
+      fonte do sistema no lugar de Anton daria um logotipo que não é o nosso), `public/sw.js`
+      e `public/offline.html`.
+      **A regra do service worker: cacheia a casca, nunca o dado.** JS, CSS, fontes e ícones
+      entram no cache; resposta de API e página renderizada, não. Servir de cache um rolê de
+      ontem rotulado "bombando agora" seria pior que não abrir. Navegação sem rede cai em
+      `/offline.html`, que não finge ter conteúdo. Registrado só em produção — em dev o SW
+      interceptaria os assets do Turbopack e viraria depuração de cache.

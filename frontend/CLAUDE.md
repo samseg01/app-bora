@@ -45,6 +45,19 @@ existe enquanto ele estava no banco alimentando o frescor.
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
 
+### PWA
+
+`app/manifest.ts` + `public/icons/` + `public/sw.js` + `public/offline.html`.
+
+**A regra do service worker: cacheia a casca, nunca o dado.** JS, CSS, fontes e ícones entram no
+cache; resposta de API e página renderizada, não — o app responde "o que está rolando agora", e
+servir de cache um rolê de ontem rotulado "bombando agora" é pior que não abrir. Navegação sem
+rede cai em `/offline.html`, que não finge ter conteúdo. Não adicionar cache de dados aqui sem
+resolver antes como a tela diria que aquilo é velho.
+
+O SW só é registrado em produção (`components/ui/registrar-sw.tsx`): em dev ele interceptaria os
+assets do Turbopack e transformaria hot reload em depuração de cache.
+
 ### Testar num celular de verdade (o R8)
 
 O `next.config.ts` libera `*.trycloudflare.com` em `allowedDevOrigins` — sem isso o Next 16
