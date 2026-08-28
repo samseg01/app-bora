@@ -117,4 +117,27 @@ export const api = {
   curadorRoles: (token: string) => req<RolePublic[]>("/curador/roles", { token }),
 
   curadorLugares: (token: string) => req<LugarPublic[]>("/curador/lugares", { token }),
+
+  salvar: (token: string, lugar_id: string) =>
+    req<unknown>("/salvos", { token, metodo: "POST", corpo: { lugar_id } }),
+
+  dessalvar: (token: string, lugar_id: string) =>
+    req<void>(`/salvos/${lugar_id}`, { token, metodo: "DELETE" }),
+
+  criarRole: (
+    token: string,
+    corpo: {
+      lugar_id: string;
+      titulo: string;
+      descricao: string | null;
+      categoria: string;
+      data_inicio: string;
+      data_fim: string;
+    },
+  ) => req<RolePublic>("/curador/roles", { token, metodo: "POST", corpo }),
+
+  criarLugar: (
+    token: string,
+    corpo: { nome: string; categoria: string; lat: number; lng: number; bairro: string },
+  ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
 };

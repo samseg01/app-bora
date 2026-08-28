@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SairDaConta } from "@/components/ui/sair-da-conta";
 import { MobileShell } from "./shell";
 
 /** Tela 2h. Mesmas ressalvas da visualização desktop (ver views/desktop/perfil.tsx). */
@@ -67,6 +68,9 @@ export function PerfilMobile({
           Um curador vai a pé validar antes de publicar.
         </p>
       </Link>
+      <div className="mx-5.5 mt-6 mb-5">
+        <SairDaConta />
+      </div>
     </MobileShell>
   );
 }

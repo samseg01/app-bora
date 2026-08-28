@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AcaoSalvar } from "@/components/ui/acao-salvar";
 import { AcaoSinalizar } from "@/components/ui/acao-sinalizar";
 import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MapaReal } from "@/components/ui/mapa-real";
@@ -80,13 +81,7 @@ export function RoleDesktop({
 
             <AcaoSinalizar roleId={role.id} dataFim={role.data_fim} />
 
-            <button
-              type="button"
-              disabled
-              className="cursor-not-allowed rounded-2xl border border-white/18 py-3 text-[13.5px] font-semibold text-text-soft opacity-45"
-            >
-              Salvar
-            </button>
+            {lugar && <AcaoSalvar lugarId={lugar.id} variante="botao" />}
           </div>
 
           {lugar && (

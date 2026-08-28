@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AcaoSalvar } from "@/components/ui/acao-salvar";
 import { AcaoSinalizar } from "@/components/ui/acao-sinalizar";
 import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MobileShell } from "./shell";
@@ -63,13 +64,7 @@ export function RoleMobile({
             </div>
           </div>
         </div>
-        <button
-          type="button"
-          disabled
-          className="shrink-0 cursor-not-allowed rounded-full border border-white/18 px-3 py-2 text-xs font-semibold text-text-soft opacity-45"
-        >
-          salvar
-        </button>
+        {lugar && <AcaoSalvar lugarId={lugar.id} />}
       </div>
 
       {comentarios.length > 0 && (

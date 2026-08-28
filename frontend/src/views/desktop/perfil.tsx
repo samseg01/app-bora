@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SairDaConta } from "@/components/ui/sair-da-conta";
 import { DesktopShell } from "./shell";
 
 /**
@@ -78,6 +79,10 @@ export function PerfilDesktop({
             Um curador vai a pé validar antes de publicar.
           </p>
         </Link>
+        <div className="mt-8 max-w-2xl">
+          <SairDaConta />
+        </div>
+
       </section>
     </DesktopShell>
   );

@@ -140,14 +140,15 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
       primeiro (o curador está na rua, acabou de sair do lugar), lista depois; editar e tirar do ar
       ficam só no desktop.
 - [x] C2. O campo "motivo pra ir" é o maior do formulário, de propósito.
-- [ ] C3. **Ligar no backend.** As rotas já existem inteiras (`POST/PATCH/DELETE /curador/lugares`
+- [x] C3. **Ligado no backend.** O painel lista os rolês reais e o formulário publica de verdade. As rotas já existem inteiras (`POST/PATCH/DELETE /curador/lugares`
       e `/curador/roles`), mas exigem token e papel `curador` — depende da fase 3. Hoje o
       formulário não envia e a lista vem de exemplo.
 - [ ] C4. **`Role.descricao` no backend** (item 15 de `../TODO.md`) — sem ela o campo principal do
       formulário não tem onde ser gravado.
 - [ ] C5. Sub-rotas `/curador/lugares` e `/curador/roles` — a nav já aponta para elas e **elas não
       existem** (404). Ou criar, ou tirar da nav.
-- [ ] C6. Cadastro de lugar com seleção de ponto no mapa — hoje só há seleção de lugar existente.
+- [ ] C6. Seleção de ponto no mapa ao cadastrar lugar — hoje as coordenadas são coladas do Google
+      Maps. Melhora quando o gargalo for esse, não a curadoria em si.
 
 ## Fase 3 — auth e salvar
 
@@ -161,10 +162,10 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
 - [x] 26. **Auth preguiçosa** (decisão (iii) do item 4a de `../TODO.md`): o app é público e
        read-only; o login só aparece quando a pessoa tenta salvar pela primeira vez, preservando a
        intenção para depois do login.
-- [ ] 27. **Salvar e dessalvar** no `2d` e no `2f`, com atualização otimista e reversão em erro.
+- [x] 27. **Salvar e dessalvar** no `2d` e no `2f`, com atualização otimista e reversão em erro.
        `POST /salvos` devolve 409 se já salvo — tratar como sucesso idempotente, não como falha.
 - [x] 28. **Tela `2g` — Salvos, com dado real.** `GET /salvos` + uma chamada a `/lugares/{id}` por item (o N+1 do item 16). Estado vazio honesto.
-- [ ] 28b. **Salvar/dessalvar de fato** — os botões de coração seguem desabilitados (item 27). "Meu caderninho", contagem, filtros e lista. ⚠️ Com a API atual
+- [x] 28b. **Salvar/dessalvar de fato** — feito no detalhe do rolê, nas duas visualizações. "Meu caderninho", contagem, filtros e lista. ⚠️ Com a API atual
        custa uma chamada a `/lugares/{id}` por item — fazer a mudança 16 de `../TODO.md` antes, ou
        aceitar o N+1 conscientemente. Os filtros "Abertos agora" e "Nunca fui" e os estados
        "aberto"/"fechado" **não são implementáveis**: não há horário de funcionamento no schema nem

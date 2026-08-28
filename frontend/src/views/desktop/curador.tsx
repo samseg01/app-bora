@@ -1,4 +1,5 @@
 import { DesktopShell } from "./shell";
+import { FormPublicar } from "./form-publicar";
 import { frescorUI } from "@/lib/frescor";
 import { hora } from "@/lib/tempo";
 import type { LugarPublic, RoleDescoberta } from "@/lib/types";
@@ -132,86 +133,5 @@ function Stat({
       </div>
       <div className="mt-1.5 text-[11.5px] text-muted-2">{rotulo}</div>
     </div>
-  );
-}
-
-const CAMPO =
-  "w-full rounded-2xl border border-white/10 bg-sunken px-3.5 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
-
-export function FormPublicar({
-  lugares,
-  bairro,
-  compacto = false,
-}: {
-  lugares: LugarPublic[];
-  bairro: string;
-  compacto?: boolean;
-}) {
-  return (
-    <form
-      className={`flex flex-col gap-3.5 rounded-[22px] border border-white/7 bg-card-alt p-5.5 ${
-        compacto ? "" : "h-full"
-      }`}
-    >
-      <div>
-        <h2 className="font-display text-[26px] leading-none uppercase">Publicar rolê</h2>
-        <p className="mt-2 text-xs leading-relaxed text-muted-2">
-          Você acabou de sair de lá. Escreva enquanto está fresco.
-        </p>
-      </div>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="rotulo text-muted-3">lugar</span>
-        <select className={CAMPO} defaultValue={lugares[0]?.id}>
-          {lugares.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.nome}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="rotulo text-muted-3">título</span>
-        <input className={CAMPO} placeholder="Selo aberto no rooftop" />
-      </label>
-
-      {/* Maior de propósito: é o que faz alguém sair de casa. */}
-      <label className="flex flex-col gap-1.5">
-        <span className="flex items-baseline justify-between">
-          <span className="rotulo text-amber">motivo pra ir</span>
-          <span className="text-[11px] text-muted-3">o que você viu lá</span>
-        </span>
-        <textarea
-          rows={compacto ? 3 : 4}
-          className={`${CAMPO} resize-none border-amber/35 leading-relaxed`}
-          placeholder="Entrada livre até meia-noite. Set de house às 23h30, teto aberto."
-        />
-      </label>
-
-      <div className="flex gap-2.5">
-        <label className="flex flex-1 flex-col gap-1.5">
-          <span className="rotulo text-muted-3">começa</span>
-          <input type="time" className={CAMPO} defaultValue="23:00" />
-        </label>
-        <label className="flex flex-1 flex-col gap-1.5">
-          <span className="rotulo text-muted-3">termina</span>
-          <input type="time" className={CAMPO} defaultValue="04:00" />
-        </label>
-      </div>
-
-      <div className="mt-auto flex flex-col gap-2.5">
-        <button
-          type="button"
-          disabled
-          className="cursor-not-allowed rounded-2xl bg-magenta/40 py-3.5 text-[14.5px] font-bold text-white/70"
-        >
-          Publicar em {bairro}
-        </button>
-        <p className="text-center text-[11.5px] leading-snug text-muted-3">
-          Entrar como curador para publicar — o login chega na fase 3.
-        </p>
-      </div>
-    </form>
   );
 }

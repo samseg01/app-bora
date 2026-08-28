@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MobileShell } from "./shell";
-import { FormPublicar } from "../desktop/curador";
+import { FormPublicar } from "../desktop/form-publicar";
 import { frescorUI } from "@/lib/frescor";
 import { hora } from "@/lib/tempo";
 import type { LugarPublic, RoleDescoberta } from "@/lib/types";

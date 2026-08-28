@@ -137,7 +137,9 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — scaffold, sistema visual e camada de dados | ✅ | Next 16.3.3 + React 19 + Tailwind v4; `npm run build` e `lint` limpos |
 | Frontend — partição mobile/desktop | ✅ | mesmo app e mesmas URLs, composições separadas cortadas por CSS em `lg` |
 | Frontend — `2c` home, `2d` detalhe, `2f` mapa, `2g` salvos, `2h` perfil | ✅ | 6 rotas, cada uma nas duas visualizações |
-| Frontend — painel do curador (UI) | ⚠️ | tela pronta nas duas visualizações, **sem backend ligado** (precisa de login) |
+| Frontend — painel do curador | ✅ | lista real, publica rolê e cadastra lugar — substitui a planilha |
+| Frontend — salvar lugar | ✅ | coração no detalhe do rolê, com 409 tratado como sucesso |
+| Frontend — sair da conta | ✅ | no perfil; JWT é sem estado, então sair é apagar o token local |
 | Frontend — login e criar conta | ✅ | `/entrar` e `/criar-conta`, desenhados e implementados; sessão em `localStorage` |
 | Frontend — abertura com escolha de bairro (`2a`) | ✅ | `/abertura` + seletor no cabeçalho da home |
 | Frontend — sinalizar e confirmação (`2e`) | ✅ | curador sinaliza, comenta e cancela de verdade; papel comum vê o porquê |
