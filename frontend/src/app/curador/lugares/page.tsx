@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Desktop, Mobile } from "@/components/viewport";
+import { CorrigirLugar } from "@/components/ui/corrigir-lugar";
 import { PassosCurador } from "@/components/ui/passos-curador";
 import { Porta } from "@/components/ui/porta";
 import { DesktopShell } from "@/views/desktop/shell";
@@ -246,18 +247,28 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
             {lista?.map((l) => (
               <div
                 key={l.id}
-                className="flex items-center gap-3.5 rounded-[18px] border border-white/7 bg-card p-3.5"
+                className="flex flex-wrap items-center gap-3.5 rounded-[18px] border border-white/7 bg-card p-3.5"
               >
                 <div className="h-11 w-11 shrink-0 rounded-xl bg-gradient-to-br from-violet to-plum" />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[14.5px] font-bold">{l.nome}</div>
                   <div className="mt-0.5 truncate text-xs text-muted-2">
-                    {l.endereco ?? `${l.categoria} · ${l.bairro}`}
+                    {l.endereco ?? (
+                      <span className="text-amber">sem endereço · {l.categoria}</span>
+                    )}
                   </div>
                 </div>
                 <span className="shrink-0 font-mono text-[11px] text-muted-3">
                   {l.lat.toFixed(4)}, {l.lng.toFixed(4)}
                 </span>
+                <CorrigirLugar
+                  lugar={l}
+                  aoSalvar={(atualizado) =>
+                    setLista((atual) =>
+                      (atual ?? []).map((x) => (x.id === atualizado.id ? atualizado : x)),
+                    )
+                  }
+                />
               </div>
             ))}
           </div>

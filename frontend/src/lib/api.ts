@@ -37,7 +37,7 @@ export class ApiOffline extends Error {
 
 interface Opcoes {
   token?: string;
-  metodo?: "GET" | "POST" | "DELETE";
+  metodo?: "GET" | "POST" | "PATCH" | "DELETE";
   corpo?: unknown;
 }
 
@@ -182,4 +182,13 @@ export const api = {
       endereco?: string | null;
     },
   ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
+
+  /** Corrigir um lugar já cadastrado. O `PATCH` existe no backend desde o esqueleto e
+      não tinha formulário: quem cadastrou na rua com a coordenada errada não tinha como
+      arrumar sem SQL. */
+  atualizarLugar: (
+    token: string,
+    id: string,
+    corpo: { nome?: string; endereco?: string | null; lat?: number; lng?: number },
+  ) => req<LugarPublic>(`/curador/lugares/${id}`, { token, metodo: "PATCH", corpo }),
 };
