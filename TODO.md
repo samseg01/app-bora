@@ -4,6 +4,23 @@ Tasks de escopo do monorepo (produto, decisões cross-cutting). Para tasks inter
 ver `backend/TODO.md` (esqueleto completo) e `frontend/TODO.md` (8 rotas no ar, faltam
 onboarding, login e a confirmação de sinal).
 
+## Por onde começar (revisto em 28/08, fim do dia)
+
+1. **R3 — curadoria a pé.** É seu, e é o gargalo. Dois lugares em República hoje (Bar do China e
+   Tokyo); a meta são 10 a 15. Nada que se construa substitui isso.
+2. **R7 — deploy.** É o que mais dói agora: o app só existe nesta máquina, e o dia inteiro dependeu
+   de túnel — três quedas e quatro URLs diferentes. Precisa de contas suas. O detalhe que decide o
+   provedor é o **PostGIS**, que nem todo Postgres gerenciado entrega.
+3. **Decidir o R9** — como um estabelecimento é cadastrado. Vira urgente no minuto em que uma
+   conversa der certo, e decidir sob pressão é pior.
+4. **Item 17 — expor `sinais_recentes`.** O hi-fi desenhou "6 sinalizaram nas últimas 2h" e a
+   contagem já é calculada; falta devolver. É o que torna o "Tô indo" do curador visível para quem
+   lê — e responde a "para que serve esse botão".
+5. **Item 31 — frescor do lugar no `/mapa`.** A ficha já mostra; o mapa não. Com República tendo
+   poucos rolês e vários lugares, é o que faz o mapa não parecer apagado.
+
+Depois disso, o bloco de decisões 40–44, que só se resolvem juntas.
+
 ## Roteiro até a primeira conversa com um estabelecimento
 
 Plano ativo. O objetivo não é terminar o app — é ter algo palpável para mostrar a um dono de casa,
@@ -145,6 +162,44 @@ não cobre, e porque vários desses achados são o tipo de coisa que se repete s
       operacional, que imagens enxutas não têm — seria surpresa no deploy do R7.
 - [x] **Procedimento de teste em celular documentado** (`f787eb5`): túnel `cloudflared`,
       `allowedDevOrigins`, e o que funciona e o que não funciona por ele.
+
+
+### A tarde de 28/08 — a ficha do lugar e o que ela puxou
+
+O pedido foi "uma tela de estabelecimento com alguns campos". O que apareceu no caminho foi que
+**não havia tela de lugar nenhuma**: só `/role/[id]`, então um lugar sem rolê hoje era inalcançável
+na interface — justamente o degrau de baixo da escada do `conceito.md`.
+
+- [x] **`/lugar/[id]`, a ficha da casa**, nas duas visualizações, com foto em primeiro plano e o
+      bloco de cor do design como alternativa. O nome do lugar virou link no detalhe do rolê, no
+      caderninho e na gaveta do mapa; o "Sem rolê hoje", que era um `span` morto, virou a porta
+      para ela.
+- [x] **Migrations 0004, 0005 e 0006** — a ficha: descrição, instagram, preço da longneck com a
+      data em que foi visto, programação da semana e funcionamento estruturado em faixas.
+- [x] **Preço nunca aparece sozinho.** Vem com "visto em 28/08": um número sem idade vira promessa
+      que a casa não pode cumprir. O servidor carimba, e corrigir recarimba.
+- [x] **Funcionamento virou dado, não texto** — botões de dia e roleta de hora. Eu tinha defendido
+      o texto livre olhando só o custo de manutenção; a estrutura devolve **"esta casa está aberta
+      agora?"**, que é a pergunta do produto. Inclui o caso que erra fácil: às 00h30 de sábado quem
+      está aberto é a faixa de **sexta** que atravessa a meia-noite.
+- [x] **Programação separada do rolê.** "Toda semana" é o que a casa costuma ter, declarado; rolê é
+      o que alguém foi ver hoje, verificado. A tela diz isso — mesma fronteira do ADR-008.
+- [x] **Balão no pin do mapa** levando à ficha. O pin era um ponto colorido sem nome, e na home e
+      no detalhe do rolê, que não têm gaveta, não levava a lugar nenhum.
+- [x] **`GET /salvos` enriquecido** (item 16) — e não por desempenho: a tela resolvia "tem rolê
+      hoje?" pelo `GET /mapa`, que é filtrado por bairro, e dizia "sem rolê hoje" para lugar salvo
+      de outro recorte **mesmo tendo rolê**.
+- [x] **Conta comum conseguia salvar e mais nada.** Comentar estava trancado dentro da confirmação
+      de sinalização — que exige um papel que ela não tem. A única contribuição permitida era
+      inalcançável.
+- [x] **O "Tô indo" cinza saiu.** CTA primário desabilitado por regra de negócio lia como app
+      quebrado. E o texto que o substituiu foi reescrito: falava da fragilidade do app, que é
+      conversa de bastidor.
+- [x] **ADR-008 e ADR-009 propostos** — o estabelecimento publicando com atribuição, e o sinal de
+      presença verificado por proximidade. Os dois esperam a conversa.
+- [x] **Corrigir lugar** cobre a ficha inteira, com rótulo em cada campo: a primeira versão eram
+      sete caixas de texto sem nome, e o formulário abre com tudo preenchido, então o placeholder
+      já tinha sumido.
 
 ## Correções críticas
 

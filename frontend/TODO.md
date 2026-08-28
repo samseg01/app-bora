@@ -128,7 +128,10 @@ Fatia que prova a tese com dado real. Consome só rotas públicas — nenhuma mu
        em `../docs/plano-frontend.md`.
 - [x] 22. **`lib/bairros.ts` + guarda de rota.** Feito com cookie (ver item 20). `bairro-servidor.ts`
        lê no servidor e valida contra a lista — cookie é entrada do usuário.
-- [ ] 23. **Tela `2h` — Perfil, parcial.** Avatar, "Você", stats, bloco "meu bairro" com "trocar",
+- [x] 23. **Tela `2h` — Perfil.** Feita e com dado real: nome e data de cadastro vêm de
+       `GET /auth/me`, que passou a existir, e o avatar usa `components/ui/avatar.tsx`, cuja cor
+       deriva do nome. "Rolês que você foi" segue como travessão, não zero — zero seria afirmação.
+       Enunciado original: Avatar, "Você", stats, bloco "meu bairro" com "trocar",
        bloco de privacidade e card "para donos de casa". **Nome e "desde agosto" ficam de fora até
        existir `GET /auth/me`** (item 18 de `../TODO.md`); "rolês que você foi" não tem rota e sai
        do escopo. O toggle "Meus sinais são anônimos" vira **texto informativo, não controle** — um
@@ -221,8 +224,10 @@ segue o hi-fi.
 - [x] X3b. **Rota `/conexoes/convite`** nas duas visualizações, com a lista do que a pessoa passa
       **e não passa** a ver. O link em si fica pendente do backend — renderizar um link falso e
       deixar copiar seria pior que mostrar o estado pendente.
-- [ ] X4. **Ligar o botão "Tô indo" do `2d`.** Ele já existe e está desabilitado com a explicação
-      de que sinalizar é restrito a curadores (`views/*/role.tsx`). Para usuário comum ele passa a
+- [ ] X4. **"Tô indo" para usuário comum, como check-in visível às conexões.** Premissa
+      atualizada em 28/08: o botão **não é mais um CTA desabilitado** — para papel comum a tela diz
+      a regra em palavras e oferece "contar como está", que é a ação que essa conta tem. O que
+      falta é o resto: para usuário comum ele passa a
       significar check-in visível às conexões. **Atualizar também o copy** "Ninguém vê seu nome",
       que deixa de ser verdade como está escrito (item 23 de `../TODO.md`).
 - [ ] X5. **Tela `2e` — confirmação de check-in.** Já está desenhada no hi-fi e nunca foi
