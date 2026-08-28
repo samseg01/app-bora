@@ -26,8 +26,34 @@ export function LugarFicha({
 }) {
   const preco = lugar.preco_longneck ? Number(lugar.preco_longneck) : null;
 
+  const foto = lugar.fotos?.[0];
+
   return (
-    <div className="flex flex-col gap-5 px-5.5 pt-8 pb-8 lg:px-8">
+    <div className="flex flex-col">
+      {/* Primeiro plano: a foto que o curador tirou no lugar. Sem foto, o bloco de cor do
+          design — que nunca foi provisório, é a escolha visual do hi-fi enquanto não há
+          foto de campo. O degradê vem do nome, então a mesma casa tem sempre a mesma cor.
+
+          `<img>` e não `next/image` de propósito: a URL é arbitrária (hoje colada pelo
+          curador, amanhã vinda do nosso armazenamento), e `remotePatterns` exigiria
+          declarar cada host antes de saber quais serão. */}
+      <div className="relative h-56 w-full shrink-0 overflow-hidden lg:h-72">
+        {foto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={foto}
+            alt={`Foto de ${lugar.nome}`}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="h-full w-full bg-gradient-to-br from-magenta via-violet to-plum" />
+        )}
+        {/* O degradê para baixo costura a imagem com o fundo da tela e mantém o título
+            legível sobre qualquer foto. */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-surface to-transparent" />
+      </div>
+
+      <div className="-mt-6 flex flex-col gap-5 px-5.5 pb-8 lg:px-8">
       <div>
         <div className="rotulo text-amber">{lugar.categoria}</div>
         <h1 className="mt-2 font-display text-[34px] leading-none uppercase lg:text-[42px]">
@@ -134,6 +160,7 @@ export function LugarFicha({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

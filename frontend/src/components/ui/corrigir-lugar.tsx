@@ -6,17 +6,27 @@ import { useSessao } from "@/lib/auth";
 import type { LugarPublic } from "@/lib/types";
 
 /**
- * Corrigir endereço e coordenada de um lugar já cadastrado.
+ * Corrigir a ficha de um lugar já cadastrado.
  *
- * O `PATCH /curador/lugares/{id}` existe no backend desde o esqueleto e nunca teve
- * formulário. Na prática isso significava que um erro cometido na calçada — coordenada
- * colada da quadra errada, endereço em branco — só se arrumava com SQL. Numa rotina cuja
- * premissa é cadastrar em campo, com pressa e sinal ruim, errar é o caso normal, não a
- * exceção.
+ * Nasceu cobrindo só endereço e coordenada, e isso virou um buraco na mesma tarde: a
+ * migration 0004 acrescentou descrição, instagram, horário, preço e a foto — e os lugares
+ * cadastrados antes dela não tinham como receber nada disso. Cadastrar de novo para
+ * preencher um campo perderia os salvos e comentários já ligados àquele lugar.
  *
- * Só endereço e coordenada: nome e categoria erradas são cadastro errado, e aí o certo é
- * tirar do ar e refazer. Estes dois são os que se descobre depois, olhando o pin no mapa.
+ * Fora daqui de propósito: nome e categoria. Errar esses dois é cadastro errado, e o
+ * certo é tirar do ar e refazer — não emendar.
  */
+const CAMPO =
+  "w-full rounded-xl border border-white/10 bg-sunken px-3 py-2.5 text-[13px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
+
+function soIdentificador(entrada: string): string {
+  return entrada
+    .trim()
+    .replace(/^@/, "")
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//, "")
+    .replace(/\/$/, "");
+}
+
 export function CorrigirLugar({
   lugar,
   aoSalvar,
@@ -27,6 +37,11 @@ export function CorrigirLugar({
   const sessao = useSessao();
   const [aberto, setAberto] = useState(false);
   const [endereco, setEndereco] = useState(lugar.endereco ?? "");
+  const [descricao, setDescricao] = useState(lugar.descricao ?? "");
+  const [instagram, setInstagram] = useState(lugar.instagram ?? "");
+  const [horario, setHorario] = useState(lugar.horario_funcionamento ?? "");
+  const [preco, setPreco] = useState(lugar.preco_longneck ?? "");
+  const [foto, setFoto] = useState(lugar.fotos?.[0] ?? "");
   const [coords, setCoords] = useState(`${lugar.lat}, ${lugar.lng}`);
   const [erro, setErro] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
@@ -38,11 +53,21 @@ export function CorrigirLugar({
       setErro("Cole as coordenadas do Google Maps: -23.5441, -46.6396");
       return;
     }
+    const valor = preco.toString().trim().replace(",", ".");
+    if (valor && !Number.isFinite(Number(valor))) {
+      setErro("O preço precisa ser um número: 12,00");
+      return;
+    }
     setSalvando(true);
     setErro(null);
     try {
       const atualizado = await api.atualizarLugar(sessao.token, lugar.id, {
         endereco: endereco.trim() || null,
+        descricao: descricao.trim() || null,
+        instagram: soIdentificador(instagram) || null,
+        horario_funcionamento: horario.trim() || null,
+        preco_longneck: valor ? Number(valor) : null,
+        fotos: foto.trim() ? [foto.trim()] : null,
         lat,
         lng,
       });
@@ -67,20 +92,56 @@ export function CorrigirLugar({
     );
   }
 
-  const campo =
-    "w-full rounded-xl border border-white/10 bg-sunken px-3 py-2.5 text-[13px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
-
   return (
     <div className="mt-3 flex w-full flex-col gap-2 border-t border-white/8 pt-3">
-      <input
-        className={campo}
-        value={endereco}
-        onChange={(e) => setEndereco(e.target.value)}
-        placeholder="endereço (opcional)"
-        maxLength={255}
+      <textarea
+        rows={3}
+        className={`${CAMPO} resize-none leading-relaxed`}
+        value={descricao}
+        onChange={(e) => setDescricao(e.target.value)}
+        placeholder="o que é a casa"
+        maxLength={2000}
       />
       <input
-        className={`${campo} font-mono`}
+        className={CAMPO}
+        value={endereco}
+        onChange={(e) => setEndereco(e.target.value)}
+        placeholder="endereço"
+        maxLength={255}
+      />
+      <div className="flex gap-2">
+        <input
+          className={`${CAMPO} flex-1`}
+          value={horario}
+          onChange={(e) => setHorario(e.target.value)}
+          placeholder="ter a dom, 18h–02h"
+          maxLength={255}
+        />
+        <input
+          className={`${CAMPO} w-24 shrink-0`}
+          value={preco}
+          onChange={(e) => setPreco(e.target.value)}
+          placeholder="12,00"
+          inputMode="decimal"
+        />
+      </div>
+      <input
+        className={CAMPO}
+        value={instagram}
+        onChange={(e) => setInstagram(e.target.value)}
+        placeholder="@perfil"
+        maxLength={80}
+      />
+      {/* URL enquanto não há armazenamento de arquivo (item 45 do TODO). Quando existir,
+          o campo continua o mesmo — só muda de onde a URL vem. */}
+      <input
+        className={CAMPO}
+        value={foto}
+        onChange={(e) => setFoto(e.target.value)}
+        placeholder="url da foto do lugar"
+      />
+      <input
+        className={`${CAMPO} font-mono`}
         value={coords}
         onChange={(e) => setCoords(e.target.value)}
         placeholder="-23.5441, -46.6396"

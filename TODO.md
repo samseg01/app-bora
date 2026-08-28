@@ -320,7 +320,10 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        do dia (escrita num GET, que é feio mas honesto), ou aceitar o cron e revisar o ADR-004.
        Decidir junto com o 42: se o dono publica (ADR-008), talvez a recorrência seja só um
        formulário que ele preenche uma vez, e o problema desaparece.
-- [ ] 45. **Foto do lugar, tirada pelo curador em campo.** Decidido em 28/08 que a origem é a foto
+- [~] 45. **Foto do lugar, tirada pelo curador em campo.** A ficha já **exibe** a foto em primeiro
+       plano (`views/lugar-ficha.tsx`, lendo `fotos[0]`), e o formulário de correção aceita a URL.
+       Sem foto, cai no bloco de cor do design — que não é provisório, é a escolha visual do
+       hi-fi. Falta o **upload**, e é aí que o impedimento continua de pé. Enunciado original: Decidido em 28/08 que a origem é a foto
        do curador — coerente com a tese e sem problema de direito de imagem. **Impedimento: não
        existe armazenamento de arquivo em lugar nenhum do projeto**, nem local nem em nuvem.
        `Lugar.fotos` existe como lista de URLs desde a migration inicial, nunca foi usada e nunca

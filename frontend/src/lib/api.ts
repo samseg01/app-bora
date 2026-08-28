@@ -200,6 +200,8 @@ export const api = {
       instagram?: string | null;
       horario_funcionamento?: string | null;
       preco_longneck?: number | null;
+      /** Lista de URLs. A primeira é a que a ficha usa como imagem de topo. */
+      fotos?: string[] | null;
       lat?: number;
       lng?: number;
     },
