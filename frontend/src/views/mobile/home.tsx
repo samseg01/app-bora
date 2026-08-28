@@ -21,13 +21,16 @@ export function HomeMobile({
 }) {
   return (
     <MobileShell>
-      <header className="flex items-center justify-between px-5.5 pt-9 pb-3">
+      {/* O hi-fi tinha um avatar no canto direito daqui. Saiu: era um `div` decorativo,
+          sem link e sem dono — a tela não sabe quem está olhando, e um avatar genérico é
+          exatamente o tipo de enfeite que finge dado. A barra inferior já leva ao Perfil,
+          então nem navegação ele acrescentava. */}
+      <header className="flex items-center px-5.5 pt-9 pb-3">
         <div className="flex flex-col gap-0.5">
           <span className="rotulo text-muted-2">você está em</span>
           {/* O nome do bairro é o próprio seletor — trocar não tira ninguém da tela. */}
           <SeletorBairro atual={bairro} />
         </div>
-        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-magenta to-amber" />
       </header>
 
       <div className="flex items-baseline gap-2.5 px-5.5 pt-2 pb-3.5">

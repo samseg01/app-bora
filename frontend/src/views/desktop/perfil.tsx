@@ -1,11 +1,13 @@
 import Link from "next/link";
+import { Avatar } from "@/components/ui/avatar";
 import { AtalhoPainel } from "@/components/ui/atalho-painel";
 import { SairDaConta } from "@/components/ui/sair-da-conta";
 import { DesktopShell } from "./shell";
 
 /**
- * Tela 2h em tela grande. Nome e "desde agosto" ficam de fora até existir
- * `GET /auth/me` (../TODO.md item 18); "rolês que você foi" não tem rota nenhuma.
+ * Tela 2h em tela grande. Nome e data de cadastro vêm de `GET /auth/me`, que passou a
+ * existir; "rolês que você foi" continua sem rota nenhuma e por isso aparece como travessão,
+ * não como zero — zero seria uma afirmação, e não sabemos.
  *
  * O toggle "meus sinais são anônimos" do design virou texto: não há campo para
  * desligar, e as sinalizações já são anônimas de fato — nenhum endpoint expõe o
@@ -26,7 +28,7 @@ export function PerfilDesktop({
     <DesktopShell>
       <section className="min-w-0 flex-1 px-10 py-8">
         <div className="flex items-center gap-4.5">
-          <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-br from-magenta to-amber" />
+          <Avatar nome={nome} tamanho={64} />
           <div>
             <h1 className="font-display text-[34px] leading-none uppercase">{nome}</h1>
             <p className="mt-1.5 text-[12.5px] text-muted-2">{bairro} · desde {desde}</p>

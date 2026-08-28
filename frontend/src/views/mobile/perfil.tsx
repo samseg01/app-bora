@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Avatar } from "@/components/ui/avatar";
 import { AtalhoPainel } from "@/components/ui/atalho-painel";
 import { SairDaConta } from "@/components/ui/sair-da-conta";
 import { MobileShell } from "./shell";
@@ -18,7 +19,7 @@ export function PerfilMobile({
   return (
     <MobileShell>
       <div className="flex items-center gap-4 px-5.5 pt-9.5">
-        <div className="h-16 w-16 shrink-0 rounded-full bg-gradient-to-br from-magenta to-amber" />
+        <Avatar nome={nome} tamanho={64} />
         <div>
           <div className="font-display text-[26px] leading-none uppercase">{nome}</div>
           <div className="mt-1.5 text-[12.5px] text-muted-2">{bairro} · desde {desde}</div>
