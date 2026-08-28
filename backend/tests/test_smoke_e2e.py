@@ -57,12 +57,22 @@ async def test_fluxo_completo_emitir_descobrir_sinalizar_salvar_comentar(
     pin = next(p for p in resp.json() if p["lugar"]["id"] == lugar_id)
     assert pin["role_ativo"]["id"] == role_id
 
-    # 5. 3x sinalização -> frescor vira "live" (o núcleo técnico da aposta do produto)
-    for _ in range(3):
+    # 5. 3 PESSOAS sinalizando -> frescor vira "live" (o núcleo técnico da aposta do produto).
+    #    Este teste antes mandava o mesmo curador sinalizar 3 vezes e exigia "live": ele
+    #    documentava a falha em vez de pegá-la. Três toques de um dedo só não são três
+    #    pessoas, e "Bombando agora" precisa significar gente.
+    sinalizadores = [curador]
+    for i in (2, 3):
+        sinalizadores.append(
+            await criar_usuario(
+                f"Curador E2E {i}", f"curador-e2e-{i}@exemplo.com", papel=PapelUsuario.CURADOR
+            )
+        )
+    for quem in sinalizadores:
         resp = await client.post(
             "/api/v1/sinalizacoes",
             json={"role_id": role_id, "tipo": "presenca"},
-            headers=auth_headers(curador),
+            headers=auth_headers(quem),
         )
         assert resp.status_code == 201
 

@@ -224,6 +224,11 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        que o dono realmente faz. Exige agregação por período — e provavelmente é o primeiro
        pedido dele depois da conversa.
 
+- [ ] 37. **Decidir se o painel do dono deve contar pessoas ou eventos.** Hoje
+       `services/engajamento.py` conta linhas de `Sinalizacao` e a tela rotula como "sinais de
+       presença", o que é coerente. Mas a pergunta que o dono faz é "quantas pessoas", e
+       provavelmente as duas respostas interessam. Anda junto com o item 36 (janela de tempo).
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`

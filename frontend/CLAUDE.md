@@ -33,6 +33,10 @@ render é impuro e num efeito com `setState` o React Compiler recusa.
 Falta o passo 2 do onboarding (`2b`, gostos), adiado de propósito. O login e a confirmação de
 sinalização (`2e`) já existem. Detalhe em `TODO.md`.
 
+**Sinalizar de novo renova, não empilha**, e cancelar apaga todos os sinais ativos da pessoa
+naquele rolê — foi o que fez o "Cancelar meu sinal" voltar a funcionar: ele apagava uma linha
+e a tela recarregava e achava a seguinte.
+
 **O "Tá marcado" é rehidratado do servidor**, não guardado em estado de componente: ao montar,
 `components/ui/acao-sinalizar.tsx` chama `GET /sinalizacoes/minhas` e recupera o sinal ativo. Sem
 isso, sair do detalhe e voltar oferecia "Tô indo" a quem já tinha marcado — dizendo que o sinal não

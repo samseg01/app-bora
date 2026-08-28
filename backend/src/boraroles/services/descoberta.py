@@ -1,12 +1,19 @@
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from boraroles.config import get_settings
 from boraroles.db.models import Lugar, Role, Sinalizacao
 from boraroles.services.frescor import FrescorEstado, classificar_frescor
+
+# Conta PESSOAS, não linhas. `classificar_frescor` acende "live" a partir de 3 sinais, e
+# contando linhas uma pessoa sozinha tocando "Tô indo" três vezes acendia o "Bombando
+# agora" — a promessa central do app forjável com um dedo. Nada impede alguém de
+# sinalizar o mesmo rolê de novo mais tarde ("continuo aqui"), e isso é legítimo; o que
+# não pode é a segunda vez valer como segunda pessoa.
+_pessoas = func.count(distinct(Sinalizacao.usuario_id))
 
 
 class RoleComFrescor:
@@ -35,8 +42,8 @@ async def listar_descoberta(
     inicio_hoje = agora.replace(hour=0, minute=0, second=0, microsecond=0)
     fim_hoje = inicio_hoje + timedelta(days=1)
 
-    sinais_recentes = func.count(Sinalizacao.id).filter(Sinalizacao.timestamp >= live_since)
-    sinais_medios = func.count(Sinalizacao.id).filter(Sinalizacao.timestamp >= warm_since)
+    sinais_recentes = _pessoas.filter(Sinalizacao.timestamp >= live_since)
+    sinais_medios = _pessoas.filter(Sinalizacao.timestamp >= warm_since)
 
     stmt = (
         select(Role, Lugar.nome, Lugar.bairro, sinais_recentes, sinais_medios)
@@ -66,8 +73,8 @@ async def frescor_de_role(
     live_since, warm_since = _janelas(agora)
 
     stmt = select(
-        func.count(Sinalizacao.id).filter(Sinalizacao.timestamp >= live_since),
-        func.count(Sinalizacao.id).filter(Sinalizacao.timestamp >= warm_since),
+        _pessoas.filter(Sinalizacao.timestamp >= live_since),
+        _pessoas.filter(Sinalizacao.timestamp >= warm_since),
     ).where(Sinalizacao.role_id == role.id, Sinalizacao.timestamp >= warm_since)
     recentes, medios = (await db.execute(stmt)).one()
     return classificar_frescor(recentes, medios, role.created_at, agora)
@@ -83,8 +90,8 @@ async def frescor_de_lugar(
     live_since, warm_since = _janelas(agora)
 
     stmt = select(
-        func.count(Sinalizacao.id).filter(Sinalizacao.timestamp >= live_since),
-        func.count(Sinalizacao.id).filter(Sinalizacao.timestamp >= warm_since),
+        _pessoas.filter(Sinalizacao.timestamp >= live_since),
+        _pessoas.filter(Sinalizacao.timestamp >= warm_since),
     ).where(Sinalizacao.lugar_id == lugar.id, Sinalizacao.timestamp >= warm_since)
     recentes, medios = (await db.execute(stmt)).one()
     return classificar_frescor(recentes, medios, lugar.created_at, agora)

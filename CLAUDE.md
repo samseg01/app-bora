@@ -130,7 +130,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: painel do curador (CRUD lugar/role) | ✅ | API pronta; UI não existe |
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | inclui `GET /estabelecimento/meus`, que diz ao cliente qual casa é dele |
 | Frontend: painel do estabelecimento (`/estabelecimento`) | ✅ | terceira superfície do produto; sem design prévio — não havia no hi-fi |
-| Backend: serviço de frescor | ✅ | ADR-0001 — a aposta técnica central do produto |
+| Backend: serviço de frescor | ✅ | ADR-0001; conta **pessoas distintas**, não linhas (ver issues) |
 | Backend: testes (34, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: criação de `Estabelecimento` via API | ❌ | não existe endpoint — só leitura pro dono; hoje só dá pra inserir direto no banco |
@@ -226,6 +226,16 @@ contradisserem, o ADR ganha.
   banco vazio (situação de hoje) não há design pra seguir.
 - **Não há seed de desenvolvimento no backend** — popular dados exige criar usuário, promover a
   curador via `scripts/promote_role.py` e cadastrar lugares/rolês na mão pelo painel do curador.
+- **Frescor conta gente, não toques.** `services/descoberta.py` usa
+  `count(distinct usuario_id)` e `POST /sinalizacoes` renova o sinal da pessoa em vez de
+  empilhar outra linha. Até 28/08 contava linhas: como `live` exige 3 sinais, uma pessoa
+  sozinha tocando "Tô indo" três vezes acendia o "Bombando agora" — a promessa central do
+  app forjável com um dedo. O smoke test da época fazia exatamente isso e passava, ou seja,
+  documentava a falha. Qualquer contagem nova de sinal precisa decidir explicitamente se é
+  de eventos ou de pessoas.
+- **`services/engajamento.py` ainda conta linhas**, de propósito: o painel do dono rotula o
+  número como "sinais de presença" (eventos, somados desde sempre), e a mesma pessoa voltando
+  em noites diferentes é informação real para ele. Não confundir com a contagem de frescor.
 - **Gotcha de enum no backend**: qualquer novo enum de coluna precisa passar por `_pg_enum()` em
   `db/models.py`, não por `sa.Enum(...)` direto — sem isso, o SQLAlchemy grava `.name` em vez de
   `.value` e quebra em runtime, não em teste de schema.

@@ -48,6 +48,7 @@ backend/
 │   └── services/
 │       ├── frescor.py                # classificar_frescor() — a aposta técnica central (ADR-001)
 │       ├── descoberta.py             # queries agregadas: listar_descoberta, frescor_de_role, frescor_de_lugar
+│       │                             # conta PESSOAS (count distinct usuario_id), não linhas — ver nota abaixo
 │       ├── lugares.py, roles.py      # serializadores ORM -> schema (evitam duplicar Geometry->lat/lng em 3 rotas)
 │       └── engajamento.py            # agregação pro painel do estabelecimento
 └── tests/
@@ -91,6 +92,18 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
 | Criação de `Estabelecimento` via API | ❌ não existe endpoint ainda — hoje só é possível inserir direto no banco; ver `TODO.md` |
+
+## Nota sobre a contagem de frescor
+
+`services/descoberta.py` conta `count(distinct Sinalizacao.usuario_id)`, e
+`POST /sinalizacoes` **renova** o sinal da pessoa naquele alvo em vez de inserir outra linha.
+Até 28/08/2026 contava linhas: como `live` exige 3 sinais, uma pessoa sozinha tocando
+"Tô indo" três vezes acendia o "Bombando agora". O smoke test fazia exatamente isso e
+passava — documentava a falha em vez de pegá-la. `DELETE /sinalizacoes/{id}` também apaga os
+outros sinais ativos da mesma pessoa no mesmo alvo, senão cancelar não cancelava nada.
+
+`services/engajamento.py` continua contando linhas de propósito: o painel do dono fala de
+eventos ("sinais de presença", somados desde sempre), não de pessoas únicas.
 
 ## Rodar os testes
 

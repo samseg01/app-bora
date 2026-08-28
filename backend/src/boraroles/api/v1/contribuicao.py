@@ -58,6 +58,37 @@ async def listar_salvos(usuario: CurrentUser, db: DbSession) -> list[Salvo]:
 async def sinalizar(
     body: SinalizacaoCreate, usuario: SinalizadorUser, db: DbSession
 ) -> Sinalizacao:
+    """Cria **ou renova** o sinal desta pessoa neste alvo.
+
+    Renova, e não empilha, porque uma segunda linha da mesma pessoa não é uma segunda
+    pessoa. Antes desta regra, três toques em "Tô indo" da mesma conta somavam três
+    sinais e acendiam o "Bombando agora" — a promessa central do app forjável com um
+    dedo. `services/descoberta.py` também passou a contar pessoas distintas; as duas
+    coisas são o mesmo conserto por dois lados, e a contagem distinta é a que vale
+    mesmo para as linhas duplicadas que já existiam.
+
+    Sinalizar de novo mais tarde é legítimo ("continuo aqui") e por isso renova o
+    `timestamp`: o sinal volta a valer pela janela inteira, em vez de expirar no
+    horário do primeiro toque.
+    """
+    corte = datetime.now(UTC) - timedelta(minutes=get_settings().frescor_warm_window_minutes)
+    alvo = (
+        Sinalizacao.role_id == body.role_id
+        if body.role_id is not None
+        else Sinalizacao.lugar_id == body.lugar_id
+    )
+    existente = await db.scalar(
+        select(Sinalizacao)
+        .where(Sinalizacao.usuario_id == usuario.id, alvo, Sinalizacao.timestamp >= corte)
+        .order_by(Sinalizacao.timestamp.desc())
+    )
+    if existente is not None:
+        existente.timestamp = datetime.now(UTC)
+        existente.tipo = body.tipo
+        await db.commit()
+        await db.refresh(existente)
+        return existente
+
     sinalizacao = Sinalizacao(
         usuario_id=usuario.id, role_id=body.role_id, lugar_id=body.lugar_id, tipo=body.tipo
     )
@@ -107,11 +138,37 @@ async def cancelar_sinalizacao(
 
     Note que aqui basta estar autenticado, sem a restrição de papel do POST: quem
     conseguiu criar pode desfazer, e negar isso prenderia a pessoa num sinal errado.
+
+    Apaga também os **outros sinais ainda ativos da mesma pessoa no mesmo alvo**.
+    Cancelar quer dizer "não vou": deixar de pé outra linha sua dizendo que vai seria
+    falso, e era o que fazia o "Cancelar meu sinal" parecer não funcionar — apagava uma
+    linha, a tela recarregava e achava a seguinte. Linhas já fora da janela ficam: elas
+    não contam mais para nada e são histórico.
     """
     sinalizacao = await db.get(Sinalizacao, sinalizacao_id)
     if sinalizacao is None or sinalizacao.usuario_id != usuario.id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Não encontrado")
-    await db.delete(sinalizacao)
+
+    corte = datetime.now(UTC) - timedelta(minutes=get_settings().frescor_warm_window_minutes)
+    alvo = (
+        Sinalizacao.role_id == sinalizacao.role_id
+        if sinalizacao.role_id is not None
+        else Sinalizacao.lugar_id == sinalizacao.lugar_id
+    )
+    irmaos = (
+        await db.execute(
+            select(Sinalizacao).where(
+                Sinalizacao.usuario_id == usuario.id,
+                alvo,
+                Sinalizacao.timestamp >= corte,
+            )
+        )
+    ).scalars().all()
+
+    for irmao in irmaos:
+        await db.delete(irmao)
+    if sinalizacao not in irmaos:
+        await db.delete(sinalizacao)
     await db.commit()
 
 

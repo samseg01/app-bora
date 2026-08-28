@@ -91,3 +91,87 @@ async def test_meus_sinais_ignora_o_que_saiu_da_janela(
 async def test_meus_sinais_exige_autenticacao(client: AsyncClient) -> None:
     resp = await client.get("/api/v1/sinalizacoes/minhas")
     assert resp.status_code == 401
+
+
+async def test_sinalizar_duas_vezes_renova_em_vez_de_empilhar(
+    client: AsyncClient,
+    criar_usuario: UsuarioFactory,
+    criar_lugar: LugarFactory,
+    criar_role: RoleFactory,
+) -> None:
+    """Uma segunda linha da mesma pessoa não é uma segunda pessoa."""
+    curador = await criar_usuario(
+        "Curador", "curador.renova@exemplo.com", papel=PapelUsuario.CURADOR
+    )
+    lugar = await criar_lugar(curador)
+    role = await criar_role(lugar, curador)
+    corpo = {"role_id": str(role.id), "tipo": "presenca"}
+
+    um = await client.post("/api/v1/sinalizacoes", json=corpo, headers=auth_headers(curador))
+    dois = await client.post("/api/v1/sinalizacoes", json=corpo, headers=auth_headers(curador))
+    assert um.status_code == 201 and dois.status_code == 201
+    assert um.json()["id"] == dois.json()["id"]
+
+    resp = await client.get("/api/v1/sinalizacoes/minhas", headers=auth_headers(curador))
+    assert len(resp.json()) == 1
+
+
+async def test_tres_toques_de_uma_pessoa_nao_acendem_o_live(
+    client: AsyncClient,
+    criar_usuario: UsuarioFactory,
+    criar_lugar: LugarFactory,
+    criar_role: RoleFactory,
+) -> None:
+    """A regressão que motivou tudo: `live` exige 3 sinais, e contando linhas um dedo só
+    bastava para acender "Bombando agora" — a promessa central do produto."""
+    curador = await criar_usuario(
+        "Curador", "curador.live@exemplo.com", papel=PapelUsuario.CURADOR
+    )
+    lugar = await criar_lugar(curador, bairro="Bairro do Live")
+    role = await criar_role(lugar, curador)
+    corpo = {"role_id": str(role.id), "tipo": "presenca"}
+
+    for _ in range(3):
+        await client.post("/api/v1/sinalizacoes", json=corpo, headers=auth_headers(curador))
+
+    resp = await client.get(f"/api/v1/roles/{role.id}")
+    assert resp.status_code == 200
+    assert resp.json()["frescor"] == "warm"
+
+
+async def test_cancelar_apaga_os_sinais_ativos_da_pessoa_no_alvo(
+    client: AsyncClient,
+    criar_usuario: UsuarioFactory,
+    criar_lugar: LugarFactory,
+    criar_role: RoleFactory,
+    db_session,
+) -> None:
+    """Cancelar quer dizer "não vou" — não pode sobrar linha sua dizendo que vai."""
+    curador = await criar_usuario(
+        "Curador", "curador.cancela@exemplo.com", papel=PapelUsuario.CURADOR
+    )
+    lugar = await criar_lugar(curador)
+    role = await criar_role(lugar, curador)
+
+    # Duplicatas como as que existiam antes da regra de renovação.
+    agora = datetime.now(UTC)
+    for minutos in (1, 20, 40):
+        db_session.add(
+            Sinalizacao(
+                usuario_id=curador.id,
+                role_id=role.id,
+                tipo=TipoSinalizacao.PRESENCA,
+                timestamp=agora - timedelta(minutes=minutos),
+            )
+        )
+    await db_session.flush()
+
+    antes = await client.get("/api/v1/sinalizacoes/minhas", headers=auth_headers(curador))
+    assert len(antes.json()) == 3
+
+    alvo = antes.json()[0]["id"]
+    apagou = await client.delete(f"/api/v1/sinalizacoes/{alvo}", headers=auth_headers(curador))
+    assert apagou.status_code == 204
+
+    depois = await client.get("/api/v1/sinalizacoes/minhas", headers=auth_headers(curador))
+    assert depois.json() == []
