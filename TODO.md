@@ -213,13 +213,11 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        Show ao vivo — tudo do topo. Boteco, oferta e feira precisam ser cidadãos de primeira classe,
        não exceção.
 
-- [ ] 34. **A janela de "hoje" da descoberta é UTC, não São Paulo.** `listar_descoberta` faz
-       `agora.replace(hour=0, ...)` sobre um datetime UTC, então o dia começa às 21h de SP do dia
-       anterior e termina às 21h de hoje. Um rolê que **começa às 21h ou depois** tem
-       `data_inicio >= fim_hoje` e cai fora do filtro — exatamente o horário em que a noite
-       acontece. Suspeita levantada em 28/08 e ainda **não confirmada com teste**: reproduzir
-       publicando um rolê às 21h e às 23h e ver se aparecem. Se confirmar, a janela deve ser
-       calculada em `America/Sao_Paulo` e só então convertida para UTC na consulta.
+- [x] 34. **A janela de "hoje" da descoberta era UTC, não São Paulo.** Confirmado com teste e
+       corrigido em 28/08. O dia ia das 21h de ontem às 21h de hoje no fuso local, então um rolê
+       que **começava às 21h** ficava fora do limite superior e sumia — para quem olhava às 20h
+       decidindo se saía, a noite inteira estava invisível. Agora `services/descoberta._dia_local`
+       calcula o dia em `settings.fuso_local` e converte para UTC; o banco segue todo em UTC.
 
 - [ ] 35. **Não há autocadastro de estabelecimento, e agora dá pra ver isso na tela.** Com o
        painel do dono no ar, a lacuna do R9 deixou de ser abstrata: uma conta de dono sem casa

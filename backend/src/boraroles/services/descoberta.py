@@ -1,5 +1,6 @@
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,6 +25,27 @@ class RoleComFrescor:
         self.frescor = frescor
 
 
+def _dia_local(agora: datetime) -> tuple[datetime, datetime]:
+    """Começo e fim de "hoje" no fuso do bairro, devolvidos em UTC.
+
+    O banco é todo UTC e continua sendo — o que precisa ser local é a pergunta "hoje".
+    Antes isto era `agora.replace(hour=0, ...)`, e como a rota chama com
+    `datetime.now(UTC)`, o dia ia das 21h de ontem às 21h de hoje em São Paulo. Efeito:
+    **um rolê que começava às 21h ficava fora do limite superior e sumia da descoberta**
+    — para alguém olhando às 20h, decidindo se sai, a noite inteira estava invisível.
+
+    O cálculo não pode depender do fuso do `datetime` recebido. Era essa dependência que
+    tornava o bug difícil de ver: com um `agora` já em São Paulo o `.replace` acertava a
+    meia-noite local por acidente, e o teste passava enquanto produção falhava. Por isso
+    converte-se explicitamente antes de qualquer coisa.
+    """
+    fuso = ZoneInfo(get_settings().fuso_local)
+    hoje = agora.astimezone(fuso).date()
+    inicio = datetime.combine(hoje, time.min, tzinfo=fuso)
+    fim = datetime.combine(hoje + timedelta(days=1), time.min, tzinfo=fuso)
+    return inicio.astimezone(UTC), fim.astimezone(UTC)
+
+
 def _janelas(agora: datetime) -> tuple[datetime, datetime]:
     settings = get_settings()
     live_since = agora - timedelta(minutes=settings.frescor_live_window_minutes)
@@ -39,8 +61,7 @@ async def listar_descoberta(
     popularidade: ver ADR sobre /descoberta não ser algorítmico."""
     agora = agora or datetime.now(UTC)
     live_since, warm_since = _janelas(agora)
-    inicio_hoje = agora.replace(hour=0, minute=0, second=0, microsecond=0)
-    fim_hoje = inicio_hoje + timedelta(days=1)
+    _, fim_hoje = _dia_local(agora)
 
     sinais_recentes = _pessoas.filter(Sinalizacao.timestamp >= live_since)
     sinais_medios = _pessoas.filter(Sinalizacao.timestamp >= warm_since)
@@ -101,8 +122,7 @@ async def role_ativo_de_lugar(
     db: AsyncSession, lugar_id: uuid.UUID, agora: datetime | None = None
 ) -> Role | None:
     agora = agora or datetime.now(UTC)
-    inicio_hoje = agora.replace(hour=0, minute=0, second=0, microsecond=0)
-    fim_hoje = inicio_hoje + timedelta(days=1)
+    _, fim_hoje = _dia_local(agora)
 
     stmt = (
         select(Role)

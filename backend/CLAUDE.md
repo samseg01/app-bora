@@ -88,11 +88,29 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Núcleo transversal (config, db/session, security, geo) | ✅ |
 | Auth + rotas API v1 | ✅ |
 | Serviço de frescor | ✅ |
-| Testes de integração + smoke E2E (39 testes) | ✅ |
+| Testes de integração + smoke E2E (42 testes) | ✅ |
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
 | Criação de `Estabelecimento` via API | ❌ não existe endpoint ainda — hoje só é possível inserir direto no banco; ver `TODO.md` |
+
+## Nota sobre a janela de "hoje"
+
+`/descoberta` e `role_ativo_de_lugar` respondem sobre **hoje**, e "hoje" é uma pergunta local.
+O banco é todo UTC e continua sendo; `services/descoberta._dia_local()` converte para
+`settings.fuso_local` (`America/Sao_Paulo`), recorta o dia lá e devolve os limites em UTC.
+
+Até 28/08/2026 era `agora.replace(hour=0, ...)` sobre um `datetime.now(UTC)`: o dia ia das 21h de
+ontem às 21h de hoje, e **um rolê começando às 21h caía fora do limite superior e sumia da
+descoberta** — o horário em que a noite começa, num app cuja tese é a noite de hoje.
+
+Cuidado ao testar: o cálculo não pode depender do fuso do `datetime` recebido. Um teste que passa
+`agora` já em horário de São Paulo acerta a meia-noite local por acidente e **passa mesmo com o
+bug presente** — foi o que aconteceu na primeira tentativa. Testes deste recorte precisam passar
+`agora` em UTC, como a rota faz. Ver `tests/test_janela_do_dia.py`.
+
+`tzdata` é dependência declarada de propósito: `zoneinfo` lê a base do sistema operacional, que
+imagens enxutas e Windows podem não ter, e a falta levanta `ZoneInfoNotFoundError` em runtime.
 
 ## Nota sobre a contagem de frescor
 

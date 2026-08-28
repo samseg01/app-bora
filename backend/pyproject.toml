@@ -17,6 +17,11 @@ dependencies = [
     "python-multipart>=0.0.32",
     "shapely>=2.1.2",
     "sqlalchemy>=2.0",
+    # A janela de "hoje" da descoberta é calculada em America/Sao_Paulo (services/descoberta.py).
+    # `zoneinfo` lê a base de fusos do sistema operacional, que imagens enxutas e Windows podem
+    # não ter — e a falta dela levanta ZoneInfoNotFoundError em runtime, derrubando /descoberta
+    # inteira. Declarar aqui tira a dependência do SO antes do deploy.
+    "tzdata>=2026.1",
     "uvicorn[standard]>=0.52.4",
 ]
 
