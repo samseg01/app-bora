@@ -65,6 +65,13 @@ export function MapaReal({
   const [erro, setErro] = useState<string | null>(null);
   /** Diagnóstico de desenvolvimento: o que o ResizeObserver mediu e em que fase estamos. */
   const [diag, setDiag] = useState("montando");
+  /**
+   * A sonda achou o canvas fora de sincronia com o container. Existe porque a pior
+   * falha deste componente é silenciosa: o mapa dispara `load`, se declara pronto e
+   * desenha num canvas de 400x300 fora da vista. Sem este sinal, "pronto" e "quebrado"
+   * são indistinguíveis olhando a tela.
+   */
+  const [suspeito, setSuspeito] = useState(false);
 
   // Guardados em ref para o efeito de inicialização não depender deles e reiniciar o
   // mapa a cada render. A sincronia vai num efeito próprio: escrever em ref durante o
@@ -151,6 +158,12 @@ export function MapaReal({
           const cont = container.current;
           const centro = mapa.current.getCenter();
           const r = raiz.current;
+          // O canvas é medido em pixels de dispositivo; a caixa, em CSS.
+          const dpr = window.devicePixelRatio || 1;
+          const alturaCaixa = cont?.clientHeight ?? 0;
+          if (alturaCaixa === 0 || Math.abs(c.height / dpr - alturaCaixa) > 8) {
+            setSuspeito(true);
+          }
           const resumo =
             `canvas ${c.width}x${c.height} · caixa ${cont?.clientWidth}x${cont?.clientHeight} · ` +
             `raiz ${r?.clientWidth}x${r?.clientHeight} · ` +
@@ -327,11 +340,12 @@ export function MapaReal({
 
       {children}
 
-      {/* Em dev o diagnóstico aparece SEMPRE, não só quando `pronto` é falso: a falha do
-          pin único era justamente um mapa que se declarava pronto e desenhava vazio, e
-          nesse estado a caixa ficava escondida — o sintoma apagava a própria pista.
+      {/* Em dev, aparece enquanto o mapa não está pronto, quando houve erro, ou quando a
+          sonda viu o canvas fora de sincronia com o container. Esse último caso é o que
+          importa: um mapa "pronto" desenhando fora da vista era invisível na tela, e por
+          isso custou três rodadas de depuração. Mapa saudável não mostra nada.
           Vai no topo porque a gaveta do lugar selecionado ocupa o rodapé. */}
-      {process.env.NODE_ENV !== "production" && (
+      {(!pronto || erro || suspeito) && process.env.NODE_ENV !== "production" && (
         <div className="pointer-events-none absolute inset-x-3 top-12 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 font-mono text-[11px] leading-snug text-amber">
           [mapa] {pronto ? "pronto" : "carregando"} · {diag}
           {erro ? ` · erro: ${erro}` : ""}

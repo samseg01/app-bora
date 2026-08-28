@@ -45,6 +45,21 @@ existe enquanto ele estava no banco alimentando o frescor.
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
 
+### Testar num celular de verdade (o R8)
+
+O `next.config.ts` libera `*.trycloudflare.com` em `allowedDevOrigins` — sem isso o Next 16
+recusa as requisições cross-origin ao servidor de dev e a página carrega só o HTML, parecendo
+app quebrado. Com o dev no ar: `cloudflared tunnel --url http://localhost:3000` devolve uma URL
+pública temporária.
+
+**O que funciona por esse túnel:** home, mapa, detalhe, abertura — são server components, então
+a busca à API acontece na máquina de desenvolvimento. **O que não funciona:** login, salvar,
+sinalizar e os painéis, porque saem do navegador para `NEXT_PUBLIC_API_URL`, que aponta para
+`localhost:8000` — no telefone, o próprio telefone. Para exercitar essas ações é preciso um
+segundo túnel para a API e o domínio do front em `CORS_ORIGINS`.
+
+A URL é **pública** enquanto o túnel viver. Fechar ao terminar.
+
 ```
 npm run dev     # http://localhost:3000
 npm run build   # valida tipos e prerender
@@ -242,9 +257,10 @@ ainda não existe.
   pronto e desenha nada. `MapaReal` detecta o caso e usa `setCenter` + zoom fixo. Importa
   porque **é o estado normal de um bairro piloto** — República começou com um lugar; a Vila
   Madalena fictícia, com seis, nunca expôs a falha.
-- **A caixa âmbar de diagnóstico aparece SEMPRE em dev**, inclusive com o mapa pronto. Antes
-  ela só aparecia com `!pronto`, e a falha acima era exatamente um mapa "pronto" e vazio — o
-  sintoma apagava a própria pista. Ela mostra canvas, caixa, centro, zoom e estilo.
+- **A caixa âmbar de diagnóstico do mapa** aparece em dev enquanto ele não está pronto, quando
+  houve erro, e — o caso que importa — quando a sonda vê o canvas fora de sincronia com o
+  container. Um mapa "pronto" desenhando num canvas de 400x300 fora da vista é invisível na
+  tela e custou três rodadas de depuração; agora ele se denuncia. Mapa saudável não mostra nada.
 - **O container do MapLibre é dimensionado em pixels pelo ResizeObserver, não por CSS.**
   Duas tentativas por CSS falharam: `absolute inset-0` sozinho e depois `absolute inset-0
   h-full w-full`. A segunda é pior do que parece — `height:100%` num filho absoluto
