@@ -56,10 +56,22 @@ export function LugarFicha({
           </div>
         </Link>
       ) : (
-        <p className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4 text-[13px] leading-relaxed text-muted">
-          Nada marcado aqui hoje. A casa pode estar aberta assim mesmo — o que a gente
-          publica é o que alguém foi ver.
-        </p>
+        // Sem rolê programado, o lugar ainda pode estar aceso por sinal próprio — é o
+        // "boteco cheio numa terça" do conceito, o degrau de baixo da escada. A API já
+        // calcula esse frescor (`frescor_de_lugar`); a primeira versão desta tela o
+        // descartava e dizia só "nada marcado", que é menos do que a gente sabe.
+        <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
+          {lugar.frescor && (
+            <div className="mb-2">
+              <FrescorPill frescor={lugar.frescor} />
+            </div>
+          )}
+          <p className="text-[13px] leading-relaxed text-muted">
+            {lugar.frescor
+              ? "Sem rolê marcado, mas alguém sinalizou movimento aqui agora."
+              : "Nada marcado aqui hoje. A casa pode estar aberta assim mesmo — o que a gente publica é o que alguém foi ver."}
+          </p>
+        </div>
       )}
 
       {(lugar.horario_funcionamento || preco !== null || lugar.instagram) && (
