@@ -90,7 +90,9 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
 
 ## Diferenciais / features principais
 
-- [ ] 4. **Implementar o frontend público (PWA, Next.js).** A pasta `frontend/` já existe com
+- [~] 4. **Implementar o frontend público (PWA, Next.js).** O app está de pé (9 rotas, dado real);
+       o **PWA em si não existe** — sem manifest, ícones ou service worker. Ver item 11 e ADR-001.
+       Descrição original: A pasta `frontend/` já existe com
       `CLAUDE.md` (convenções, tokens, contratos da API) e `TODO.md` (**as 37 tasks detalhadas, em
       6 fases — é lá que o trabalho é acompanhado**). Análise que originou tudo:
       `docs/plano-frontend.md`. ⚠️ Em andamento: 8 rotas no ar nas duas visualizações. Faltam
@@ -104,20 +106,22 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
 - [ ] 4b. **Desenhar os estados vazios e as telas de auth.** O hi-fi pressupõe a Vila Madalena
       cheia e não tem login/cadastro; as duas coisas faltam antes de o app funcionar com banco
       vazio ou com usuário de verdade.
-- [ ] 5. **Conectar o frontend ao backend com dado real do bairro piloto** (depende das tasks 2 e
+- [x] 5. **Conectar o frontend ao backend com dado real do bairro piloto** (depende das tasks 2 e
       4). Os tipos do front devem convergir com os schemas Pydantic de
       `backend/src/boraroles/schemas/`; a API já expõe tudo que as telas públicas precisam
       (`GET /descoberta`, `GET /mapa`, `GET /roles/{id}`, `GET /lugares/{id}`). Lembrar de incluir a
       origem do front em `CORS_ORIGINS` no `.env` do backend.
-- [ ] 6. **Painel do curador como UI real.** ⚠️ Em andamento — decidido que é a superfície
+- [x] 6. **Painel do curador como UI real.** Feito: lista, publica rolê e cadastra lugar contra a
+       API real, com filtro de bairro e "tirar do ar". Decidido que é a superfície
       desktop-native do produto, desenhado (`docs/front-end-ideias/desktop/Curador.dc.html`) e a
       tela existe em `/curador` nas duas visualizações. **Falta ligar no backend**: o CRUD em
       `backend/.../api/v1/curador.py` exige token e papel `curador`, então depende do login
       (fase 3 do `frontend/TODO.md`). Detalhes nos itens C3–C6 de lá.
-- [ ] 7. **Sinalização de presença na UI.** Começar restrito a curadores/usuários engajados
+- [x] 7. **Sinalização de presença na UI.** Começar restrito a curadores/usuários engajados
       (motor mais frágil do conceito — ver tabela de motores em `docs/conceito.md`). A API já
       existe e já é restrita (ADR-0006); falta o fluxo de UI (telas `2d` → `2e` do hi-fi).
-- [ ] 8. **Painel do estabelecimento como UI real**, só depois de ter volume de Salvos/Sinalizações
+- [x] 8. **Painel do estabelecimento como UI real** (28/08, `/estabelecimento`). A ressalva
+       original — só vale com volume de Salvos/Sinalizações
       pra mostrar algo honesto (ordem de construção do conceito: comunidade antes de painel).
       Começar simples — dois números honestos, nada de dashboard corporativo cedo. Também sem
       design ainda.
@@ -168,7 +172,7 @@ e o **bairro piloto** (item 2 daqui) — sem concentração geográfica a rede d
 Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
 `docs/plano-frontend.md`.
 
-- [ ] 15. **`Role.descricao`** (texto, nullable) + expor em `RolePublic` + aceitar no CRUD do
+- [x] 15. **`Role.descricao`** (texto, nullable) + expor em `RolePublic` + aceitar no CRUD do
        curador. É o "motivo pra ir" — o wireframe dedicou 3 telas (`1m`/`1n`/`1o`) a estudar esse
        copy e o schema não tem onde guardá-lo. Sem isso o detalhe do rolê é só título + horário.
        Lembrar do gotcha: migration à mão, no padrão do `0001_initial_schema.py`.
@@ -176,7 +180,7 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        `lugar_id`, senão a tela `2g` precisa de uma chamada a `/lugares/{id}` por item salvo.
 - [ ] 17. **Expor `sinais_recentes` em `RolePublic`** — a contagem já é calculada dentro de
        `frescor_de_role()`, mas só o rótulo sai. Destrava "6 sinalizaram nas últimas 2h" no `2d`.
-- [ ] 18. **`GET /auth/me`** — nome e data de cadastro pro perfil (`2h`). O papel não precisa dele:
+- [x] 18. **`GET /auth/me`** — nome e data de cadastro pro perfil (`2h`). O papel não precisa dele:
        já viaja dentro do JWT e o front decodifica client-side pra decidir o gating de UI.
 - [~] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — `lugar_id` feito em 28/08: sem ele o
        botão Salvar da home ficava `disabled` por falta de dado (parecia regra de produto e era
