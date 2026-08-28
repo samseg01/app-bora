@@ -203,6 +203,14 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        Show ao vivo — tudo do topo. Boteco, oferta e feira precisam ser cidadãos de primeira classe,
        não exceção.
 
+- [ ] 34. **A janela de "hoje" da descoberta é UTC, não São Paulo.** `listar_descoberta` faz
+       `agora.replace(hour=0, ...)` sobre um datetime UTC, então o dia começa às 21h de SP do dia
+       anterior e termina às 21h de hoje. Um rolê que **começa às 21h ou depois** tem
+       `data_inicio >= fim_hoje` e cai fora do filtro — exatamente o horário em que a noite
+       acontece. Suspeita levantada em 28/08 e ainda **não confirmada com teste**: reproduzir
+       publicando um rolê às 21h e às 23h e ver se aparecem. Se confirmar, a janela deve ser
+       calculada em `America/Sao_Paulo` e só então convertida para UTC na consulta.
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`
