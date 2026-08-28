@@ -150,8 +150,10 @@ export function MapaReal({
           const c = mapa.current.getCanvas();
           const cont = container.current;
           const centro = mapa.current.getCenter();
+          const r = raiz.current;
           const resumo =
             `canvas ${c.width}x${c.height} · caixa ${cont?.clientWidth}x${cont?.clientHeight} · ` +
+            `raiz ${r?.clientWidth}x${r?.clientHeight} · ` +
             `centro ${centro.lng.toFixed(4)},${centro.lat.toFixed(4)} · ` +
             `zoom ${mapa.current.getZoom().toFixed(1)} · estilo=${mapa.current.isStyleLoaded()}`;
           console.log(`[mapa] ${resumo}`);
@@ -215,8 +217,22 @@ export function MapaReal({
     }
 
     // O gatilho é o tamanho: a partição escondida é 0×0 e nunca instancia mapa nenhum.
+    // A raiz é quem carrega as classes de dimensão; o container do MapLibre é um filho
+    // `absolute inset-0` cuja ALTURA vinha resolvendo para zero nas composições em flex.
+    // Medido em campo: `caixa 366x0` com a raiz visivelmente alta na tela, e o MapLibre
+    // caindo no fallback interno de 400x300. `height:100%` num filho absoluto depende de
+    // a altura do bloco contêiner ser definida, e num item de flex ela nem sempre é.
+    // Então não dependemos mais de porcentagem: o observador já mediu a raiz, e a medida
+    // vai direto para o container em pixels.
+    const dimensionar = (width: number, height: number) => {
+      if (!alvo || height <= 0) return;
+      alvo.style.width = `${Math.round(width)}px`;
+      alvo.style.height = `${Math.round(height)}px`;
+    };
+
     const ro = new ResizeObserver(([entrada]) => {
       const { width, height } = entrada.contentRect;
+      dimensionar(width, height);
       setDiag(`medido ${Math.round(width)}x${Math.round(height)}`);
       if (width > 0 && height > 0) {
         if (mapa.current) mapa.current.resize();
@@ -233,6 +249,7 @@ export function MapaReal({
     requestAnimationFrame(() => {
       if (mapa.current || cancelado) return;
       const r = el.getBoundingClientRect();
+      dimensionar(r.width, r.height);
       setDiag(`rAF ${Math.round(r.width)}x${Math.round(r.height)}`);
       if (r.width > 0 && r.height > 0) void iniciar();
     });
@@ -296,10 +313,11 @@ export function MapaReal({
         <MapaEstilizado pins={pins} className="h-full w-full" />
       </div>
 
-      {/* `absolute inset-0` sozinho estava resolvendo para clientHeight 0, e o MapLibre
-          então caía no fallback interno de 400x300 e nunca terminava de carregar.
-          `h-full w-full` dá altura explícita a partir da raiz, que tem dimensão. */}
-      <div ref={container} className="absolute inset-0 h-full w-full" />
+      {/* Sem classe de altura de propósito: o tamanho vem em pixels do ResizeObserver
+          (ver `dimensionar` acima). Tanto `inset-0` sozinho quanto `h-full` resolveram
+          para altura 0 aqui, em momentos diferentes, e o MapLibre não avisa — ele só cai
+          num fallback interno de 400x300 e desenha fora da vista. */}
+      <div ref={container} className="absolute top-0 left-0" />
 
       {etiqueta && (
         <span className="pointer-events-none absolute top-3 left-3 z-3 rounded-full bg-surface/80 px-2.5 py-1 text-[11px] font-semibold text-text-faint backdrop-blur-sm">

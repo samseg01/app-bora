@@ -238,11 +238,14 @@ ainda não existe.
 - **A caixa âmbar de diagnóstico aparece SEMPRE em dev**, inclusive com o mapa pronto. Antes
   ela só aparecia com `!pronto`, e a falha acima era exatamente um mapa "pronto" e vazio — o
   sintoma apagava a própria pista. Ela mostra canvas, caixa, centro, zoom e estilo.
-- **Altura de mapa: nunca `h-full` dentro de um pai que só tem altura por `flex-1`.**
-  `height:100%` resolve contra a altura do pai, e a de um item de flex vem do crescimento — o
-  MapLibre mede zero, cai num fallback interno de 400x300 e nunca desenha. O padrão que funciona
-  é `flex-1` na própria raiz do `MapaReal` (home mobile, `/mapa` mobile) ou altura explícita
-  (`h-dvh` no `/mapa` desktop). A caixa âmbar de diagnóstico em dev diz qual foi o caso.
+- **O container do MapLibre é dimensionado em pixels pelo ResizeObserver, não por CSS.**
+  Duas tentativas por CSS falharam: `absolute inset-0` sozinho e depois `absolute inset-0
+  h-full w-full`. A segunda é pior do que parece — `height:100%` num filho absoluto
+  sobre-restringe a caixa (o `bottom:0` é ignorado) e resolve para 0 quando a altura do bloco
+  contêiner não é definida, que é o caso de um item de flex. Medido em campo:
+  `caixa 366x0` com a raiz visivelmente alta. O MapLibre não reclama — cai num fallback
+  interno de 400x300, dispara `load` e desenha fora da vista. Não reintroduzir classe de
+  altura nesse div.
 - **O que é *meu* (salvos e sinais) vem de `lib/meus.ts`, não de `api.*` direto.** Cada botão
   buscando a própria lista viraria dez chamadas na home de desktop. Quem escreve chama
   `invalidarMeus()`.
