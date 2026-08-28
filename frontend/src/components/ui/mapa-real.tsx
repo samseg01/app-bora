@@ -142,21 +142,41 @@ export function MapaReal({
 
         m.on("styledata", () => setDiag("estilo carregado, aguardando render"));
 
-        // Sonda: depois de alguns segundos, reporta o estado INTERNO do mapa. Olhar de
-        // fora (eventos, console) não estava dizendo nada; o canvas e as flags dizem.
+        // Sonda: depois de alguns segundos, reporta o estado INTERNO do mapa — na tela,
+        // não só no console. Um mapa que dispara `load` e mesmo assim não desenha era
+        // indistinguível de um que nunca subiu; o canvas e o centro dizem qual é.
         setTimeout(() => {
           if (cancelado || !mapa.current) return;
           const c = mapa.current.getCanvas();
           const cont = container.current;
-          console.log(
-            `[mapa] canvas ${c.width}x${c.height} · container ${cont?.clientWidth}x${cont?.clientHeight} · ` +
-              `styleLoaded=${mapa.current.isStyleLoaded()}`,
-          );
-        }, 5000);
+          const centro = mapa.current.getCenter();
+          const resumo =
+            `canvas ${c.width}x${c.height} · caixa ${cont?.clientWidth}x${cont?.clientHeight} · ` +
+            `centro ${centro.lng.toFixed(4)},${centro.lat.toFixed(4)} · ` +
+            `zoom ${mapa.current.getZoom().toFixed(1)} · estilo=${mapa.current.isStyleLoaded()}`;
+          console.log(`[mapa] ${resumo}`);
+          setDiag(resumo);
+        }, 4000);
 
         const enquadrar = () => {
           const atuais = pinsRef.current;
           if (atuais.length === 0) return;
+
+          // Um pin só — ou vários no mesmo ponto — dá bounds de área zero, e o
+          // `fitBounds` resolve isso para zoom infinito / centro NaN: o mapa carrega,
+          // dispara `load`, e desenha nada. É o caso do bairro piloto, que começa com
+          // um lugar; a Vila Madalena fictícia, com seis, nunca expôs a falha.
+          const lngs = atuais.map((p) => p.lugar.lng);
+          const lats = atuais.map((p) => p.lugar.lat);
+          const semExtensao =
+            Math.max(...lngs) === Math.min(...lngs) && Math.max(...lats) === Math.min(...lats);
+
+          if (semExtensao) {
+            m.setCenter([lngs[0], lats[0]]);
+            m.setZoom(15.5);
+            return;
+          }
+
           const b = new LngLatBounds();
           atuais.forEach((p) => b.extend([p.lugar.lng, p.lugar.lat]));
           m.fitBounds(b, { padding: 56, maxZoom: 16, animate: false });
@@ -289,9 +309,13 @@ export function MapaReal({
 
       {children}
 
-      {!pronto && process.env.NODE_ENV !== "production" && (
-        <div className="absolute inset-x-3 bottom-3 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 font-mono text-[11px] leading-snug text-amber">
-          [mapa] {diag}
+      {/* Em dev o diagnóstico aparece SEMPRE, não só quando `pronto` é falso: a falha do
+          pin único era justamente um mapa que se declarava pronto e desenhava vazio, e
+          nesse estado a caixa ficava escondida — o sintoma apagava a própria pista.
+          Vai no topo porque a gaveta do lugar selecionado ocupa o rodapé. */}
+      {process.env.NODE_ENV !== "production" && (
+        <div className="pointer-events-none absolute inset-x-3 top-12 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 font-mono text-[11px] leading-snug text-amber">
+          [mapa] {pronto ? "pronto" : "carregando"} · {diag}
           {erro ? ` · erro: ${erro}` : ""}
         </div>
       )}

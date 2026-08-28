@@ -230,6 +230,14 @@ ainda não existe.
 
 - **`RoleDescoberta` traz `lugar_id` desde 28/08**, mas ainda não `lat`/`lng` — calcular distância
   "a pé" continua dependendo da mudança 19 do `../TODO.md`.
+- **Um pin só quebrava o mapa.** `fitBounds` com bounds de área zero (um lugar, ou vários no
+  mesmo ponto) resolve para zoom infinito / centro NaN: o MapLibre dispara `load`, se declara
+  pronto e desenha nada. `MapaReal` detecta o caso e usa `setCenter` + zoom fixo. Importa
+  porque **é o estado normal de um bairro piloto** — República começou com um lugar; a Vila
+  Madalena fictícia, com seis, nunca expôs a falha.
+- **A caixa âmbar de diagnóstico aparece SEMPRE em dev**, inclusive com o mapa pronto. Antes
+  ela só aparecia com `!pronto`, e a falha acima era exatamente um mapa "pronto" e vazio — o
+  sintoma apagava a própria pista. Ela mostra canvas, caixa, centro, zoom e estilo.
 - **Altura de mapa: nunca `h-full` dentro de um pai que só tem altura por `flex-1`.**
   `height:100%` resolve contra a altura do pai, e a de um item de flex vem do crescimento — o
   MapLibre mede zero, cai num fallback interno de 400x300 e nunca desenha. O padrão que funciona
