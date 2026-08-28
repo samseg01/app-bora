@@ -1,6 +1,7 @@
 import { EscolhaBairro } from "@/views/abertura/escolha-bairro";
 import { api, ApiOffline } from "@/lib/api";
 import { BAIRROS } from "@/lib/bairros";
+import { bairroEscolhido } from "@/lib/bairro-servidor";
 
 /**
  * Primeira tela de quem nunca abriu o app. As contagens ao lado de cada bairro vêm da
@@ -25,5 +26,6 @@ async function contar() {
 }
 
 export default async function AberturaPage() {
-  return <EscolhaBairro contagens={await contar()} />;
+  const [contagens, atual] = await Promise.all([contar(), bairroEscolhido()]);
+  return <EscolhaBairro contagens={contagens} atual={atual} />;
 }

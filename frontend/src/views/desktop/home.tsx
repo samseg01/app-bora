@@ -1,5 +1,6 @@
 import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleRow } from "@/components/ui/role-row";
+import Link from "next/link";
 import { DesktopShell } from "./shell";
 import { LegendaFrescor } from "./legenda-frescor";
 import type { ComentarioResumo, MapaPin, RoleDescoberta } from "@/lib/types";
@@ -32,12 +33,16 @@ export function HomeDesktop({
         <div className="flex items-start justify-between">
           <div className="flex flex-col gap-1">
             <span className="rotulo text-muted-2">você está em</span>
-            <span className="flex items-center gap-[7px] text-[17px] font-bold">
+            {/* Trocar de bairro não pode depender de conta: o app é público por decisão. */}
+            <Link href="/abertura" className="flex items-center gap-[7px] text-[17px] font-bold hover:text-magenta-soft">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff3d81">
                 <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
               </svg>
               {bairro}
-            </span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </Link>
           </div>
         </div>
 

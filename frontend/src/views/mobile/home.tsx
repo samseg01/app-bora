@@ -1,5 +1,6 @@
 import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleCard } from "@/components/ui/role-card";
+import Link from "next/link";
 import { MobileShell } from "./shell";
 import type { MapaPin, RoleDescoberta } from "@/lib/types";
 
@@ -22,10 +23,14 @@ export function HomeMobile({
       <header className="flex items-center justify-between px-5.5 pt-9 pb-3">
         <div className="flex flex-col gap-0.5">
           <span className="rotulo text-muted-2">você está em</span>
-          <span className="flex items-center gap-1.5 text-[17px] font-bold">
+          {/* Trocar de bairro não pode depender de conta: o app é público por decisão. */}
+          <Link href="/abertura" className="flex items-center gap-1.5 text-[17px] font-bold">
             <PinIcone />
             {bairro}
-          </span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8478a0" strokeWidth={2.5}>
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </Link>
         </div>
         <div className="h-9 w-9 rounded-full bg-gradient-to-br from-magenta to-amber" />
       </header>

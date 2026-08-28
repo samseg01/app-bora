@@ -16,11 +16,15 @@ import { BAIRROS, COOKIE_BAIRRO, COOKIE_MAX_AGE } from "@/lib/bairros";
  */
 export function EscolhaBairro({
   contagens,
+  atual,
 }: {
   contagens: Record<string, { lugares: number; roles: number }>;
+  /** Quem já escolheu chega aqui para trocar: começa no que está valendo, não no primeiro
+      da lista — senão um toque distraído troca de bairro sem querer. */
+  atual: string | null;
 }) {
   const router = useRouter();
-  const [escolhido, setEscolhido] = useState(BAIRROS[0].nome);
+  const [escolhido, setEscolhido] = useState(atual ?? BAIRROS[0].nome);
   const [indo, setIndo] = useState(false);
 
   function continuar() {
@@ -43,9 +47,19 @@ export function EscolhaBairro({
 
       <div className="mt-11">
         <h2 className="font-display text-[31px] leading-[1.02] uppercase">
-          Por onde você
-          <br />
-          costuma sair?
+          {atual ? (
+            <>
+              Trocar de
+              <br />
+              bairro
+            </>
+          ) : (
+            <>
+              Por onde você
+              <br />
+              costuma sair?
+            </>
+          )}
         </h2>
         <p className="mt-2.5 text-[13px] leading-relaxed text-muted">
           A gente conhece bem um pedaço de São Paulo. Preferimos ser bons em um bairro a ruins
@@ -101,10 +115,10 @@ export function EscolhaBairro({
           disabled={indo}
           className="w-full rounded-2xl bg-magenta py-4 text-[15px] font-bold text-white disabled:opacity-60"
         >
-          {indo ? "Um instante…" : "Ver a noite de hoje"}
+          {indo ? "Um instante…" : atual ? "Ver esse bairro" : "Ver a noite de hoje"}
         </button>
         <p className="mt-3.5 text-center text-xs leading-relaxed text-muted-3">
-          Dá pra trocar depois, no perfil.
+          {atual ? "Dá pra voltar quando quiser." : "Dá pra trocar depois, tocando no nome do bairro."}
         </p>
       </div>
     </div>
