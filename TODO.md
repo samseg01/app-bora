@@ -232,6 +232,18 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        presença", o que é coerente. Mas a pergunta que o dono faz é "quantas pessoas", e
        provavelmente as duas respostas interessam. Anda junto com o item 36 (janela de tempo).
 
+- [ ] 38. **A busca por localização infere a região dos lugares curados, não de geocodificação.**
+       `GET /lugares/proximos` responde "o lugar curado mais próximo é X, a N metros", e a tela
+       conclui o recorte a partir daí. É honesto e barato, mas tem um limite: o app **não sabe
+       dizer em que bairro a pessoa está** — só a que distância ela está do que a gente curou.
+       Enquanto forem dois recortes isso não incomoda. Se um dia a tela precisar dizer "você está
+       no Bixiga", aí entra geocodificação reversa (Nominatim, ou os polígonos de bairro da
+       Prefeitura), com o custo e a dependência externa que isso traz.
+- [ ] 39. **`RAIO_DENTRO_M` = 1500 m é chute informado, não medida.** É o limite que decide entre
+       "você está aqui" e "o mais perto que curamos". Escolhido por cobrir poucas quadras mais a
+       margem de erro do GPS entre prédios altos. Conferir no R8, andando pelo recorte com o
+       aparelho na mão.
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`

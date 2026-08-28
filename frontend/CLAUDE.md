@@ -45,6 +45,20 @@ existe enquanto ele estava no banco alimentando o frescor.
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
 
+### Localização
+
+`lib/localizacao.ts` embrulha `navigator.geolocation` e traduz "onde estou" em "que recorte é
+esse", consultando `GET /lugares/proximos`. Fica em `lib/` por ser regra de negócio e porque é
+exatamente o que atravessa a migração para nativo do ADR-001 — lá o `navigator.geolocation` vira a
+API do dispositivo e o resto não muda.
+
+**A coordenada não é guardada.** Vai como parâmetro de consulta, responde e morre: sem cookie, sem
+`localStorage`, sem coluna. Não introduzir cache dela sem decidir antes o que a tela diria sobre
+isso.
+
+Exige contexto seguro (HTTPS ou localhost) — em HTTP de rede local o `navigator.geolocation` nem
+existe, e o código trata isso como `sem-suporte` em vez de erro genérico.
+
 ### PWA
 
 `app/manifest.ts` + `public/icons/` + `public/sw.js` + `public/offline.html`.

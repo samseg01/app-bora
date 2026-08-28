@@ -106,13 +106,13 @@ curador/dono_estabelecimento), `Estabelecimento` (plano: organico/destacado), `L
 
 ## Superfície da API (backend, tudo sob `/api/v1`)
 
-22 rotas, todas implementadas e cobertas por teste:
+26 rotas, todas implementadas e cobertas por teste:
 
 | Grupo | Rotas |
 |---|---|
 | Auth | `POST /auth/signup`, `POST /auth/login` |
 | Descoberta | `GET /descoberta`, `GET /roles/{id}` |
-| Mapa | `GET /mapa`, `GET /lugares/{id}` |
+| Mapa | `GET /mapa`, `GET /lugares/{id}`, `GET /lugares/proximos` |
 | Contribuição | `POST/GET /salvos`, `DELETE /salvos/{lugar_id}`, `POST /sinalizacoes`, `POST /comentarios` |
 | Curador (papel=curador) | CRUD completo de `/curador/lugares` e `/curador/roles` |
 | Estabelecimento (dono) | `GET /{id}/lugares`, `GET /{id}/engajamento` — só leitura |
@@ -235,6 +235,11 @@ contradisserem, o ADR ganha.
   comentário existia no banco e nenhuma tela o mostrava. Corrigido com
   `services/lugares.comentarios_do_lugar()`. Toda leitura nova de comentário precisa passar
   por ele.
+- **A localização do usuário não é guardada em lugar nenhum.** "Buscar pela minha localização"
+  na abertura manda lat/lng como parâmetro de consulta para `GET /lugares/proximos`, recebe a
+  resposta e esquece — sem cookie, sem `localStorage`, sem coluna, sem log no backend. Num app
+  que promete anonimato no sinal de presença, pedir localização e guardá-la seria contradizer a
+  promessa no primeiro toque. Ver `frontend/src/lib/localizacao.ts`.
 - **"Hoje" é uma pergunta local, não UTC.** A janela de `/descoberta` é recortada em
   `settings.fuso_local` e convertida para UTC (`services/descoberta._dia_local`). Calculada em
   UTC, ela ia das 21h de ontem às 21h de hoje e escondia todo rolê que começasse às 21h.
