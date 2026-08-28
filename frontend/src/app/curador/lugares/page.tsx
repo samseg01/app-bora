@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Desktop, Mobile } from "@/components/viewport";
-import { AbasCurador } from "@/components/ui/abas-curador";
+import { PassosCurador } from "@/components/ui/passos-curador";
 import { Porta } from "@/components/ui/porta";
 import { DesktopShell } from "@/views/desktop/shell";
 import { MobileShell } from "@/views/mobile/shell";
@@ -36,7 +36,10 @@ export default function CuradorLugaresPage() {
 }
 
 function Conteudo() {
-  const corpo = <Lugares />;
+  // A contagem sobe da lista para as etapas: quem está aqui é justamente quem precisa
+  // ver "0 cadastrados" virar "1 cadastrado" sem trocar de tela.
+  const [quantos, setQuantos] = useState<number | null>(null);
+  const corpo = <Lugares aoContar={setQuantos} />;
   return (
     <>
       <Mobile>
@@ -48,19 +51,26 @@ function Conteudo() {
             </Link>
           </div>
           <div className="mt-3 px-6">
-            <AbasCurador />
+            <PassosCurador bairro={bairroDoCookie() ?? BAIRROS[0].nome} lugares={quantos} />
           </div>
           {corpo}
         </MobileShell>
       </Mobile>
       <Desktop>
-        <DesktopShell curador>{corpo}</DesktopShell>
+        <DesktopShell curador>
+          <div className="min-w-0 flex-1">
+            <div className="px-8 pt-8">
+              <PassosCurador bairro={bairroDoCookie() ?? BAIRROS[0].nome} lugares={quantos} />
+            </div>
+            {corpo}
+          </div>
+        </DesktopShell>
       </Desktop>
     </>
   );
 }
 
-function Lugares() {
+function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
   const sessao = useSessao();
   const token = sessao?.token;
   const bairro = bairroDoCookie() ?? BAIRROS[0].nome;
@@ -79,15 +89,19 @@ function Lugares() {
     void api
       .curadorLugares(token, bairro)
       .then((l) => {
-        if (vivo) setLista(l);
+        if (!vivo) return;
+        setLista(l);
+        aoContar(l.length);
       })
       .catch(() => {
-        if (vivo) setLista([]);
+        if (!vivo) return;
+        setLista([]);
+        aoContar(0);
       });
     return () => {
       vivo = false;
     };
-  }, [token, bairro]);
+  }, [token, bairro, aoContar]);
 
   async function cadastrar(e: React.FormEvent) {
     e.preventDefault();
@@ -109,7 +123,11 @@ function Lugares() {
         bairro,
         endereco: endereco.trim() || null,
       });
-      setLista((l) => [...(l ?? []), novo]);
+      // Fora do updater de propósito: a função passada ao setState precisa ser pura,
+      // e avisar o pai lá dentro é efeito colateral.
+      const atualizada = [...(lista ?? []), novo];
+      setLista(atualizada);
+      aoContar(atualizada.length);
       setNome("");
       setCoords("");
       setEndereco("");

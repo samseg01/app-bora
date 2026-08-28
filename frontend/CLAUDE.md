@@ -45,12 +45,19 @@ existe enquanto ele estava no banco alimentando o frescor.
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
 
-**Painel do curador:** são duas telas (`/curador` publica o rolê, `/curador/lugares` cadastra o
-lugar) e o lugar vem primeiro — não dá para publicar rolê onde não há lugar. No desktop a coluna
-`sidebar-curador.tsx` liga as duas; no mobile é `components/ui/abas-curador.tsx`, porque a barra
-inferior não aparece aqui (`nav={false}`: painel é superfície de trabalho, não o app público).
-Sem essas abas o cadastro de lugar ficava inalcançável no telefone, que é justamente onde o
-curador está quando volta da rua.
+**Painel do curador — três etapas, nesta ordem: região → lugar → rolê.**
+`components/ui/passos-curador.tsx` mostra a sequência nas duas visualizações. A ordem é dependência
+real, não enfeite: um rolê acontece num lugar, e um lugar pertence a um recorte.
+
+A etapa 1 tem o seletor de bairro porque a região do painel vinha em silêncio do cookie do app
+público — de dentro do painel, "Publicar em República" parecia imutável, e trocar de recorte exigia
+sair, ir à tela de leitura e voltar. É o **mesmo cookie** de propósito: são duas leituras do mesmo
+"onde estou agora", e quem acabou de publicar quer conferir o resultado no app público, no mesmo
+bairro.
+
+A barra inferior não aparece aqui (`nav={false}`: painel é superfície de trabalho, não o app
+público), então sem as etapas o cadastro de lugar ficava inalcançável no telefone — justamente onde
+o curador está quando volta da rua.
 
 ### Localização
 

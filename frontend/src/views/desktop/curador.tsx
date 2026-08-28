@@ -1,5 +1,6 @@
 import { DesktopShell } from "./shell";
 import { FormPublicar } from "./form-publicar";
+import { PassosCurador } from "@/components/ui/passos-curador";
 import { TirarDoAr } from "@/components/ui/tirar-do-ar";
 import { frescorUI } from "@/lib/frescor";
 import { hora } from "@/lib/tempo";
@@ -31,6 +32,9 @@ export function CuradorDesktop({
   return (
     <DesktopShell curador>
       <section className="min-w-0 flex-1 px-8 py-8">
+        <div className="mb-6">
+          <PassosCurador bairro={bairro} lugares={lugares.length} />
+        </div>
         <h1 className="font-display text-[42px] leading-none uppercase">A noite de hoje</h1>
         <p className="mt-2 text-[13px] text-muted-2">
           o que está no ar agora em {bairro} — some sozinho no horário de término
