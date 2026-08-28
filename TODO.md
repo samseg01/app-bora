@@ -329,6 +329,15 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        "tô indo" como intenção — que é justamente o que o item 40 tem em aberto). Decidir junto
        com o 40, porque são a mesma pergunta vista de dois lados.
 
+- [ ] 42. **[hipótese] Estabelecimento publica o próprio rolê, com atribuição.** ADR-008 do
+       backend, status **proposto** — depende do que a conversa com o dono responder. É o motor
+       mais forte da tabela de incentivos do `conceito.md` ("bar quer público", fase "Já") e o
+       único que não sofre de cold start; hoje não existe, e o painel do dono é só leitura.
+       Trabalho previsto, se confirmado: (a) permitir `dono_estabelecimento` criar `Role` só em
+       lugar da própria casa; (b) expor a origem derivada de `Role.criado_por`, que já existe no
+       banco e nunca foi exposta — sem coluna nova; (c) mostrar a atribuição no card. Depende do
+       R9, porque sem `estabelecimento_id` preenchido não há posse a verificar.
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`

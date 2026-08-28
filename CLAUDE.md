@@ -183,6 +183,10 @@ Mais `GET /health` fora do prefixo versionado.
   declarado**, não uma possibilidade remota: a decisão é de ordem, não de permanência. Gatilhos
   de reavaliação, caminho de migração (Capacitor vs. RN) e as três regras que mantêm o código
   portável estão em `frontend/docs/adr/0001-pwa-agora-nativo-depois.md`.
+- **A oferta pode vir da casa; a curadoria é que é garantida** (ADR-008 do backend, **proposto**).
+  Duas afirmações de fontes diferentes: "este lugar presta" é o curador que esteve lá, "hoje tem
+  forró às 21h" é a casa. O app garante a primeira e **atribui** a segunda — sem fila de
+  aprovação, que travaria um produto cuja tese é "hoje à noite".
 - **Monetização por destaque verificado, não ranking pago** — no minuto em que o topo parece pago,
   a confiança (único ativo do app) morre. Destaque exige validação de curador em campo.
 - **Ordem de construção deliberada**: manual antes de sistema, comunidade antes de painel do
