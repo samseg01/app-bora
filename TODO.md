@@ -319,6 +319,16 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        frescor público. A (c) resolve a sensação de app morto sem entregar o motor de confiança,
        mas depende do backend de Conexões (itens 27–30), que não existe.
 
+- [ ] 41. **Frescor não devia ser calculável antes de o rolê começar.** Descoberto em 28/08,
+       preparando a conversa com o dono: às 11h30 o card de um rolê marcado para as 21h dizia
+       "Começando a encher", por causa de um sinal das 09h58. O frescor afirma "tem gente lá
+       agora"; antes de `data_inicio` isso não pode ser verdade, e sinalizar às 10h para um rolê
+       da noite é sinalizar o quê?
+       Duas saídas: ignorar sinal anterior a `data_inicio` no cálculo (barato, resolve o sintoma),
+       ou recusar a sinalização antes de o rolê começar (mais honesto, mas fecha a porta para o
+       "tô indo" como intenção — que é justamente o que o item 40 tem em aberto). Decidir junto
+       com o 40, porque são a mesma pergunta vista de dois lados.
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`
