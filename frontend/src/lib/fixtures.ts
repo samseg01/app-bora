@@ -1,17 +1,15 @@
 import type {
-  CheckInDeConexao,
   ComentarioResumo,
-  Conexao,
   LugarDetalhe,
   MapaPin,
   RoleDescoberta,
   RolePublic,
-  SalvoDeConexao,
 } from "./types";
 
 /**
- * Dado de desenvolvimento, usado SÓ quando a API não responde e só fora de produção,
- * e nas telas que ainda dependem de autenticação (salvos, perfil, curador — fase 3).
+ * Dado de desenvolvimento, usado **só** quando a API não responde, e só fora de produção.
+ * Nada mais no app depende disto: salvos, perfil e o painel do curador passaram a
+ * consumir a API de verdade, e conexões diz que não está pronta em vez de inventar gente.
  *
  * Existe porque o backend roda em Docker local e fica fora do ar com frequência durante
  * o trabalho de UI, e porque ainda não há seed no backend (../TODO.md item 22).
@@ -81,16 +79,6 @@ export const ROLES_EXEMPLO: RoleDescoberta[] = [
     lugar_bairro: BAIRRO_EXEMPLO,
   },
 ];
-
-/** O "motivo pra ir" de cada rolê — o campo que o backend ainda não tem (item 15). */
-export const MOTIVO_EXEMPLO: Record<string, string> = {
-  [ID.roleAurora]:
-    "Entrada livre até meia-noite. Set de house às 23h30, teto aberto. Depois da meia-noite a fila dobra a esquina — vale chegar antes.",
-  [ID.roleBoteco]:
-    "Roda de samba na calçada desde as 21h. Sem couvert, cerveja a 12. Cabe pouca gente sentada.",
-  [ID.roleGaragem]:
-    "Microfone aberto à meia-noite. Cabem 40 pessoas, chega cedo se quiser ler.",
-};
 
 function lugar(
   id: string,
@@ -197,7 +185,7 @@ export function roleExemplo(id: string): RolePublic | null {
     data_fim: encontrado.data_fim,
     frescor: encontrado.frescor,
     created_at: emHoras(-6),
-    descricao: MOTIVO_EXEMPLO[id] ?? null,
+    descricao: encontrado.descricao,
     sinais_recentes: encontrado.frescor === "live" ? 6 : encontrado.frescor === "warm" ? 2 : 0,
   };
 }
@@ -212,77 +200,3 @@ export function lugarDetalheExemplo(id: string): LugarDetalhe | null {
     comentarios_recentes: pin && pin.total_comentarios > 0 ? COMENTARIOS_EXEMPLO : [],
   };
 }
-
-/** Os lugares do caderninho. Depende de auth, que ainda não existe no front (fase 3). */
-export const SALVOS_EXEMPLO = [
-  ID.aurora,
-  ID.garagem,
-  ID.boteco,
-  ID.casa47,
-  ID.praca,
-  ID.cru,
-].map((id) => porId(id));
-
-/* ---------------------------- Conexões ---------------------------------- */
-
-export const CONEXOES_EXEMPLO: Conexao[] = [
-  { id: "c1", nome: "Marina", status: "aceita", created_at: emHoras(-2000) },
-  { id: "c2", nome: "Rafa", status: "aceita", created_at: emHoras(-1800) },
-  { id: "c3", nome: "Bia", status: "aceita", created_at: emHoras(-1500) },
-  { id: "c4", nome: "Nina", status: "aceita", created_at: emHoras(-900) },
-  { id: "c5", nome: "Caio", status: "aceita", created_at: emHoras(-700) },
-  { id: "c6", nome: "Duda", status: "aceita", created_at: emHoras(-400) },
-  { id: "c7", nome: "Ju", status: "aceita", created_at: emHoras(-200) },
-  { id: "c8", nome: "Téo", status: "pendente", created_at: emHoras(-3) },
-];
-
-/** Quem está fora agora. Bia é o check-in de bairro — sem lugar exato. */
-export const FORA_AGORA_EXEMPLO: CheckInDeConexao[] = [
-  {
-    id: "k1",
-    conexao_id: "c1",
-    nome: "Marina",
-    lugar_id: ID.aurora,
-    lugar_nome: "Bar Aurora",
-    bairro: BAIRRO_EXEMPLO,
-    role_id: ID.roleAurora,
-    role_titulo: "Selo aberto no rooftop",
-    frescor: "live",
-    timestamp: emHoras(-0.2),
-  },
-  {
-    id: "k2",
-    conexao_id: "c2",
-    nome: "Rafa",
-    lugar_id: ID.boteco,
-    lugar_nome: "Boteco do Zé",
-    bairro: BAIRRO_EXEMPLO,
-    role_id: ID.roleBoteco,
-    role_titulo: "Samba de quinta",
-    frescor: "warm",
-    timestamp: emHoras(-0.63),
-  },
-  {
-    id: "k3",
-    conexao_id: "c3",
-    nome: "Bia",
-    lugar_id: null,
-    lugar_nome: null,
-    bairro: BAIRRO_EXEMPLO,
-    role_id: null,
-    role_titulo: null,
-    frescor: null,
-    timestamp: emHoras(-0.07),
-  },
-];
-
-/** A peça que serve à descoberta: lugares salvos por quem você confia. */
-export const SALVOS_CONEXOES_EXEMPLO: SalvoDeConexao[] = [
-  { lugar: porId(ID.cru), por: ["Marina"] },
-  { lugar: porId(ID.casa47), por: ["Rafa", "Bia"] },
-  { lugar: porId(ID.praca), por: ["Marina"] },
-  { lugar: porId(ID.garagem), por: ["Rafa"] },
-];
-
-/** O que a aba mostra quando você ainda não tem conexão nenhuma. */
-export const SALVOS_DO_CURADOR_EXEMPLO = [ID.cru, ID.casa47, ID.praca].map((id) => porId(id));

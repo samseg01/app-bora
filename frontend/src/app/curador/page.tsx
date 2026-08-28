@@ -1,48 +1,101 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Desktop, Mobile } from "@/components/viewport";
 import { Porta } from "@/components/ui/porta";
 import { CuradorDesktop } from "@/views/desktop/curador";
 import { CuradorMobile } from "@/views/mobile/curador";
-import { BAIRRO_EXEMPLO, LUGARES_EXEMPLO, ROLES_EXEMPLO } from "@/lib/fixtures";
+import { api } from "@/lib/api";
+import { useSessao } from "@/lib/auth";
+import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
+import type { LugarPublic, RoleDescoberta } from "@/lib/types";
 
 /**
- * Painel do curador. A API existe inteira (CRUD em /curador/lugares e /curador/roles,
- * papel=curador), mas todas as rotas exigem token e o login só chega na fase 3 — então
- * a tela roda com dado de exemplo e o formulário não envia.
+ * Painel do curador, com dado real. Era a última tela a mostrar ficção depois do login
+ * — e a mais fácil de ligar, porque o CRUD em `/curador/*` existe e é testado desde o
+ * esqueleto do backend.
+ *
+ * A `Porta` exige o papel, não só a sessão: quem entra como gente comum vê que publicar
+ * é de quem valida em campo.
  */
-export const dynamic = "force-dynamic";
-
 const DUAS_HORAS_MS = 2 * 60 * 60 * 1000;
 
-/**
- * O relógio é lido aqui, fora de qualquer componente e uma vez por requisição. Ler a
- * hora durante o render é impuro (o React Compiler recusa) e diverge na hidratação.
- */
-async function carregar() {
-  const agora = Date.now();
-  return {
-    lugares: LUGARES_EXEMPLO.filter((l) => l.bairro === BAIRRO_EXEMPLO),
-    terminandoLogo: ROLES_EXEMPLO.filter(
-      (r) => new Date(r.data_fim).getTime() - agora < DUAS_HORAS_MS,
-    ).length,
-  };
+export default function CuradorPage() {
+  return (
+    <Porta
+      titulo="Painel do curador"
+      descricao="Publicar rolê é coisa de quem valida em campo. Precisa entrar como curador."
+      curador
+    >
+      <PainelCarregado />
+    </Porta>
+  );
 }
 
-export default async function CuradorPage() {
-  const { lugares, terminandoLogo } = await carregar();
+function PainelCarregado() {
+  const sessao = useSessao();
+  const token = sessao?.token;
+  const [dados, setDados] = useState<{
+    roles: RoleDescoberta[];
+    lugares: LugarPublic[];
+    terminandoLogo: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+    let vivo = true;
+    void (async () => {
+      const [roles, lugares] = await Promise.all([
+        api.curadorRoles(token),
+        api.curadorLugares(token),
+      ]);
+      if (!vivo) return;
+
+      // `GET /curador/roles` devolve RolePublic, sem o nome do lugar — a tela precisa
+      // dele, então resolvemos aqui em vez de pedir mais uma rota ao backend.
+      const porId = new Map(lugares.map((l) => [l.id, l] as const));
+      const agora = Date.now();
+
+      setDados({
+        lugares,
+        terminandoLogo: roles.filter(
+          (r) => new Date(r.data_fim).getTime() - agora < DUAS_HORAS_MS,
+        ).length,
+        roles: roles.map((r) => ({
+          id: r.id,
+          titulo: r.titulo,
+          descricao: r.descricao ?? null,
+          categoria: r.categoria,
+          data_inicio: r.data_inicio,
+          data_fim: r.data_fim,
+          frescor: r.frescor,
+          lugar_nome: porId.get(r.lugar_id)?.nome ?? "—",
+          lugar_bairro: porId.get(r.lugar_id)?.bairro ?? "",
+        })),
+      });
+    })();
+    return () => {
+      vivo = false;
+    };
+  }, [token]);
+
+  if (!dados) return null;
+
+  const bairro = bairroDoCookie() ?? BAIRROS[0].nome;
 
   return (
-    <Porta titulo="Painel do curador" descricao="Publicar rolê é coisa de quem valida em campo. Precisa entrar como curador." curador>
+    <>
       <Mobile>
-        <CuradorMobile roles={ROLES_EXEMPLO} lugares={lugares} bairro={BAIRRO_EXEMPLO} />
+        <CuradorMobile roles={dados.roles} lugares={dados.lugares} bairro={bairro} />
       </Mobile>
       <Desktop>
         <CuradorDesktop
-          roles={ROLES_EXEMPLO}
-          lugares={lugares}
-          bairro={BAIRRO_EXEMPLO}
-          terminandoLogo={terminandoLogo}
+          roles={dados.roles}
+          lugares={dados.lugares}
+          bairro={bairro}
+          terminandoLogo={dados.terminandoLogo}
         />
       </Desktop>
-    </Porta>
+    </>
   );
 }

@@ -15,7 +15,7 @@ export interface Bairro {
   descricao: string;
 }
 
-export const BAIRROS: Bairro[] = [
+const RECORTES: Bairro[] = [
   {
     nome: "República",
     descricao: "O recorte do piloto: Largo do Arouche, Vieira de Carvalho e a praça.",
@@ -25,6 +25,21 @@ export const BAIRROS: Bairro[] = [
     descricao: "Do Largo da Batata até a Benedito Calixto.",
   },
 ];
+
+/**
+ * Em desenvolvimento entra também a Vila Madalena, que é onde vive o seed fictício
+ * (`backend/seed/exemplo-ficticio.json`). Sem isso o app fica inalcançável com dado:
+ * o piloto está vazio de propósito, e semear ficção em República seria exatamente o
+ * que o arquivo de seed do piloto existe para impedir.
+ *
+ * Nunca aparece em produção.
+ */
+const SO_EM_DEV: Bairro[] = [
+  { nome: "Vila Madalena", descricao: "Só em desenvolvimento — dado fictício do seed." },
+];
+
+export const BAIRROS: Bairro[] =
+  process.env.NODE_ENV === "production" ? RECORTES : [...RECORTES, ...SO_EM_DEV];
 
 export const COOKIE_BAIRRO = "boraroles.bairro";
 
