@@ -76,12 +76,82 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       honestos, e o `conceito.md` diz que esse painel só tem valor porque a comunidade existe.
       Ele é o que se mostra na *segunda* conversa, quando houver número.
 
+## Concluído em 28/08/2026 — trabalho sem item prévio
+
+Um dia inteiro de sessão, e a maior parte não estava na lista: quase tudo saiu de defeito
+encontrado usando o app, não de tarefa planejada. Fica registrado aqui porque a numeração acima
+não cobre, e porque vários desses achados são o tipo de coisa que se repete se ninguém escrever.
+
+### Correções de honestidade do dado
+
+- [x] **Frescor contava toques, não pessoas** (`55f5283`). `live` acende com 3 sinais e a contagem
+      era de linhas: uma pessoa tocando "Tô indo" três vezes acendia o "Bombando agora" — a
+      promessa central do produto, forjável com um dedo. O smoke test fazia exatamente isso e
+      passava, ou seja, documentava a falha. Agora conta `distinct usuario_id`, o POST renova em
+      vez de empilhar, e o DELETE leva junto os sinais irmãos.
+- [x] **Comentário da tela 2e não aparecia em lugar nenhum** (`92f0f8b`). Gravado com `role_id`,
+      e as duas únicas leituras filtravam por `lugar_id`. Era aceito, gravado, e invisível.
+      Três comentários reais estavam nesse limbo.
+- [x] **"Hoje" era contado em UTC** (`83e95bf`). O dia ia das 21h de ontem às 21h de hoje em São
+      Paulo, então todo rolê que começava às 21h sumia da descoberta — o horário em que a noite
+      começa. Confirmado com teste antes do conserto; o primeiro teste passava com o bug presente.
+- [x] **O painel do curador dizia coisas falsas** (`0e4715e`). Sem filtro de bairro nem de data:
+      mostrava lugares da Vila Madalena sob o rótulo "República" e contava como "no ar" rolês já
+      encerrados.
+- [x] **O círculo no canto da home não era nada** (`16530dd`). Avatar decorativo, sem link e sem
+      dono. Junto: as duas telas de perfil ignoravam o componente `Avatar` (que deriva a cor do
+      nome) e usavam um gradiente fixo, igual para todo mundo.
+
+### O mapa, em três rodadas
+
+- [x] **Bairro com um lugar só quebrava o mapa** (`541b59c`). `fitBounds` com área zero resolve
+      para centro NaN: o MapLibre carregava, disparava `load` e não desenhava. É o estado NORMAL
+      de um bairro piloto — o seed fictício, com seis lugares, escondia a falha no cenário real.
+- [x] **O container tinha altura zero** (`fa46e1a`). E a culpa era do conserto anterior:
+      `height:100%` num filho absoluto sobre-restringe a caixa e resolve para 0 dentro de um item
+      de flex. O tamanho passou a vir em pixels do ResizeObserver.
+- [x] **O diagnóstico se escondia justamente quando era preciso** (`f787eb5`). A caixa só aparecia
+      com `!pronto`, e a falha era um mapa "pronto" desenhando fora da vista. Agora ela reaparece
+      sozinha quando o canvas diverge do container.
+
+### Estado que só existia no cliente
+
+- [x] **"Tá marcado" não sobrevivia a sair da tela** (`033a1cb`). Vivia em `useState`; ao voltar, o
+      app oferecia "Tô indo" a quem já tinha marcado. Criada `GET /sinalizacoes/minhas` para
+      rehidratar do servidor.
+- [x] **Salvar bloqueado e "Tô indo" sem memória na home** (`07c05f8`). `GET /descoberta` não
+      devolvia `lugar_id`, e o botão estava `disabled` com um aviso sobre "a fase 3" que já tinha
+      passado — parecia regra de produto e era lacuna de schema. Junto veio `lib/meus.ts`, que
+      reduz dez chamadas idênticas a duas por tela.
+
+### Superfícies e navegação
+
+- [x] **Painel do estabelecimento** (`033a1cb`) — terceira superfície do produto, sem design
+      prévio. Mostra só os dois totais que a agregação devolve, rotulados como "desde sempre".
+      Junto, `GET /estabelecimento/meus`, sem a qual o painel era inalcançável.
+- [x] **Cadastro de lugar era inalcançável no celular** (`951e044`) e o painel virou três etapas
+      explícitas (`2b9ce67`), com a região trocável ali dentro — antes ela vinha em silêncio do
+      cookie do app público.
+- [x] **Categoria estava no rolê e foi para o lugar** (`9dfbb56`), com vocabulário fechado.
+- [x] **A barra inferior flutuava no meio da tela** (`dfe71a9`) em salvos, perfil e conexões.
+
+### Infraestrutura e decisões
+
+- [x] **ADR-001: PWA agora, nativo depois** (`25e3645`). Nativo é destino declarado, com gatilhos
+      concretos de reavaliação e as três regras que mantêm o código portável.
+- [x] **`tests/` estava no `.dockerignore`** (`55f5283`): a suíte nunca entrava na imagem e o
+      pytest respondia "no files were found in testpaths" — falhando com cara de sucesso.
+- [x] **`tzdata` virou dependência declarada** (`83e95bf`). `zoneinfo` lê a base do sistema
+      operacional, que imagens enxutas não têm — seria surpresa no deploy do R7.
+- [x] **Procedimento de teste em celular documentado** (`f787eb5`): túnel `cloudflared`,
+      `allowedDevOrigins`, e o que funciona e o que não funciona por ele.
+
 ## Correções críticas
 
 - [x] 1. **Versionar o projeto.** Feito: repositório único na raiz, commit inicial `d44aa40` com
       161 arquivos. O `.git` vazio do backend foi retirado (não tinha commits nem remotes).
       Conferido que `.env` real, `node_modules`, `.next` e os canvas gerados ficaram de fora.
-- [ ] 1b. **Criar o remote e dar push.** É o item R2 do roteiro acima.
+- [x] 1b. **Criar o remote e dar push.** Feito — ver R2.
 - [x] 2. **Bairro piloto: Anhangabaú.** Pergunta 1 de `docs/conceito.md`, respondida. Ver R1.
 - [ ] 3. **Decidir o fluxo de criação de `Estabelecimento`.** Hoje não existe endpoint — só rotas
       de leitura pro dono (`backend/CLAUDE.md`, seção "Gap conhecido"). Decisão de produto: curador
@@ -96,13 +166,19 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       6 fases — é lá que o trabalho é acompanhado**). Análise que originou tudo:
       `docs/plano-frontend.md`. ⚠️ Em andamento: 8 rotas no ar nas duas visualizações. Faltam
       onboarding (`2a`/`2b`), login e a confirmação de sinal (`2e`).
-- [ ] 4a. **Decidir os 3 pontos travados de design ↔ backend** antes da fase 4 do plano: (i) o que
+- [x] 4a. **Os 3 pontos travados de design ↔ backend foram decididos e implementados.**
+      (i) CTA desabilitado com o motivo honesto (`components/ui/acao-sinalizar.tsx`); (ii) o card
+      social cita comentário, não sinalização; (iii) auth preguiçosa confirmada e construída.
+      Enunciado original: antes da fase 4 do plano: (i) o que
       o usuário comum vê no lugar do CTA "Tô indo", já que `POST /sinalizacoes` dá 403 pra ele
       (recomendação no plano: CTA desabilitado com explicação honesta); (ii) o card social da home
       passa a citar **comentários** em vez de sinalizações, pra não quebrar o anonimato prometido
       no `2d`/`2h`; (iii) confirmar a "auth preguiçosa" — app público read-only, login só quando a
       pessoa tenta salvar. Detalhes em `docs/plano-frontend.md`.
-- [ ] 4b. **Desenhar os estados vazios e as telas de auth.** O hi-fi pressupõe a Vila Madalena
+- [x] 4b. **Estados vazios e telas de auth existem.** As telas de auth foram desenhadas
+      (`docs/front-end-ideias/entrar/`) e implementadas. Os estados vazios foram escritos direto
+      no código, sem artboard — decisão consciente: eles dizem por que a tela está vazia, e esse
+      texto é argumento de produto, não composição visual. Enunciado original: O hi-fi pressupõe a Vila Madalena
       cheia e não tem login/cadastro; as duas coisas faltam antes de o app funcionar com banco
       vazio ou com usuário de verdade.
 - [x] 5. **Conectar o frontend ao backend com dado real do bairro piloto** (depende das tasks 2 e

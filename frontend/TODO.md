@@ -83,10 +83,16 @@ Fatia que prova a tese com dado real. Consome só rotas públicas — nenhuma mu
 - [ ] 17. **Estados de carregamento e erro:** falta o skeleton no formato dos cards (não spinner)
        via `loading.tsx`. O caso de API fora do ar já está coberto (`AvisoOffline` + `lib/fixtures`),
        e `/role/[id]` já trata 404 com `notFound()`.
-- [ ] 18. **Estados vazios.** ⚠️ Não existem no design (item 4b de `../TODO.md`). Sem bairro
+- [x] 18. **Estados vazios.** Feitos: home sem rolê, caderninho vazio, painel do curador sem nada
+      no ar, painel do dono sem casa vinculada e busca por localização fora de área. Enunciado
+      original: ⚠️ Não existem no design (item 4b de `../TODO.md`). Sem bairro
        piloto e sem seed, é o estado que mais vai aparecer. Precisa de design antes de codar, mas
        precisa de *algo* para a tela não quebrar: no mínimo um texto centrado no tom do produto.
-- [ ] 19. **Testar a altura das duas camadas em device real.** A ressalva de
+- [x] 19. **Testado em device real em 28/08**, por túnel, num Android em 4G: o card do rolê, o
+      seam e o mapa couberam na dobra com a barra inferior visível. A ressalva de altura que
+      vinha do começo do projeto está resolvida — e o mesmo teste revelou três bugs que só
+      apareciam no aparelho (mapa em branco, barra flutuando, "você está aqui" a 1,4 km).
+      Enunciado original: A ressalva de
        `../docs/arquitetura-backend-frontend.md`: na artboard de 740px as duas camadas cabem sem
        scroll; num telefone real (~650px úteis) provavelmente não. Se não couber, encolher o
        mini-mapa — não virar abas.
@@ -143,9 +149,13 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
 - [x] C3. **Ligado no backend.** O painel lista os rolês reais e o formulário publica de verdade. As rotas já existem inteiras (`POST/PATCH/DELETE /curador/lugares`
       e `/curador/roles`), mas exigem token e papel `curador` — depende da fase 3. Hoje o
       formulário não envia e a lista vem de exemplo.
-- [ ] C4. **`Role.descricao` no backend** (item 15 de `../TODO.md`) — sem ela o campo principal do
+- [x] C4. **`Role.descricao` no backend** — feito (migration 0002). Enunciado original: sem ela o campo principal do
       formulário não tem onde ser gravado.
-- [ ] C5. Sub-rotas `/curador/lugares` e `/curador/roles` — a nav já aponta para elas e **elas não
+- [x] C5. **`/curador/lugares` existe** (cadastro com categoria, endereço e coordenadas), e as duas
+      telas do painel são ligadas pelas três etapas (`components/ui/passos-curador.tsx`).
+      `/curador/roles` **não** foi criada e não deve ser: a lista do que está no ar vive no
+      próprio `/curador`, e uma terceira tela só para repetir isso seria navegação sem conteúdo.
+      Enunciado original: a nav já aponta para elas e **elas não
       existem** (404). Ou criar, ou tirar da nav.
 - [ ] C6. Seleção de ponto no mapa ao cadastrar lugar — hoje as coordenadas são coladas do Google
       Maps. Melhora quando o gargalo for esse, não a curadoria em si.
@@ -227,9 +237,11 @@ segue o hi-fi.
 
 ## Fase 5 — enriquecimento (depende do backend)
 
-- [ ] 32. Descrição do rolê no `2d`, quando existir `Role.descricao` (item 15 de `../TODO.md`) — é
+- [x] 32. **Descrição do rolê no `2d`** — feito, nas duas visualizações. Era
       o "motivo pra ir", a peça que mais falta para o `2d` cumprir a tese do produto.
-- [ ] 33. Card do curador ("VALIDOU EM CAMPO") e endereço do lugar (item 21 de `../TODO.md`).
+- [~] 33. **Endereço do lugar: feito** (migration 0003; aparece no `2d` nas duas visualizações).
+      **Card do curador ("VALIDOU EM CAMPO"): não.** Falta decidir o que ele afirma — assinar
+      com nome do curador é promessa de responsabilidade que ninguém combinou ainda.
 - [ ] 34. "N sinalizaram nas últimas 2h" no `2d`, quando `RolePublic` expuser a contagem (item 17).
 - [ ] 35. Distância "a pé" com geolocalização do browser, quando `RoleDescoberta` trouxer
       `lat`/`lng` (item 19).
