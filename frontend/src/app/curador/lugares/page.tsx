@@ -26,7 +26,7 @@ export default function CuradorLugaresPage() {
     <Porta
       titulo="Painel do curador"
       descricao="Cadastrar lugar é de quem valida em campo. Precisa entrar como curador."
-      curador
+      exige="curador"
     >
       <Conteudo />
     </Porta>

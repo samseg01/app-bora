@@ -1,4 +1,6 @@
 import type {
+  EngajamentoEstabelecimento,
+  EstabelecimentoPublic,
   LugarDetalhe,
   MapaPin,
   RoleDescoberta,
@@ -108,6 +110,10 @@ export const api = {
   sinalizar: (token: string, role_id: string, tipo: TipoSinalizacao = "presenca") =>
     req<SinalizacaoPublic>("/sinalizacoes", { token, metodo: "POST", corpo: { role_id, tipo } }),
 
+  /** Os sinais do próprio usuário ainda dentro da janela de 2h — o que permite ao
+      "Tá marcado" sobreviver a sair da tela e voltar. */
+  meusSinais: (token: string) => req<SinalizacaoPublic[]>("/sinalizacoes/minhas", { token }),
+
   cancelarSinal: (token: string, id: string) =>
     req<void>(`/sinalizacoes/${id}`, { token, metodo: "DELETE" }),
 
@@ -120,6 +126,18 @@ export const api = {
 
   removerRole: (token: string, id: string) =>
     req<void>(`/curador/roles/${id}`, { token, metodo: "DELETE" }),
+
+  /** Painel do dono. `meus` é o que resolve qual estabelecimento é o seu — o vínculo
+      não viaja no JWT, só o papel. */
+  meusEstabelecimentos: (token: string) =>
+    req<EstabelecimentoPublic[]>("/estabelecimento/meus", { token }),
+
+  estabelecimentoLugares: (token: string, id: string) =>
+    req<LugarPublic[]>(`/estabelecimento/${id}/lugares`, { token }),
+
+  /** ⚠️ Totais desde sempre, não de uma janela — ver o comentário em `types.ts`. */
+  engajamento: (token: string, id: string) =>
+    req<EngajamentoEstabelecimento>(`/estabelecimento/${id}/engajamento`, { token }),
 
   curadorLugares: (token: string, bairro?: string) =>
     req<LugarPublic[]>(

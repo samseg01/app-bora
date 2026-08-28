@@ -42,8 +42,9 @@ backend/
 │   │       ├── descoberta.py         # GET /descoberta, GET /roles/{id}
 │   │       ├── mapa.py                # GET /mapa, GET /lugares/{id}
 │   │       ├── contribuicao.py       # /salvos, /sinalizacoes (restrito, ver ADR-006), /comentarios
+│   │       │                          # + GET /sinalizacoes/minhas: sinais ativos do próprio usuário
 │   │       ├── curador.py            # CRUD /curador/lugares, /curador/roles (papel=curador)
-│   │       └── estabelecimento.py    # GET .../lugares, GET .../engajamento (dono do próprio estabelecimento)
+│   │       └── estabelecimento.py    # GET /meus (qual casa é minha), GET .../lugares, GET .../engajamento
 │   └── services/
 │       ├── frescor.py                # classificar_frescor() — a aposta técnica central (ADR-001)
 │       ├── descoberta.py             # queries agregadas: listar_descoberta, frescor_de_role, frescor_de_lugar
@@ -51,7 +52,9 @@ backend/
 │       └── engajamento.py            # agregação pro painel do estabelecimento
 └── tests/
     ├── conftest.py                   # Postgres+PostGIS real via docker-compose local, sem mock; isolamento por
-    │                                 # transação+savepoint revertida a cada teste (ver fixture db_session)
+    │                                 # transação+savepoint revertida a cada teste (ver fixture db_session).
+    │                                 # ATENÇÃO: é o MESMO banco do dev, e os fixtures usam e-mails
+    │                                 # fixos — conta manual com @exemplo.com colide (use @local.dev)
     ├── test_security.py, test_geo.py, test_frescor.py   # unitários, sem banco
     └── test_auth_api.py, test_descoberta_api.py, test_mapa_api.py, test_curador_crud.py,
         test_estabelecimento_panel.py, test_smoke_e2e.py  # via httpx.AsyncClient + ASGITransport
@@ -83,11 +86,17 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Núcleo transversal (config, db/session, security, geo) | ✅ |
 | Auth + rotas API v1 | ✅ |
 | Serviço de frescor | ✅ |
-| Testes de integração + smoke E2E (28 testes) | ✅ |
+| Testes de integração + smoke E2E (34 testes) | ✅ |
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
 | Criação de `Estabelecimento` via API | ❌ não existe endpoint ainda — hoje só é possível inserir direto no banco; ver `TODO.md` |
+
+## Rodar os testes
+
+`docker compose exec api uv run pytest`. Até agosto/2026 isso não funcionava: `tests/` estava
+no `.dockerignore`, então a suíte nunca entrava na imagem e o pytest respondia "no files were
+found in testpaths" — parecendo sucesso. A linha foi removida.
 
 ## Gap conhecido: criação de Estabelecimento
 

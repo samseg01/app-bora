@@ -18,36 +18,48 @@ import { guardarDestino, useSessao } from "@/lib/auth";
  * Antes de existir login, o critério era o ambiente (`NODE_ENV`), que era o mais
  * honesto possível na época. Agora é sessão de verdade.
  */
+/** O que dizer a quem está logado mas não tem o papel. Um por papel exigido: a recusa
+    precisa explicar a regra, não só negar. */
+const RECUSA = {
+  curador: {
+    titulo: "Só para curadores",
+    descricao:
+      "Publicar rolê é de quem valida em campo. Curador é convite — a gente chama quem já conhece o bairro a pé.",
+  },
+  dono_estabelecimento: {
+    titulo: "Só para donos de estabelecimento",
+    descricao:
+      "Este painel é de quem toca a casa. O cadastro ainda é feito na mão, junto com a gente — não há como se inscrever sozinho por enquanto.",
+  },
+} as const;
+
 export function Porta({
   titulo,
   descricao,
-  curador = false,
+  exige,
   children,
 }: {
   titulo: string;
   descricao: string;
-  /** Painel do curador: exige também o papel, não só estar logado. */
-  curador?: boolean;
+  /** Exige também o papel, não só estar logado. Sem isto, basta ter sessão. */
+  exige?: keyof typeof RECUSA;
   /** JSX comum: server component não consegue passar função para client component. */
   children: React.ReactNode;
 }) {
   const caminho = usePathname();
   const sessao = useSessao();
 
-  if (sessao && (!curador || sessao.papel === "curador")) return <>{children}</>;
+  if (sessao && (!exige || sessao.papel === exige)) return <>{children}</>;
 
-  const semPapel = sessao !== null && curador;
+  // Logado, mas sem o papel: não há ação a oferecer, só a regra a explicar.
+  const recusa = sessao !== null && exige ? RECUSA[exige] : null;
   return (
     <Aviso
-      curador={curador}
-      titulo={semPapel ? "Só para curadores" : titulo}
-      descricao={
-        semPapel
-          ? "Publicar rolê é de quem valida em campo. Curador é convite — a gente chama quem já conhece o bairro a pé."
-          : descricao
-      }
+      curador={exige === "curador"}
+      titulo={recusa?.titulo ?? titulo}
+      descricao={recusa?.descricao ?? descricao}
       acao={
-        semPapel ? null : (
+        recusa ? null : (
           <Link
             href="/entrar"
             onClick={() => guardarDestino(caminho)}

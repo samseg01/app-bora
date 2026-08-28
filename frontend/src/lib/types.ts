@@ -139,6 +139,37 @@ export interface SalvoDeConexao {
   por: string[];
 }
 
+/** GET /estabelecimento/meus */
+export interface EstabelecimentoPublic {
+  id: string;
+  dono_usuario_id: string;
+  nome: string;
+  /** `organico` = não paga nada. O destaque verificado é o único plano pago previsto. */
+  plano: "organico" | "destaque_verificado";
+  created_at: string;
+}
+
+/**
+ * GET /estabelecimento/{id}/engajamento
+ *
+ * ⚠️ Os dois totais são **desde sempre**, não uma janela de tempo: a agregação em
+ * `services/engajamento.py` conta todas as linhas de `Salvo` e `Sinalizacao`. Qualquer
+ * rótulo do tipo "esta semana" na tela seria mentira.
+ */
+export interface EngajamentoPorLugar {
+  lugar_id: string;
+  lugar_nome: string;
+  total_salvos: number;
+  total_sinalizacoes: number;
+}
+
+export interface EngajamentoEstabelecimento {
+  estabelecimento_id: string;
+  total_salvos: number;
+  total_sinalizacoes: number;
+  por_lugar: EngajamentoPorLugar[];
+}
+
 /** POST /sinalizacoes */
 export interface SinalizacaoPublic {
   id: string;

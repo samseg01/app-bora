@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AtalhoPainel } from "@/components/ui/atalho-painel";
 import { SairDaConta } from "@/components/ui/sair-da-conta";
 import { DesktopShell } from "./shell";
 
@@ -67,18 +68,9 @@ export function PerfilDesktop({
           </div>
         </div>
 
-        <Link
-          href="/curador"
-          className="mt-6 flex max-w-2xl flex-col rounded-[20px] border border-amber/24 bg-gradient-to-br from-amber/13 to-violet/9 px-4.5 py-4.5"
-        >
-          <div className="rotulo text-amber">para donos de casa e curadores</div>
-          <div className="mt-2 text-[15px] font-bold">
-            Tenho um bar e quero cadastrar um rolê
-          </div>
-          <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
-            Um curador vai a pé validar antes de publicar.
-          </p>
-        </Link>
+        <div className="mt-6 max-w-2xl">
+          <AtalhoPainel />
+        </div>
         <div className="mt-8 max-w-2xl">
           <SairDaConta />
         </div>

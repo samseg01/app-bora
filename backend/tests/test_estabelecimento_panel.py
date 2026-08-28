@@ -61,3 +61,36 @@ async def test_engajamento_estabelecimento_inexistente_404(
         headers=auth_headers(dono),
     )
     assert resp.status_code == 404
+
+
+async def test_meus_estabelecimentos_devolve_so_os_do_dono(
+    client: AsyncClient,
+    criar_usuario: UsuarioFactory,
+    criar_estabelecimento: EstabelecimentoFactory,
+) -> None:
+    """Sem esta rota o painel do dono é inalcançável: o vínculo não viaja no JWT."""
+    dono = await criar_usuario(
+        "Dona", "dona.meus@exemplo.com", papel=PapelUsuario.DONO_ESTABELECIMENTO
+    )
+    alheio = await criar_usuario(
+        "Alheio", "alheio.meus@exemplo.com", papel=PapelUsuario.DONO_ESTABELECIMENTO
+    )
+    minha = await criar_estabelecimento(dono, nome="Casa da Dona")
+    await criar_estabelecimento(alheio, nome="Casa Alheia")
+
+    resp = await client.get("/api/v1/estabelecimento/meus", headers=auth_headers(dono))
+    assert resp.status_code == 200
+    corpo = resp.json()
+    assert [e["id"] for e in corpo] == [str(minha.id)]
+    assert corpo[0]["nome"] == "Casa da Dona"
+
+
+async def test_meus_estabelecimentos_vazio_pra_quem_nao_tem_casa(
+    client: AsyncClient, criar_usuario: UsuarioFactory
+) -> None:
+    """Lista vazia, não 403: a conta é válida, ela só não tem casa vinculada — e a tela
+    precisa distinguir isso de "você não pode entrar aqui"."""
+    comum = await criar_usuario("Comum", "comum.meus@exemplo.com")
+    resp = await client.get("/api/v1/estabelecimento/meus", headers=auth_headers(comum))
+    assert resp.status_code == 200
+    assert resp.json() == []

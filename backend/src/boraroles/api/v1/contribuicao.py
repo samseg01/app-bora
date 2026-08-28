@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -6,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from boraroles.api.deps import CurrentUser, DbSession, require_role
+from boraroles.config import get_settings
 from boraroles.db.models import Comentario, PapelUsuario, Salvo, Sinalizacao, Usuario
 from boraroles.schemas.comentario import ComentarioCreate, ComentarioPublic
 from boraroles.schemas.salvo import SalvoCreate, SalvoPublic
@@ -67,6 +69,31 @@ async def sinalizar(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alvo inexistente") from exc
     await db.refresh(sinalizacao)
     return sinalizacao
+
+
+@router.get("/sinalizacoes/minhas", response_model=list[SinalizacaoPublic])
+async def meus_sinais(usuario: CurrentUser, db: DbSession) -> list[Sinalizacao]:
+    """Os sinais do próprio usuário que ainda estão valendo.
+
+    Sem isto o "Tá marcado" da tela 2e vive só na memória do componente: ao sair do
+    detalhe do rolê o estado some e o app volta a oferecer "Tô indo" para quem já
+    marcou — dizendo à pessoa que o sinal dela não existe, quando ele está no banco
+    alimentando o frescor. É a rota que permite rehidratar aquele estado.
+
+    O recorte é a mesma janela warm que `services/frescor.py` usa para contar: um
+    sinal fora dela já não afeta nada que se veja, então mostrá-lo como ativo seria
+    outra forma de mentir.
+
+    Devolve só o que é do requisitante. Sinalização é anônima por promessa do
+    produto — não existe rota para ver o sinal de terceiros, nem agregada por pessoa.
+    """
+    corte = datetime.now(UTC) - timedelta(minutes=get_settings().frescor_warm_window_minutes)
+    result = await db.execute(
+        select(Sinalizacao)
+        .where(Sinalizacao.usuario_id == usuario.id, Sinalizacao.timestamp >= corte)
+        .order_by(Sinalizacao.timestamp.desc())
+    )
+    return list(result.scalars().all())
 
 
 @router.delete("/sinalizacoes/{sinalizacao_id}", status_code=status.HTTP_204_NO_CONTENT)

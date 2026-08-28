@@ -71,8 +71,10 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       como ensaio, mostrando o canvas de design no celular. Não vira o bairro piloto por isso, e
       ensina como a conversa corre sem custar nenhuma semana.
 - [ ] R10. **A conversa.** Mostrar a tela de descoberta com o bar dele e o pin aceso no mapa.
-      **Não** mostrar o painel do estabelecimento: vai estar zerado, e o `conceito.md` diz que esse
-      painel só tem valor porque a comunidade existe.
+      O painel do estabelecimento **existe** desde 28/08 (`/estabelecimento`), mas o conselho não
+      mudou: **não** abrir ele na conversa. Num bairro que ainda não foi curado ele mostra zeros
+      honestos, e o `conceito.md` diz que esse painel só tem valor porque a comunidade existe.
+      Ele é o que se mostra na *segunda* conversa, quando houver número.
 
 ## Correções críticas
 
@@ -177,10 +179,11 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        já viaja dentro do JWT e o front decodifica client-side pra decidir o gating de UI.
 - [ ] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — destrava distância "a pé" (com
        geolocalização) e navegação direta do card pro lugar.
-- [ ] 20. **`DELETE /sinalizacoes/{id}`** — "Cancelar meu sinal" do `2e` não tem rota.
+- [x] 20. **`DELETE /sinalizacoes/{id}`** — feito, junto com `GET /sinalizacoes/minhas`, que é o
+       que faz o "Tá marcado" sobreviver a sair da tela e voltar.
 - [ ] 21. **`Lugar.endereco`** (nullable) — o `2d` mostra "Rua Aspicuelta, 340" e o schema só tem
        `geo` e `bairro`.
-- [ ] 22. **Seed de desenvolvimento.** Hoje popular o banco exige criar usuário, promover a curador
+- [x] 22. **Seed de desenvolvimento.** Hoje popular o banco exige criar usuário, promover a curador
        via `scripts/promote_role.py` e cadastrar lugares/rolês na mão. Um seed com a Vila Madalena
        fictícia (14 lugares, 3 rolês, comentários, sinalizações recentes) faz o frontend ter contra
        o que rodar desde o primeiro dia, e reproduz os estados `live`/`warm`/`new` de propósito.
@@ -210,6 +213,16 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        acontece. Suspeita levantada em 28/08 e ainda **não confirmada com teste**: reproduzir
        publicando um rolê às 21h e às 23h e ver se aparecem. Se confirmar, a janela deve ser
        calculada em `America/Sao_Paulo` e só então convertida para UTC na consulta.
+
+- [ ] 35. **Não há autocadastro de estabelecimento, e agora dá pra ver isso na tela.** Com o
+       painel do dono no ar, a lacuna do R9 deixou de ser abstrata: uma conta de dono sem casa
+       vinculada cai num recado explicando que o vínculo é manual. Isso é honesto e sustentável
+       enquanto forem poucas casas visitadas a pé — vira gargalo no dia em que não for.
+- [ ] 36. **As métricas do painel do dono não têm janela de tempo.** `total_salvos` e
+       `total_sinalizacoes` somam tudo desde sempre (`services/engajamento.py`). A tela diz isso
+       com todas as letras em vez de fingir uma janela, mas "salvaram esta semana" é a pergunta
+       que o dono realmente faz. Exige agregação por período — e provavelmente é o primeiro
+       pedido dele depois da conversa.
 
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 

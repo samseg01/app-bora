@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
@@ -21,10 +21,23 @@ import { hora } from "@/lib/tempo";
  * O contador de expiração é **convenção de interface**, não promessa da API: o backend
  * não apaga sinal nenhum, ele deixa de contar depois da janela warm. "Some sozinho" é
  * verdade sobre o efeito, não sobre a linha no banco.
+ *
+ * O "Tá marcado" **não pode viver só em estado de componente**: ao sair do detalhe e
+ * voltar, o React desmonta tudo e a tela voltava a oferecer "Tô indo" para quem já
+ * tinha marcado — dizendo que o sinal não existe enquanto ele estava no banco
+ * alimentando o frescor. Por isso o estado é rehidratado de `GET /sinalizacoes/minhas`
+ * a cada montagem. A fonte da verdade é o servidor; o componente só reflete.
  */
 
 /** Espelha FRESCOR_WARM_WINDOW_MINUTES do backend. */
 const JANELA_MIN = 120;
+
+/** Minutos que faltam para o sinal sair da janela. Fora de componente de propósito:
+    ler o relógio durante o render é impuro e o React Compiler recusa. */
+function minutosRestantes(timestamp: string): number {
+  const fim = new Date(timestamp).getTime() + JANELA_MIN * 60_000;
+  return Math.max(0, Math.round((fim - Date.now()) / 60_000));
+}
 
 export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: string }) {
   const sessao = useSessao();
@@ -32,11 +45,37 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
   const router = useRouter();
 
   const [sinalId, setSinalId] = useState<string | null>(null);
-  /** Minutos restantes no instante em que se marcou. Calculado no evento, não no
-      render: ler o relógio durante o render é impuro e o React Compiler recusa. */
+  /** Minutos restantes no instante em que se marcou (ou em que se rehidratou). É um
+      retrato, não um relógio: reabrir a tela recalcula. */
   const [restante, setRestante] = useState<number | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [ocupado, setOcupado] = useState(false);
+
+  const token = sessao?.token;
+
+  useEffect(() => {
+    if (!token) return;
+    let vivo = true;
+    void api
+      .meusSinais(token)
+      .then((sinais) => {
+        const meu = sinais.find((s) => s.role_id === roleId);
+        if (!vivo || !meu) return;
+        const faltam = minutosRestantes(meu.timestamp);
+        // Zero significa que a janela fechou entre o corte do servidor e agora: o
+        // sinal não conta mais para ninguém, então não anunciamos que conta.
+        if (faltam <= 0) return;
+        setSinalId(meu.id);
+        setRestante(faltam);
+      })
+      .catch(() => {
+        /* silencioso: sem isto a tela só perde a memória do sinal, que é o
+           comportamento antigo — não vale um erro na cara de quem só quer marcar */
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [token, roleId]);
 
   const podeSinalizar =
     sessao?.papel === "curador" || sessao?.papel === "dono_estabelecimento";
@@ -48,8 +87,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     try {
       const s = await api.sinalizar(sessao.token, roleId);
       setSinalId(s.id);
-      const fim = new Date(s.timestamp).getTime() + JANELA_MIN * 60_000;
-      setRestante(Math.max(0, Math.round((fim - Date.now()) / 60_000)));
+      setRestante(minutosRestantes(s.timestamp));
       router.refresh();
     } catch (e) {
       setErro(

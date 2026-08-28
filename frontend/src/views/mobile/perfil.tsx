@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AtalhoPainel } from "@/components/ui/atalho-painel";
 import { SairDaConta } from "@/components/ui/sair-da-conta";
 import { MobileShell } from "./shell";
 
@@ -58,16 +59,9 @@ export function PerfilMobile({
         </div>
       </div>
 
-      <Link
-        href="/curador"
-        className="mx-5.5 mt-6 mb-5 block rounded-[20px] border border-amber/24 bg-gradient-to-br from-amber/13 to-violet/9 px-4.5 py-4"
-      >
-        <div className="rotulo text-amber">para donos de casa e curadores</div>
-        <div className="mt-2 text-[15px] font-bold">Tenho um bar e quero cadastrar um rolê</div>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
-          Um curador vai a pé validar antes de publicar.
-        </p>
-      </Link>
+      <div className="mx-5.5 mt-6 mb-5">
+        <AtalhoPainel />
+      </div>
       <div className="mx-5.5 mt-6 mb-5">
         <SairDaConta />
       </div>

@@ -25,7 +25,7 @@ export default function CuradorPage() {
     <Porta
       titulo="Painel do curador"
       descricao="Publicar rolê é coisa de quem valida em campo. Precisa entrar como curador."
-      curador
+      exige="curador"
     >
       <PainelCarregado />
     </Porta>

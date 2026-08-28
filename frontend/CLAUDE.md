@@ -22,13 +22,21 @@ Contexto de produto: `../docs/conceito.md`. Backend: `../backend/CLAUDE.md`.
 | `/conexoes` | aba de Conexões + estado vazio | só exemplo — **nenhuma rota existe no backend** |
 | `/conexoes/convite` | convite por link | idem; o link fica pendente |
 | `/entrar`, `/criar-conta` | login e cadastro | **API real** — cria conta, entra e guarda o token |
+| `/estabelecimento` | painel do dono (sem design prévio) | **API real** — `/estabelecimento/meus` + `/engajamento` |
 
 **Sessão:** token em `localStorage` (`lib/auth.ts`). O `papel` vem dentro do JWT e é lido sem
 verificar assinatura — é só gating de UI, quem autoriza é o backend. As telas protegidas passam
-por `components/ui/porta.tsx`, que usa `useSyncExternalStore` porque ler `localStorage` durante o
+por `components/ui/porta.tsx` — a prop `exige` (`"curador"` | `"dono_estabelecimento"`) pede também
+o papel, e cada papel tem seu texto de recusa. Ela usa `useSyncExternalStore` porque ler `localStorage` durante o
 render é impuro e num efeito com `setState` o React Compiler recusa.
 
-Faltam o onboarding (`2a`/`2b`), o login e a confirmação de sinalização (`2e`). Detalhe em `TODO.md`.
+Falta o passo 2 do onboarding (`2b`, gostos), adiado de propósito. O login e a confirmação de
+sinalização (`2e`) já existem. Detalhe em `TODO.md`.
+
+**O "Tá marcado" é rehidratado do servidor**, não guardado em estado de componente: ao montar,
+`components/ui/acao-sinalizar.tsx` chama `GET /sinalizacoes/minhas` e recupera o sinal ativo. Sem
+isso, sair do detalhe e voltar oferecia "Tô indo" a quem já tinha marcado — dizendo que o sinal não
+existe enquanto ele estava no banco alimentando o frescor.
 
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
