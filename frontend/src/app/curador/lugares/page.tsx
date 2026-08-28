@@ -63,7 +63,7 @@ function Lugares() {
     if (!token) return;
     let vivo = true;
     void api
-      .curadorLugares(token)
+      .curadorLugares(token, bairro)
       .then((l) => {
         if (vivo) setLista(l);
       })
@@ -73,7 +73,7 @@ function Lugares() {
     return () => {
       vivo = false;
     };
-  }, [token]);
+  }, [token, bairro]);
 
   async function cadastrar(e: React.FormEvent) {
     e.preventDefault();

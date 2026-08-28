@@ -3,7 +3,7 @@
   "bairro": "Vila Madalena",
   "curador": {
     "nome": "Curador de exemplo",
-    "email": "curador@exemplo.local",
+    "email": "curador@exemplo.com",
     "senha": "exemplo-local-8"
   },
   "lugares": [
@@ -111,17 +111,17 @@
   "usuarios": [
     {
       "nome": "Marina",
-      "email": "marina@exemplo.local",
+      "email": "marina@exemplo.com",
       "senha": "exemplo-local-8"
     },
     {
       "nome": "Rafa",
-      "email": "rafa@exemplo.local",
+      "email": "rafa@exemplo.com",
       "senha": "exemplo-local-8"
     },
     {
       "nome": "Bia",
-      "email": "bia@exemplo.local",
+      "email": "bia@exemplo.com",
       "senha": "exemplo-local-8"
     }
   ]

@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -39,8 +40,18 @@ async def criar_lugar(body: LugarCreate, usuario: CuradorUser, db: DbSession) ->
 
 
 @router.get("/lugares", response_model=list[LugarPublic])
-async def listar_lugares(usuario: CuradorUser, db: DbSession) -> list[LugarPublic]:
-    lugares = (await db.execute(select(Lugar))).scalars().all()
+async def listar_lugares(
+    usuario: CuradorUser, db: DbSession, bairro: str | None = None
+) -> list[LugarPublic]:
+    """Sem `bairro`, devolve tudo — o painel sempre passa o recorte em que está.
+
+    Antes não havia filtro nenhum, e o painel dizia "o que está em X" listando os
+    lugares de todos os bairros.
+    """
+    stmt = select(Lugar)
+    if bairro:
+        stmt = stmt.where(Lugar.bairro == bairro)
+    lugares = (await db.execute(stmt)).scalars().all()
     return [lugar_to_public(lugar) for lugar in lugares]
 
 
@@ -110,8 +121,18 @@ async def criar_role(body: RoleCreate, usuario: CuradorUser, db: DbSession) -> R
 
 
 @router.get("/roles", response_model=list[RolePublic])
-async def listar_roles(usuario: CuradorUser, db: DbSession) -> list[RolePublic]:
-    roles = (await db.execute(select(Role))).scalars().all()
+async def listar_roles(
+    usuario: CuradorUser, db: DbSession, bairro: str | None = None, encerrados: bool = False
+) -> list[RolePublic]:
+    """Por padrão só o que ainda não terminou — o painel chama isso de "no ar agora", e
+    incluir rolê encerrado tornava a contagem falsa. `encerrados=true` traz o histórico.
+    """
+    stmt = select(Role)
+    if bairro:
+        stmt = stmt.join(Lugar, Lugar.id == Role.lugar_id).where(Lugar.bairro == bairro)
+    if not encerrados:
+        stmt = stmt.where(Role.data_fim >= datetime.now(UTC))
+    roles = (await db.execute(stmt)).scalars().all()
     resultado = []
     for role in roles:
         frescor = await frescor_de_role(db, role)

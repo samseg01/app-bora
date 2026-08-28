@@ -56,3 +56,9 @@ que é o que a `/descoberta` procura.
 **`descricao` é o campo que importa.** É o "motivo pra ir": o que você viu que faria alguém sair
 de casa. Sem ele o card do rolê é título mais horário, e é justamente o card que se mostra a um
 dono de casa.
+
+## Emails dos usuários de exemplo
+
+Use um domínio comum (`@exemplo.com`). Domínios de uso especial como `.local` e `.test` são
+**rejeitados pelo `EmailStr`** do backend — o seed grava direto no banco e passa, mas o
+`POST /auth/login` recusa depois, e a conta fica inutilizável para testar o app.

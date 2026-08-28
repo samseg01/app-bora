@@ -41,13 +41,15 @@ function PainelCarregado() {
     terminandoLogo: number;
   } | null>(null);
 
+  const bairro = bairroDoCookie() ?? BAIRROS[0].nome;
+
   useEffect(() => {
     if (!token) return;
     let vivo = true;
     void (async () => {
       const [roles, lugares] = await Promise.all([
-        api.curadorRoles(token),
-        api.curadorLugares(token),
+        api.curadorRoles(token, bairro),
+        api.curadorLugares(token, bairro),
       ]);
       if (!vivo) return;
 
@@ -77,11 +79,9 @@ function PainelCarregado() {
     return () => {
       vivo = false;
     };
-  }, [token]);
+  }, [token, bairro]);
 
   if (!dados) return null;
-
-  const bairro = bairroDoCookie() ?? BAIRROS[0].nome;
 
   return (
     <>

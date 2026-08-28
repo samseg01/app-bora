@@ -1,5 +1,6 @@
 import { DesktopShell } from "./shell";
 import { FormPublicar } from "./form-publicar";
+import { TirarDoAr } from "@/components/ui/tirar-do-ar";
 import { frescorUI } from "@/lib/frescor";
 import { hora } from "@/lib/tempo";
 import type { LugarPublic, RoleDescoberta } from "@/lib/types";
@@ -32,7 +33,7 @@ export function CuradorDesktop({
       <section className="min-w-0 flex-1 px-8 py-8">
         <h1 className="font-display text-[42px] leading-none uppercase">A noite de hoje</h1>
         <p className="mt-2 text-[13px] text-muted-2">
-          o que está no ar agora em {bairro}
+          o que está no ar agora em {bairro} — some sozinho no horário de término
         </p>
 
         <div className="mt-5.5 flex gap-3">
@@ -84,22 +85,9 @@ export function CuradorDesktop({
                   />
                   {ui?.label ?? "sem sinal"}
                 </span>
-                <div className="flex shrink-0 gap-2">
-                  <button
-                    type="button"
-                    disabled
-                    className="cursor-not-allowed rounded-xl border border-white/16 px-3 py-2 text-xs font-semibold text-text-soft opacity-50"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    disabled
-                    className="cursor-not-allowed rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-muted-2 opacity-50"
-                  >
-                    Tirar do ar
-                  </button>
-                </div>
+                {/* "Editar" saiu: a rota PATCH existe, mas sem formulário de edição o botão
+                    era enfeite. Corrigir um rolê hoje é tirar do ar e publicar de novo. */}
+                <TirarDoAr roleId={role.id} />
               </div>
             );
           })}

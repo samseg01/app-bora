@@ -114,9 +114,18 @@ export const api = {
   comentar: (token: string, role_id: string, texto: string) =>
     req<unknown>("/comentarios", { token, metodo: "POST", corpo: { role_id, texto } }),
 
-  curadorRoles: (token: string) => req<RolePublic[]>("/curador/roles", { token }),
+  /** Só o que ainda não terminou, e só do bairro em que o painel está. */
+  curadorRoles: (token: string, bairro: string) =>
+    req<RolePublic[]>(`/curador/roles?bairro=${encodeURIComponent(bairro)}`, { token }),
 
-  curadorLugares: (token: string) => req<LugarPublic[]>("/curador/lugares", { token }),
+  removerRole: (token: string, id: string) =>
+    req<void>(`/curador/roles/${id}`, { token, metodo: "DELETE" }),
+
+  curadorLugares: (token: string, bairro?: string) =>
+    req<LugarPublic[]>(
+      `/curador/lugares${bairro ? `?bairro=${encodeURIComponent(bairro)}` : ""}`,
+      { token },
+    ),
 
   salvar: (token: string, lugar_id: string) =>
     req<unknown>("/salvos", { token, metodo: "POST", corpo: { lugar_id } }),
