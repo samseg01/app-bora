@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MapaReal } from "@/components/ui/mapa-real";
+import { SugerirLugar } from "@/components/ui/sugerir-lugar";
 import { DesktopShell } from "./shell";
 import { frescorUI } from "@/lib/frescor";
 import { hora, idade } from "@/lib/tempo";
@@ -80,6 +81,9 @@ export function MapaDesktop({
               </button>
             );
           })}
+          <div className="mt-2 px-1 pb-4">
+            <SugerirLugar bairro={bairro} variante={pins.length === 0 ? "bloco" : "linha"} />
+          </div>
         </div>
       </section>
 

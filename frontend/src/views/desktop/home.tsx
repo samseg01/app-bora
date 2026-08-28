@@ -1,6 +1,7 @@
 import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleRow } from "@/components/ui/role-row";
 import { SeletorBairro } from "@/components/ui/seletor-bairro";
+import { SugerirLugar } from "@/components/ui/sugerir-lugar";
 import { DesktopShell } from "./shell";
 import { LegendaFrescor } from "./legenda-frescor";
 import type { ComentarioResumo, MapaPin, RoleDescoberta } from "@/lib/types";
@@ -58,6 +59,9 @@ export function HomeDesktop({
                 <RoleRow key={role.id} role={role} indice={i} />
               ))}
             </div>
+            <div className="mt-4 max-w-[34rem]">
+              <SugerirLugar bairro={bairro} variante="linha" />
+            </div>
           </>
         ) : (
           <VazioDescoberta bairro={bairro} />
@@ -105,6 +109,7 @@ function VazioDescoberta({ bairro }: { bairro: string }) {
       <p className="mt-3 text-[13px] leading-relaxed text-muted-3">
         Volte à noite, que é quando o bairro tem o que mostrar.
       </p>
+      <SugerirLugar bairro={bairro} />
     </div>
   );
 }

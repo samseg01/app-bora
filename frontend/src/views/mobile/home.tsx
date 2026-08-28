@@ -1,6 +1,7 @@
 import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleCard } from "@/components/ui/role-card";
 import { SeletorBairro } from "@/components/ui/seletor-bairro";
+import { SugerirLugar } from "@/components/ui/sugerir-lugar";
 import { MobileShell } from "./shell";
 import type { MapaPin, RoleDescoberta } from "@/lib/types";
 
@@ -57,6 +58,7 @@ export function HomeMobile({
             Um rolê só aparece depois que alguém foi até lá e viu. Em {bairro} isso ainda não
             aconteceu — e a gente prefere a tela vazia a encher de lugar que ninguém visitou.
           </p>
+          <SugerirLugar bairro={bairro} />
         </div>
       )}
 

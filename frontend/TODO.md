@@ -91,6 +91,20 @@ Fatia que prova a tese com dado real. Consome só rotas públicas — nenhuma mu
        scroll; num telefone real (~650px úteis) provavelmente não. Se não couber, encolher o
        mini-mapa — não virar abas.
 
+## Sugerir um lugar — o começo da rotina de curadoria
+
+- [x] S1. **Convite para indicar lugar**, nos estados vazios (bloco) e ao pé da lista (linha).
+      **Sem backend de propósito:** abre WhatsApp ou email do curador com o bairro já no texto.
+      O `conceito.md` manda ir o mais longe possível no manual antes da primeira linha de
+      sistema — e há uma razão de produto junto: **sugestão não é conteúdo, é pista.** Ela não
+      pode virar lugar no app, senão entra coisa que ninguém visitou.
+      O copy diz que alguém vai **a pé conferir antes** — sem isso a pessoa espera ver o lugar
+      publicado no dia seguinte e some quando não vê.
+      Contato em `NEXT_PUBLIC_CURADOR_WHATSAPP` ou `NEXT_PUBLIC_CURADOR_EMAIL`; sem nenhum dos
+      dois o convite não aparece.
+- [ ] S2. **Virar entidade `Sugestao` + fila no painel do curador** — só quando o volume
+      justificar. Antes disso é automatizar processo que ninguém rodou.
+
 ## Fase 2 — onboarding e perfil (client-side)
 
 - [x] 20. **Abertura — escolha de bairro** (`/abertura`, era a tela `2a`). Duas diferenças
