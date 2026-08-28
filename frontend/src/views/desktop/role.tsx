@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AcaoSinalizar } from "@/components/ui/acao-sinalizar";
 import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MapaReal } from "@/components/ui/mapa-real";
 import { DesktopShell } from "./shell";
@@ -77,18 +78,7 @@ export function RoleDesktop({
               </div>
             </div>
 
-            {/* POST /sinalizacoes responde 403 para papel comum (ADR-0006), e não há login
-                ainda. Mostrar desabilitado e dizer por quê é mais honesto que esconder. */}
-            <button
-              type="button"
-              disabled
-              className="cursor-not-allowed rounded-2xl bg-magenta/40 py-3.5 text-[15px] font-bold text-white/70"
-            >
-              Tô indo — vale por 2h
-            </button>
-            <p className="-mt-1.5 text-center text-[11.5px] leading-snug text-muted-3">
-              Sinalizar ainda está com os curadores da Vila.
-            </p>
+            <AcaoSinalizar roleId={role.id} dataFim={role.data_fim} />
 
             <button
               type="button"

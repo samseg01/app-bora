@@ -65,11 +65,23 @@ export function SalvosDesktop({ itens }: { itens: ItemSalvo[] }) {
           </div>
         )}
 
-        <div className="mt-5.5 grid grid-cols-3 gap-4.5">
-          {itens.map(({ lugar, role }, i) => (
-            <CardSalvo key={lugar.id} lugar={lugar} role={role} indice={i} />
-          ))}
-        </div>
+        {itens.length === 0 ? (
+          <div className="mt-7 max-w-[30rem] rounded-[20px] border border-white/7 bg-card px-6 py-7">
+            <h2 className="font-display text-[26px] leading-tight uppercase">
+              Caderninho vazio
+            </h2>
+            <p className="mt-3 text-[13.5px] leading-relaxed text-muted text-pretty">
+              Salve um lugar tocando no coração quando algum te interessar. Fica só pra você —
+              serve pra lembrar depois, não pra mostrar pra ninguém.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-5.5 grid grid-cols-3 gap-4.5">
+            {itens.map(({ lugar, role }, i) => (
+              <CardSalvo key={lugar.id} lugar={lugar} role={role} indice={i} />
+            ))}
+          </div>
+        )}
       </section>
     </DesktopShell>
   );

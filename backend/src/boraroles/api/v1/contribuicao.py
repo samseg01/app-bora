@@ -69,6 +69,25 @@ async def sinalizar(
     return sinalizacao
 
 
+@router.delete("/sinalizacoes/{sinalizacao_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def cancelar_sinalizacao(
+    sinalizacao_id: uuid.UUID, usuario: CurrentUser, db: DbSession
+) -> None:
+    """Desfaz o próprio sinal — o "cancelar meu sinal" da tela de confirmação.
+
+    Sinal de outra pessoa devolve 404, não 403: 403 confirmaria que aquele id existe,
+    e sinalização é anônima por promessa do produto.
+
+    Note que aqui basta estar autenticado, sem a restrição de papel do POST: quem
+    conseguiu criar pode desfazer, e negar isso prenderia a pessoa num sinal errado.
+    """
+    sinalizacao = await db.get(Sinalizacao, sinalizacao_id)
+    if sinalizacao is None or sinalizacao.usuario_id != usuario.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Não encontrado")
+    await db.delete(sinalizacao)
+    await db.commit()
+
+
 @router.post("/comentarios", response_model=ComentarioPublic, status_code=status.HTTP_201_CREATED)
 async def comentar(body: ComentarioCreate, usuario: CurrentUser, db: DbSession) -> Comentario:
     comentario = Comentario(

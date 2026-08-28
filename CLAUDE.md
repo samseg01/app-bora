@@ -126,7 +126,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: modelo de dados + migration inicial | ✅ | `backend/alembic/versions/0001_initial_schema.py`, escrita à mão |
 | Backend: auth (signup/login/me JWT) | ✅ | ADR-0003; `GET /auth/me` adicionado junto com o login do frontend |
 | Backend: API de leitura (`/descoberta`, `/mapa`) | ✅ | curatorial, sem ranking algorítmico (decisão registrada) |
-| Backend: API de contribuição (salvar, sinalizar, comentar) | ✅ | sinalização restrita — ver ADR-0006/backend TODO |
+| Backend: API de contribuição (salvar, sinalizar, comentar, cancelar sinal) | ✅ | sinalização restrita (ADR-0006); `DELETE /sinalizacoes/{id}` adicionado |
 | Backend: painel do curador (CRUD lugar/role) | ✅ | API pronta; UI não existe |
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | API pronta; UI não existe |
 | Backend: serviço de frescor | ✅ | ADR-0001 — a aposta técnica central do produto |
@@ -139,7 +139,10 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — `2c` home, `2d` detalhe, `2f` mapa, `2g` salvos, `2h` perfil | ✅ | 6 rotas, cada uma nas duas visualizações |
 | Frontend — painel do curador (UI) | ⚠️ | tela pronta nas duas visualizações, **sem backend ligado** (precisa de login) |
 | Frontend — login e criar conta | ✅ | `/entrar` e `/criar-conta`, desenhados e implementados; sessão em `localStorage` |
-| Frontend — abertura com escolha de bairro (`2a`) | ✅ | `/abertura`, com contagens reais e sem prometer bairro futuro |
+| Frontend — abertura com escolha de bairro (`2a`) | ✅ | `/abertura` + seletor no cabeçalho da home |
+| Frontend — sinalizar e confirmação (`2e`) | ✅ | curador sinaliza, comenta e cancela de verdade; papel comum vê o porquê |
+| Frontend — salvos com dado real | ✅ | `GET /salvos` + N chamadas a `/lugares/{id}` (item 16 melhora isso) |
+| Frontend — indicar um lugar | ✅ | link para WhatsApp/email do curador, sem backend por decisão |
 | Frontend — onboarding de gostos (`2b`) e confirmação de sinal (`2e`) | ❌ | o `2b` segue sem uso funcional por decisão |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
 | Frontend — painel do estabelecimento | ❌ | sem design e sem tela; só depois de haver comunidade |
@@ -147,7 +150,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
 | Deploy de produção | ❌ | só `docker compose` local hoje |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
-| Social — aba de Conexões: UI | ⚠️ | telas prontas nas duas visualizações (`/conexoes`, `/conexoes/convite`), **nenhuma rota no backend** |
+| Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
 | Fila/worker/Redis | ❌ | fora de escopo por decisão (ADR-0004) — só entra se leitura em tempo real virar problema medido |
 

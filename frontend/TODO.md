@@ -163,7 +163,8 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
        intenção para depois do login.
 - [ ] 27. **Salvar e dessalvar** no `2d` e no `2f`, com atualização otimista e reversão em erro.
        `POST /salvos` devolve 409 se já salvo — tratar como sucesso idempotente, não como falha.
-- [ ] 28. **Tela `2g` — Salvos.** "Meu caderninho", contagem, filtros e lista. ⚠️ Com a API atual
+- [x] 28. **Tela `2g` — Salvos, com dado real.** `GET /salvos` + uma chamada a `/lugares/{id}` por item (o N+1 do item 16). Estado vazio honesto.
+- [ ] 28b. **Salvar/dessalvar de fato** — os botões de coração seguem desabilitados (item 27). "Meu caderninho", contagem, filtros e lista. ⚠️ Com a API atual
        custa uma chamada a `/lugares/{id}` por item — fazer a mudança 16 de `../TODO.md` antes, ou
        aceitar o N+1 conscientemente. Os filtros "Abertos agora" e "Nunca fui" e os estados
        "aberto"/"fechado" **não são implementáveis**: não há horário de funcionamento no schema nem
@@ -171,16 +172,17 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
 
 ## Fase 4 — contribuição
 
-- [ ] 29. **CTA de sinalizar no `2d`.** Depende da decisão (i) do item 4a de `../TODO.md`.
+- [x] 29. **CTA de sinalizar no `2d`.** Três comportamentos: deslogado leva para entrar guardando o destino; papel comum vê desabilitado com o motivo; curador sinaliza de verdade. Depende da decisão (i) do item 4a de `../TODO.md`.
        Recomendação registrada: mostrar desabilitado com explicação honesta para `papel=comum`,
        porque `POST /sinalizacoes` responde **403** para quem não é curador ou dono (ADR-0006).
        Tratar o 403 de verdade — não assumir que a UI sempre acerta o gating.
-- [ ] 30. **Tela `2e` — Sinal enviado.** Confirmação, contador "expira em" com barra de progresso
+- [x] 30. **Tela `2e` — Sinal enviado.** Feita como estado do `2d`. Confirmação, contador "expira em" com barra de progresso
        (`timestamp` + 120min, a janela warm do backend — deixar claro no código que é **convenção
        de UI**, não prazo garantido pela API), "Contar como está lá dentro" (`POST /comentarios`) e
        "Cancelar meu sinal" (⚠️ sem rota: item 20 de `../TODO.md`). Implementar como estado do
        `2d`, não como rota nova.
-- [ ] 31. **Comentar** a partir do `2e` e do `LugarSheet` do `2f`.
+- [x] 31. **Comentar** a partir do `2e` — funciona para qualquer autenticado.
+- [ ] 31b. **Comentar do `LugarSheet` do `2f`** — ainda não.
 
 ## Conexões — feature nova (plano em `../docs/plano-conexoes.md`)
 

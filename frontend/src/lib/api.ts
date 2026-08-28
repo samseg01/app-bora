@@ -2,8 +2,11 @@ import type {
   LugarDetalhe,
   MapaPin,
   RoleDescoberta,
+  LugarPublic,
   RolePublic,
   SalvoPublic,
+  SinalizacaoPublic,
+  TipoSinalizacao,
   UsuarioPublic,
 } from "./types";
 
@@ -100,4 +103,18 @@ export const api = {
 
   /** ⚠️ Devolve só lugar_id e created_at — montar a tela exige N chamadas (../TODO.md item 16). */
   salvos: (token: string) => req<SalvoPublic[]>("/salvos", { token }),
+
+  /** ⚠️ 403 para papel comum (ADR-0006): só curador e dono de estabelecimento sinalizam. */
+  sinalizar: (token: string, role_id: string, tipo: TipoSinalizacao = "presenca") =>
+    req<SinalizacaoPublic>("/sinalizacoes", { token, metodo: "POST", corpo: { role_id, tipo } }),
+
+  cancelarSinal: (token: string, id: string) =>
+    req<void>(`/sinalizacoes/${id}`, { token, metodo: "DELETE" }),
+
+  comentar: (token: string, role_id: string, texto: string) =>
+    req<unknown>("/comentarios", { token, metodo: "POST", corpo: { role_id, texto } }),
+
+  curadorRoles: (token: string) => req<RolePublic[]>("/curador/roles", { token }),
+
+  curadorLugares: (token: string) => req<LugarPublic[]>("/curador/lugares", { token }),
 };

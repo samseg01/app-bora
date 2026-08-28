@@ -138,3 +138,12 @@ export interface SalvoDeConexao {
   lugar: LugarPublic;
   por: string[];
 }
+
+/** POST /sinalizacoes */
+export interface SinalizacaoPublic {
+  id: string;
+  role_id: string | null;
+  lugar_id: string | null;
+  tipo: TipoSinalizacao;
+  timestamp: string;
+}

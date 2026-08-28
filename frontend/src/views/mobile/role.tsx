@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AcaoSinalizar } from "@/components/ui/acao-sinalizar";
 import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MobileShell } from "./shell";
 import { hora, idade } from "@/lib/tempo";
@@ -94,16 +95,7 @@ export function RoleMobile({
       )}
 
       <div className="mt-auto px-5.5 pt-4 pb-6.5">
-        <button
-          type="button"
-          disabled
-          className="w-full cursor-not-allowed rounded-2xl bg-magenta/40 py-4 text-[15px] font-bold text-white/70"
-        >
-          Tô indo — vale por 2h
-        </button>
-        <p className="mt-2.5 text-center text-[11.5px] text-muted-3">
-          Sinalizar ainda está com os curadores da Vila.
-        </p>
+        <AcaoSinalizar roleId={role.id} dataFim={role.data_fim} />
       </div>
     </MobileShell>
   );

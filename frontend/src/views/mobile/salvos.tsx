@@ -20,6 +20,15 @@ export function SalvosMobile({ itens }: { itens: ItemSalvo[] }) {
         </p>
       </div>
 
+      {itens.length === 0 && (
+        <div className="mx-5.5 mt-5 rounded-[20px] border border-white/7 bg-card px-5 py-5.5">
+          <h2 className="font-display text-[22px] leading-tight uppercase">Caderninho vazio</h2>
+          <p className="mt-2.5 text-[13px] leading-relaxed text-muted text-pretty">
+            Salve um lugar tocando no coração quando algum te interessar. Fica só pra você.
+          </p>
+        </div>
+      )}
+
       <div className="mt-4.5 flex flex-col gap-2.5 px-5.5">
         {itens.map(({ lugar, role }, i) => {
           const ui = frescorUI(role?.frescor ?? null);
