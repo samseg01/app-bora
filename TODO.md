@@ -207,9 +207,13 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        um rolê mesmo para oferta simples — mantém um conceito só e é o que o piloto deve fazer; ou
        (b) a descoberta passa a misturar lugares quentes sem rolê. Recomendo (a) agora e (b) só se
        o campo mostrar que faz falta.
-- [ ] 33. **Vocabulário de categoria cobrindo a base da escada.** O design usa Balada, Bar, Sarau,
-       Show ao vivo — tudo do topo. Boteco, oferta e feira precisam ser cidadãos de primeira classe,
-       não exceção.
+- [x] 33. **Vocabulário de categoria cobrindo a base da escada.** Feito em 28/08, junto com a
+       mudança que tirou os botões do rolê e os pôs no lugar. `frontend/src/lib/categorias.ts`
+       fecha a lista em Boteco, Bar, Feira, Praça, Sarau, Galeria, Casa de show e Balada — nessa
+       ordem de propósito: o design partia de Balada e Show ao vivo, e uma lista onde boteco e
+       feira aparecem por último conta outra história para quem cadastra.
+       **A conferir no R3:** se o campo encontrar lugar que não cabe em nenhuma, a resposta é
+       discutir a lista, não reabrir texto livre.
 
 - [x] 34. **A janela de "hoje" da descoberta era UTC, não São Paulo.** Confirmado com teste e
        corrigido em 28/08. O dia ia das 21h de ontem às 21h de hoje no fuso local, então um rolê

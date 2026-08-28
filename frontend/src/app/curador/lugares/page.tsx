@@ -10,6 +10,7 @@ import { MobileShell } from "@/views/mobile/shell";
 import { api, ApiError } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
 import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
+import { CATEGORIAS_LUGAR } from "@/lib/categorias";
 import type { LugarPublic } from "@/lib/types";
 
 /**
@@ -77,7 +78,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
 
   const [lista, setLista] = useState<LugarPublic[] | null>(null);
   const [nome, setNome] = useState("");
-  const [categoria, setCategoria] = useState("bar");
+  const [categoria, setCategoria] = useState<string>(CATEGORIAS_LUGAR[0]);
   const [endereco, setEndereco] = useState("");
   const [coords, setCoords] = useState("");
   const [erro, setErro] = useState<string | null>(null);
@@ -169,15 +170,27 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="rotulo text-muted-3">categoria</span>
-            <input
-              className={CAMPO}
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-              placeholder="bar, boteco, sarau…"
-              required
-              maxLength={60}
-            />
+            <span className="flex items-baseline justify-between">
+              <span className="rotulo text-muted-3">categoria</span>
+              <span className="text-[11px] text-muted-3">o que o lugar é</span>
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIAS_LUGAR.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCategoria(c)}
+                  aria-pressed={categoria === c}
+                  className={`rounded-full px-3.5 py-2 text-[12.5px] transition-colors ${
+                    categoria === c
+                      ? "border-[1.5px] border-magenta bg-magenta/16 font-semibold"
+                      : "border border-white/8 bg-sunken font-medium text-text-faint"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
           </label>
 
           <label className="flex flex-col gap-1.5">

@@ -14,13 +14,14 @@ import type { LugarPublic } from "@/lib/types";
  * O campo do **motivo pra ir** é o maior de propósito: é o que faz alguém sair de casa,
  * e num bar sem agenda ele carrega sozinho o card inteiro.
  *
+ * Não há campo de categoria aqui: ela é do lugar, e o rolê herda. O seletor mostra a
+ * categoria junto do nome para que a herança fique visível na hora de escolher.
+ *
  * Horário vira data hoje. Depois da meia-noite conta como o dia seguinte, senão o rolê
  * nasceria terminado e a `/descoberta` não o veria — mesma regra do seed.
  */
 const CAMPO =
   "w-full rounded-2xl border border-white/10 bg-sunken px-3.5 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
-
-const CATEGORIAS = ["Bar", "Boteco", "Balada", "Sarau", "Show", "Feira"];
 
 function hojeAs(hhmm: string): Date {
   const [h, m] = hhmm.split(":").map(Number);
@@ -45,7 +46,6 @@ export function FormPublicar({
   const [lugarId, setLugarId] = useState(lugares[0]?.id ?? "");
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [categoria, setCategoria] = useState(CATEGORIAS[0]);
   const [inicio, setInicio] = useState("21:00");
   const [fim, setFim] = useState("02:00");
   const [estado, setEstado] = useState<"parado" | "enviando" | "feito">("parado");
@@ -62,6 +62,11 @@ export function FormPublicar({
       const dInicio = hojeAs(inicio);
       const dFim = hojeAs(fim);
       if (dFim <= dInicio) dFim.setDate(dFim.getDate() + 1);
+
+      // A categoria é do LUGAR, não do rolê: um boteco continua boteco em qualquer
+      // noite. Antes o formulário perguntava de novo aqui, e o resultado era o Bar do
+      // China cadastrado como "forró" publicando rolê como "Bar".
+      const categoria = lugares.find((l) => l.id === lugarId)?.categoria ?? "Bar";
 
       await api.criarRole(sessao.token, {
         lugar_id: lugarId,
@@ -125,7 +130,7 @@ export function FormPublicar({
         <select className={CAMPO} value={lugarId} onChange={(e) => setLugarId(e.target.value)}>
           {lugares.map((l) => (
             <option key={l.id} value={l.id}>
-              {l.nome}
+              {l.nome} · {l.categoria}
             </option>
           ))}
         </select>
@@ -168,26 +173,6 @@ export function FormPublicar({
           <input type="time" className={CAMPO} value={fim} onChange={(e) => setFim(e.target.value)} />
         </label>
       </div>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="rotulo text-muted-3">categoria</span>
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIAS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setCategoria(c)}
-              className={`rounded-full px-3.5 py-2 text-[12.5px] transition-colors ${
-                categoria === c
-                  ? "border-[1.5px] border-magenta bg-magenta/16 font-semibold"
-                  : "border border-white/8 bg-sunken font-medium text-text-faint"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </label>
 
       <div className="mt-auto flex flex-col gap-2.5">
         <button
