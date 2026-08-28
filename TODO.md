@@ -338,6 +338,19 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        banco e nunca foi exposta — sem coluna nova; (c) mostrar a atribuição no card. Depende do
        R9, porque sem `estabelecimento_id` preenchido não há posse a verificar.
 
+- [ ] 43. **[hipótese] "Tô aqui" — sinal de presença verificado por proximidade.** ADR-009 do
+       backend, status **proposto**. `POST /sinalizacoes` passa a receber `lat`/`lng` e o servidor
+       recusa fora do raio; a coordenada é conferida e descartada, nunca guardada. Resolve a
+       incoerência de o botão dizer intenção e o dado gravar presença — e **destrava o item 40**,
+       porque sinal verificado deixa de ser ruído quando qualquer um pode dar. Resolve o 41 de
+       graça: não dá para marcar às 10h da manhã um rolê das 21h se você não está lá.
+       Custos registrados no ADR: não prova nada (GPS de navegador se falsifica), não distingue
+       bares vizinhos, e o erro de GPS é pior justamente dentro do bar. O raio começa em ~150 m e
+       **precisa ser calibrado no R8** — o limiar da busca por bairro nasceu de um chute de 1500 m
+       e caiu para 700 m no primeiro teste em aparelho real.
+       Separa em duas ações: "Tô aqui" (no lugar, com GPS, alimenta o frescor) e "Tô indo" (de
+       casa, sem GPS, avisa amigos — a fase 2 do `conceito.md`).
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`

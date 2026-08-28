@@ -79,6 +79,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | [0006](docs/adr/0006-rbac-por-enum-simples.md) | RBAC por enum de 3 papéis fixos, sem tabela de permissões |
 | [0007](docs/adr/0007-promocao-de-papel-manual.md) | Promoção de papel é sempre manual (script), nunca self-service |
 | [0008](docs/adr/0008-estabelecimento-publica-com-atribuicao.md) | **Proposto** — dono publica o próprio rolê, com atribuição em vez de fila de aprovação |
+| [0009](docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md) | **Proposto** — sinalizar exige estar perto, verificado no servidor; separa "Tô aqui" de "Tô indo" |
 
 ## Status
 

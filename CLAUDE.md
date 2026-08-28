@@ -178,6 +178,10 @@ Mais `GET /health` fora do prefixo versionado.
 - **Duas camadas na tela** (descoberta empurra no topo, mapa puxa embaixo) em vez de abrir no mapa
   — mapa é cruel com vazio e pressupõe intenção que quem "decide se sair" ainda não tem. Ver
   `docs/conceito.md`.
+- **O sinal de presença deve custar estar lá** (ADR-009 do backend, **proposto**). Hoje o botão
+  diz intenção ("Tô indo") e o dado grava presença, e as duas só coincidem para quem sinaliza de
+  dentro do lugar — origem da restrição do ADR-006. Verificar proximidade no servidor separa as
+  duas ações e é o caminho para o frescor sair do "com cautela" do `conceito.md`.
 - **PWA agora, nativo depois** — descoberta espontânea não pode ter fricção de "baixar da loja",
   e sem base instalada o link compartilhado *é* o canal de distribuição. Mas **nativo é o destino
   declarado**, não uma possibilidade remota: a decisão é de ordem, não de permanência. Gatilhos
