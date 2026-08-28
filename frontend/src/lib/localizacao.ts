@@ -29,17 +29,37 @@ export class ErroLocalizacao extends Error {
   }
 }
 
-/** Abaixo disto consideramos que a pessoa está *no* recorte, não perto dele. Um recorte
-    tem poucas quadras; 1,5 km é caminhada curta e cobre a margem do GPS urbano, que erra
-    bastante entre prédios altos. */
-export const RAIO_DENTRO_M = 1500;
+/**
+ * Os dois limites que separam "você está aqui", "dá pra ir andando" e "fica longe".
+ *
+ * O primeiro valor era 1500 m, escolhido no escritório. O teste em campo derrubou na
+ * hora: a tela disse "VOCÊ ESTÁ AQUI" para alguém a 1,4 km — uns 17 minutos de
+ * caminhada. "Aqui" precisa querer dizer aqui.
+ *
+ * Há um limite conceitual embutido, que a copy não pode atropelar (item 38 do TODO):
+ * medimos a distância até o **lugar curado mais próximo**, não até a fronteira do
+ * bairro. Alguém pode estar dentro da Vila Madalena e a 1 km do lugar mais próximo que
+ * a gente visitou. Por isso só o círculo bem apertado se dá ao luxo de dizer "aqui"; o
+ * resto fala de distância, que é o que de fato sabemos.
+ */
+export const RAIO_DENTRO_M = 700;
+/** Até aqui ainda é decisão de caminhada; além disso, é decisão de transporte. */
+export const RAIO_A_PE_M = 3000;
+
+/** Minutos de caminhada a ~5 km/h. Para este produto "20 min a pé" decide mais que "1,6 km". */
+export function minutosAPe(metros: number): number {
+  return Math.max(1, Math.round(metros / 83));
+}
 
 export interface Achado {
   /** O recorte atendido mais próximo. `null` quando nada por perto é bairro que o app cobre. */
   bairro: string | null;
   distancia_m: number | null;
-  /** A pessoa está dentro do recorte, e não apenas mais perto dele que dos outros. */
-  dentro: boolean;
+  /**
+   * `aqui` — em cima do recorte. `a-pe` — longe o bastante para andar, perto o bastante
+   * para valer. `longe` — o app não atende a região dela hoje, e a tela diz isso.
+   */
+  proximidade: "aqui" | "a-pe" | "longe";
   /** Os primeiros lugares curados, do mais perto ao mais longe — o "locais próximos". */
   lugares: LugarProximo[];
 }
@@ -79,10 +99,16 @@ export function interpretar(proximos: LugarProximo[]): Achado {
   const atendidos = proximos.filter((p) => BAIRROS.some((b) => b.nome === p.lugar.bairro));
   const primeiro = atendidos[0];
 
+  const metros = primeiro?.distancia_m ?? null;
   return {
     bairro: primeiro?.lugar.bairro ?? null,
-    distancia_m: primeiro?.distancia_m ?? null,
-    dentro: primeiro !== undefined && primeiro.distancia_m <= RAIO_DENTRO_M,
+    distancia_m: metros,
+    proximidade:
+      metros === null || metros > RAIO_A_PE_M
+        ? "longe"
+        : metros <= RAIO_DENTRO_M
+          ? "aqui"
+          : "a-pe",
     lugares: atendidos.slice(0, 3),
   };
 }

@@ -239,10 +239,13 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        Enquanto forem dois recortes isso não incomoda. Se um dia a tela precisar dizer "você está
        no Bixiga", aí entra geocodificação reversa (Nominatim, ou os polígonos de bairro da
        Prefeitura), com o custo e a dependência externa que isso traz.
-- [ ] 39. **`RAIO_DENTRO_M` = 1500 m é chute informado, não medida.** É o limite que decide entre
-       "você está aqui" e "o mais perto que curamos". Escolhido por cobrir poucas quadras mais a
-       margem de erro do GPS entre prédios altos. Conferir no R8, andando pelo recorte com o
-       aparelho na mão.
+- [x] 39. **Limiar de proximidade calibrado em campo, no mesmo dia.** O chute de escritório era
+       1500 m, e o primeiro teste no celular mostrou a tela dizendo "VOCÊ ESTÁ AQUI" para alguém
+       a 1,4 km — 17 minutos de caminhada. Agora são três faixas: `aqui` até 700 m, `a-pe` até
+       3 km (com o tempo de caminhada, que decide mais que a distância), e `longe` acima disso.
+       Só a faixa apertada afirma "aqui", porque o que medimos é a distância até o lugar curado
+       mais próximo e não até a fronteira do bairro (item 38) — alguém pode estar dentro da Vila
+       Madalena e a 1 km do lugar mais próximo que a gente visitou.
 
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 

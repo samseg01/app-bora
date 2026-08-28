@@ -6,6 +6,7 @@ import {
   distanciaLegivel,
   ErroLocalizacao,
   interpretar,
+  minutosAPe,
   pedirPosicao,
   type Achado,
   type FalhaLocalizacao,
@@ -103,16 +104,37 @@ function Resultado({ achado }: { achado: Achado }) {
     );
   }
 
+  // Três faixas, e a diferença entre elas é o que a tela pode honestamente afirmar.
+  // "Aqui" só no círculo apertado: o que medimos é a distância até o lugar curado mais
+  // próximo, não até a fronteira do bairro (item 38). Fora dele, falamos de distância.
+  const rotulo =
+    achado.proximidade === "aqui"
+      ? "você está aqui"
+      : achado.proximidade === "a-pe"
+        ? "dá pra ir andando"
+        : "o mais perto que curamos";
+
+  const detalhe =
+    achado.proximidade === "aqui"
+      ? distanciaLegivel(achado.distancia_m)
+      : achado.proximidade === "a-pe"
+        ? `${distanciaLegivel(achado.distancia_m)} · ${minutosAPe(achado.distancia_m)} min a pé`
+        : distanciaLegivel(achado.distancia_m);
+
+  const destaque = achado.proximidade !== "longe";
+
   return (
-    <div className="mt-3 rounded-[18px] border border-magenta/30 bg-gradient-to-br from-magenta/12 to-violet/8 px-4 py-3.5">
-      <div className="rotulo text-magenta-soft">
-        {achado.dentro ? "você está aqui" : "o mais perto que curamos"}
-      </div>
+    <div
+      className={`mt-3 rounded-[18px] border px-4 py-3.5 ${
+        destaque
+          ? "border-magenta/30 bg-gradient-to-br from-magenta/12 to-violet/8"
+          : "border-white/10 bg-card-alt"
+      }`}
+    >
+      <div className={`rotulo ${destaque ? "text-magenta-soft" : "text-muted-3"}`}>{rotulo}</div>
       <div className="mt-1.5 text-[15px] font-bold">
         {achado.bairro}
-        <span className="ml-2 text-[12.5px] font-medium text-muted-2">
-            a {distanciaLegivel(achado.distancia_m)}
-        </span>
+        <span className="ml-2 text-[12.5px] font-medium text-muted-2">{detalhe}</span>
       </div>
 
       {achado.lugares.length > 0 && (
@@ -129,9 +151,9 @@ function Resultado({ achado }: { achado: Achado }) {
         </ul>
       )}
 
-      {!achado.dentro && (
+      {achado.proximidade === "longe" && (
         <p className="mt-2.5 text-[12px] leading-relaxed text-muted-2">
-          Longe pra ir a pé hoje, mas dá pra ver o que está rolando lá.
+          Longe pra hoje, mas dá pra ver o que está rolando lá.
         </p>
       )}
     </div>
