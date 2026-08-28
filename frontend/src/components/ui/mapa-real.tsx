@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Map as MapLibreMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MapaEstilizado } from "./mapa-estilizado";
@@ -34,6 +35,13 @@ import type { MapaPin } from "@/lib/types";
  * compacto, mas **não pode ser removida**.
  */
 
+/** O nome do lugar vem do banco e vira HTML aqui — escapar antes, sempre. */
+function escapar(texto: string): string {
+  const div = document.createElement("div");
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
 const ESTILO = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 
 interface Props {
@@ -53,6 +61,7 @@ export function MapaReal({
   selecionadoId,
   onSelecionar,
 }: Props) {
+  const router = useRouter();
   const raiz = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
   const mapa = useRef<MapLibreMap | null>(null);
@@ -282,7 +291,7 @@ export function MapaReal({
 
     let vivo = true;
     void (async () => {
-      const { Marker: MarcadorGL } = await import("maplibre-gl");
+      const { Marker: MarcadorGL, Popup: PopupGL } = await import("maplibre-gl");
       if (!vivo || !mapa.current) return;
 
       marcadores.current.forEach((mk) => mk.remove());
@@ -308,8 +317,34 @@ export function MapaReal({
           });
         }
 
+        // Banner do pin: o pin sozinho é um ponto colorido sem nome, e na home e no
+        // detalhe do rolê — que não têm gaveta — tocar nele não levava a lugar nenhum.
+        // O balão inteiro é o link para a ficha da casa.
+        const balao = document.createElement("a");
+        balao.href = `/lugar/${pin.lugar.id}`;
+        balao.className = "balao-pin";
+        balao.innerHTML =
+          `<strong>${escapar(pin.lugar.nome)}</strong>` +
+          `<span>${escapar(pin.role_ativo ? pin.role_ativo.titulo : pin.lugar.categoria)}</span>`;
+        // Navegação do lado do cliente: `<a>` puro recarregaria o app inteiro. Continua
+        // sendo âncora de verdade, então abrir em nova aba e copiar link seguem valendo.
+        balao.addEventListener("click", (e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+          e.preventDefault();
+          router.push(`/lugar/${pin.lugar.id}`);
+        });
+
         return new MarcadorGL({ element: el })
           .setLngLat([pin.lugar.lng, pin.lugar.lat])
+          .setPopup(
+            new PopupGL({
+              closeButton: false,
+              closeOnClick: true,
+              offset: 14,
+              maxWidth: "15rem",
+              className: "popup-bora",
+            }).setDOMContent(balao),
+          )
           .addTo(mapa.current!);
       });
     })();
@@ -317,7 +352,7 @@ export function MapaReal({
     return () => {
       vivo = false;
     };
-  }, [pins, selecionadoId, onSelecionar, pronto]);
+  }, [pins, selecionadoId, onSelecionar, pronto, router]);
 
   return (
     <div ref={raiz} className={`relative overflow-hidden ${className}`}>

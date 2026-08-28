@@ -57,6 +57,13 @@ bastidor: quem está decidindo aonde ir não precisa saber onde o produto é vul
 de quem são os curadores e do que dá pra fazer agora. Vale para todo estado vazio e toda recusa: o
 `conceito.md` justifica as decisões para nós, não para a tela.
 
+**O pin do mapa abre um balão que leva à ficha da casa.** Popup do MapLibre com o nome e o rolê de
+hoje (ou a categoria), o balão inteiro sendo âncora para `/lugar/{id}` — com `router.push` no clique
+para navegação do cliente, mantendo o `<a>` de verdade para abrir em nova aba. Importa porque a home
+e o detalhe do rolê não têm gaveta: sem o balão, o pin ali era um ponto colorido sem nome e sem
+destino. O estilo está em `globals.css` (`.popup-bora`, `.balao-pin`) porque o popup do MapLibre
+nasce branco e brigaria com o dark-matter. **O nome vem do banco e vira HTML — escapar sempre.**
+
 **Categoria é do LUGAR, não do rolê.** Lista fechada em `lib/categorias.ts`; o formulário de rolê
 não pergunta categoria e herda a do lugar escolhido (o seletor mostra `nome · categoria` para a
 herança ficar visível). Antes os botões estavam no rolê e o lugar tinha texto livre, o que produzia
