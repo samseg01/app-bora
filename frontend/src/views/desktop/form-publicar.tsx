@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
@@ -88,10 +89,19 @@ export function FormPublicar({
     return (
       <div className="flex flex-col gap-3 rounded-[22px] border border-white/7 bg-card-alt p-5.5">
         <h2 className="font-display text-[26px] leading-none uppercase">Publicar rolê</h2>
+        {/* Os asteriscos de markdown apareciam literalmente na tela: isto é JSX, não
+            texto formatado. E a instrução era beco sem saída — "cadastre em Lugares"
+            sem link, na única tela em que a pessoa precisa exatamente disso. */}
         <p className="text-xs leading-relaxed text-muted-2">
-          Nenhum lugar cadastrado em {bairro} ainda. Um rolê acontece **em** um lugar, então o
-          lugar vem primeiro — cadastre em Lugares.
+          Nenhum lugar cadastrado em {bairro} ainda. Um rolê acontece <em>em</em> um lugar, então
+          o lugar vem primeiro.
         </p>
+        <Link
+          href="/curador/lugares"
+          className="rounded-2xl bg-magenta py-3 text-center text-[13.5px] font-bold text-white"
+        >
+          Cadastrar o primeiro lugar
+        </Link>
       </div>
     );
   }

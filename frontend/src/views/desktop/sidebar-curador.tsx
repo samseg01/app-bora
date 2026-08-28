@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
 
@@ -34,6 +35,7 @@ const ITENS = [
 ];
 
 export function SidebarCurador() {
+  const caminho = usePathname();
   const sessao = useSessao();
   const [nome, setNome] = useState<string | null>(null);
   const token = sessao?.token;
@@ -65,13 +67,17 @@ export function SidebarCurador() {
       </div>
 
       <nav className="flex flex-col gap-1">
-        {ITENS.map(({ href, label, icone }, i) => (
+        {ITENS.map(({ href, label, icone }) => {
+          // Antes era `i === 0` fixo: em /curador/lugares a coluna destacava
+          // "A noite de hoje", dizendo que se estava numa tela em que não se estava.
+          const ativo = caminho === href;
+          return (
           <Link
             key={href}
             href={href}
-            aria-current={i === 0 ? "page" : undefined}
+            aria-current={ativo ? "page" : undefined}
             className={`flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm transition-colors ${
-              i === 0
+              ativo
                 ? "bg-magenta/15 font-semibold text-magenta"
                 : "font-medium text-muted-2 hover:bg-white/4 hover:text-text"
             }`}
@@ -79,7 +85,8 @@ export function SidebarCurador() {
             {icone}
             {label}
           </Link>
-        ))}
+          );
+        })}
       </nav>
 
       <div className="mt-auto flex flex-col gap-3">

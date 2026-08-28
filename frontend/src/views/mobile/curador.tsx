@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AbasCurador } from "@/components/ui/abas-curador";
 import { MobileShell } from "./shell";
 import { FormPublicar } from "../desktop/form-publicar";
 import { frescorUI } from "@/lib/frescor";
@@ -35,6 +36,10 @@ export function CuradorMobile({
       </div>
 
       <div className="mt-5 px-5.5">
+        <AbasCurador />
+      </div>
+
+      <div className="mt-4 px-5.5">
         <FormPublicar lugares={lugares} bairro={bairro} compacto />
       </div>
 

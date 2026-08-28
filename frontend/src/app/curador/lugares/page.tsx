@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Desktop, Mobile } from "@/components/viewport";
+import { AbasCurador } from "@/components/ui/abas-curador";
 import { Porta } from "@/components/ui/porta";
 import { DesktopShell } from "@/views/desktop/shell";
 import { MobileShell } from "@/views/mobile/shell";
@@ -38,7 +40,18 @@ function Conteudo() {
   return (
     <>
       <Mobile>
-        <MobileShell nav={false}>{corpo}</MobileShell>
+        <MobileShell nav={false}>
+          <div className="flex items-center justify-between px-6 pt-9">
+            <div className="rotulo text-amber">painel do curador</div>
+            <Link href="/" className="text-xs font-semibold text-muted-2">
+              ver o app
+            </Link>
+          </div>
+          <div className="mt-3 px-6">
+            <AbasCurador />
+          </div>
+          {corpo}
+        </MobileShell>
       </Mobile>
       <Desktop>
         <DesktopShell curador>{corpo}</DesktopShell>
@@ -112,7 +125,7 @@ function Lugares() {
   }
 
   return (
-    <section className="min-w-0 flex-1 px-6 py-8 lg:px-8">
+    <section className="min-w-0 flex-1 px-6 pt-5 pb-8 lg:px-8 lg:pt-8">
       <h1 className="font-display text-[38px] leading-none uppercase lg:text-[42px]">Lugares</h1>
       <p className="mt-2 text-[13px] text-muted-2">
         O que existe em {bairro}. Um rolê acontece em um lugar — o lugar vem primeiro.

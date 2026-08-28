@@ -45,6 +45,13 @@ existe enquanto ele estava no banco alimentando o frescor.
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
 
+**Painel do curador:** são duas telas (`/curador` publica o rolê, `/curador/lugares` cadastra o
+lugar) e o lugar vem primeiro — não dá para publicar rolê onde não há lugar. No desktop a coluna
+`sidebar-curador.tsx` liga as duas; no mobile é `components/ui/abas-curador.tsx`, porque a barra
+inferior não aparece aqui (`nav={false}`: painel é superfície de trabalho, não o app público).
+Sem essas abas o cadastro de lugar ficava inalcançável no telefone, que é justamente onde o
+curador está quando volta da rua.
+
 ### Localização
 
 `lib/localizacao.ts` embrulha `navigator.geolocation` e traduz "onde estou" em "que recorte é
