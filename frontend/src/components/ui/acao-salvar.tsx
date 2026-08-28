@@ -40,7 +40,7 @@ export function AcaoSalvar({
     let vivo = true;
     // Compartilhado: numa home com cinco cards isto é uma chamada, não cinco.
     void meusSalvos(token).then((lista) => {
-      if (vivo) setDoServidor(lista.some((s) => s.lugar_id === lugarId));
+      if (vivo) setDoServidor(lista.some((s) => s.lugar.id === lugarId));
     });
     return () => {
       vivo = false;

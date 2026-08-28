@@ -290,7 +290,7 @@ ligado).
 |---|---|
 | `POST /auth/signup` → `UsuarioPublic` | cria sempre `papel=comum` |
 | `POST /auth/login` → `{access_token}` | validade 30 dias |
-| `GET /salvos` | ⚠️ devolve só `lugar_id` e `created_at` — sem nome/categoria |
+| `GET /salvos` | devolve `lugar` + `role_ativo` — uma chamada monta o caderninho |
 | `POST /salvos {lugar_id}` / `DELETE /salvos/{lugar_id}` | 409 se já salvo |
 | `POST /comentarios {lugar_id\|role_id, texto}` | qualquer usuário autenticado |
 | `POST /sinalizacoes {role_id\|lugar_id, tipo}` | ⚠️ **403 para `papel=comum`** — só curador/dono (ADR-0006) |
@@ -325,8 +325,10 @@ ainda não existe.
 - **O que é *meu* (salvos e sinais) vem de `lib/meus.ts`, não de `api.*` direto.** Cada botão
   buscando a própria lista viraria dez chamadas na home de desktop. Quem escreve chama
   `invalidarMeus()`.
-- **`GET /salvos` é cru.** Montar a tela `2g` com a API atual custa uma chamada a `/lugares/{id}`
-  por item salvo. Ver mudança 16 do `../TODO.md`.
+- **Nunca resolver "tem rolê hoje?" pelo `GET /mapa`.** Ele é filtrado por bairro, e telas que
+  atravessam recortes — o caderninho é a óbvia — passam a afirmar "sem rolê hoje" para lugar de
+  outro bairro. Quem responde isso é a rota do próprio recurso (`GET /salvos` já traz
+  `role_ativo`).
 - **O comentário da 2e é gravado no rolê, não no lugar** (`POST /comentarios` com `role_id`),
   mas aparece em `GET /lugares/{id}` — o backend junta os dois alvos. A tela `/role/[id]` lê
   `lugar.comentarios_recentes`, e é por isso que funciona. Não existe leitura de comentário

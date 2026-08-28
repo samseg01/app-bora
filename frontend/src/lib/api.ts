@@ -7,7 +7,7 @@ import type {
   RoleDescoberta,
   LugarPublic,
   RolePublic,
-  SalvoPublic,
+  SalvoDetalhe,
   SinalizacaoPublic,
   TipoSinalizacao,
   UsuarioPublic,
@@ -110,8 +110,8 @@ export const api = {
 
   eu: (token: string) => req<UsuarioPublic>("/auth/me", { token }),
 
-  /** ⚠️ Devolve só lugar_id e created_at — montar a tela exige N chamadas (../TODO.md item 16). */
-  salvos: (token: string) => req<SalvoPublic[]>("/salvos", { token }),
+  /** Já vem com o lugar e o rolê de hoje — uma chamada monta o caderninho inteiro. */
+  salvos: (token: string) => req<SalvoDetalhe[]>("/salvos", { token }),
 
   /** ⚠️ 403 para papel comum (ADR-0006): só curador e dono de estabelecimento sinalizam. */
   sinalizar: (token: string, role_id: string, tipo: TipoSinalizacao = "presenca") =>

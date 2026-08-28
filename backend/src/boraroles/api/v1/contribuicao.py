@@ -8,10 +8,13 @@ from sqlalchemy.exc import IntegrityError
 
 from boraroles.api.deps import CurrentUser, DbSession, require_role
 from boraroles.config import get_settings
-from boraroles.db.models import Comentario, PapelUsuario, Salvo, Sinalizacao, Usuario
+from boraroles.db.models import Comentario, Lugar, PapelUsuario, Salvo, Sinalizacao, Usuario
 from boraroles.schemas.comentario import ComentarioCreate, ComentarioPublic
-from boraroles.schemas.salvo import SalvoCreate, SalvoPublic
+from boraroles.schemas.lugar import RolePin
+from boraroles.schemas.salvo import SalvoCreate, SalvoDetalhe, SalvoPublic
 from boraroles.schemas.sinalizacao import SinalizacaoCreate, SinalizacaoPublic
+from boraroles.services.descoberta import frescor_de_role, role_ativo_de_lugar
+from boraroles.services.lugares import lugar_to_public
 
 router = APIRouter(tags=["contribuicao"])
 
@@ -48,10 +51,41 @@ async def dessalvar_lugar(lugar_id: uuid.UUID, usuario: CurrentUser, db: DbSessi
     await db.commit()
 
 
-@router.get("/salvos", response_model=list[SalvoPublic])
-async def listar_salvos(usuario: CurrentUser, db: DbSession) -> list[Salvo]:
-    result = await db.execute(select(Salvo).where(Salvo.usuario_id == usuario.id))
-    return list(result.scalars().all())
+@router.get("/salvos", response_model=list[SalvoDetalhe])
+async def listar_salvos(usuario: CurrentUser, db: DbSession) -> list[SalvoDetalhe]:
+    """O caderninho, já resolvido: cada lugar salvo com o rolê de hoje nele, se houver.
+
+    Devolve o lugar inteiro e não só o id porque o caderninho **atravessa bairros** — e
+    a tela, sem isto, perguntava a um `GET /mapa` filtrado por um bairro só, o que fazia
+    lugar salvo de outro recorte aparecer como "sem rolê hoje" mesmo tendo rolê.
+    """
+    rows = (
+        await db.execute(
+            select(Salvo, Lugar)
+            .join(Lugar, Lugar.id == Salvo.lugar_id)
+            .where(Salvo.usuario_id == usuario.id)
+            .order_by(Salvo.created_at.desc())
+        )
+    ).all()
+
+    itens = []
+    for salvo, lugar in rows:
+        role = await role_ativo_de_lugar(db, lugar.id)
+        pin = None
+        if role is not None:
+            frescor = await frescor_de_role(db, role)
+            pin = RolePin(
+                id=role.id,
+                titulo=role.titulo,
+                categoria=role.categoria,
+                data_inicio=role.data_inicio,
+                data_fim=role.data_fim,
+                frescor=frescor.value if frescor else None,
+            )
+        itens.append(
+            SalvoDetalhe(lugar=lugar_to_public(lugar), role_ativo=pin, created_at=salvo.created_at)
+        )
+    return itens
 
 
 @router.post("/sinalizacoes", response_model=SinalizacaoPublic, status_code=status.HTTP_201_CREATED)

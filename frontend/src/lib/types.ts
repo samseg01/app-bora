@@ -105,9 +105,23 @@ export interface UsuarioPublic {
   created_at: string;
 }
 
-/** GET /salvos — cru: só o id do lugar (ver ../TODO.md item 16). */
+/** POST /salvos — só a confirmação. */
 export interface SalvoPublic {
   lugar_id: string;
+  created_at: string;
+}
+
+/**
+ * GET /salvos — o lugar inteiro e o rolê de hoje nele.
+ *
+ * Enriquecido em 28/08. Antes vinha só `lugar_id`, e a tela descobria o resto sozinha:
+ * N chamadas a `/lugares/{id}` mais um `GET /mapa` — que é filtrado por bairro, e por
+ * isso dizia "sem rolê hoje" para lugar salvo fora do recorte selecionado. O caderninho
+ * atravessa bairros por natureza.
+ */
+export interface SalvoDetalhe {
+  lugar: LugarPublic;
+  role_ativo: RolePin | null;
   created_at: string;
 }
 

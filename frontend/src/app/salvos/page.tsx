@@ -7,7 +7,6 @@ import { SalvosDesktop, type ItemSalvo } from "@/views/desktop/salvos";
 import { SalvosMobile } from "@/views/mobile/salvos";
 import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
-import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
 
 /**
  * Tela 2g — o caderninho, com dado real.
@@ -15,9 +14,11 @@ import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
  * Antes mostrava seis lugares de exemplo mesmo depois do login, o que é a pior versão
  * do problema: dado inventado apresentado como sendo seu.
  *
- * `GET /salvos` devolve só `lugar_id`, então cada item custa uma chamada a
- * `/lugares/{id}` — o N+1 do item 16 do TODO da raiz. Com o volume de um caderninho
- * pessoal isso é aceitável; com a rota enriquecida vira uma chamada só.
+ * Uma chamada monta a tela inteira. Até 28/08 eram N+1: `GET /salvos` devolvia só
+ * `lugar_id`, cada item custava um `/lugares/{id}`, e o rolê de hoje vinha de um
+ * `GET /mapa` — **filtrado pelo bairro selecionado**. Resultado: lugar salvo em outro
+ * recorte aparecia como "sem rolê hoje" mesmo tendo rolê. O caderninho atravessa
+ * bairros por natureza, e perguntar isso ao mapa de um bairro só era a pergunta errada.
  */
 export default function SalvosPage() {
   return (
@@ -38,26 +39,15 @@ function SalvosCarregados() {
   useEffect(() => {
     if (!token) return;
     let vivo = true;
-    void (async () => {
-      const bairro = bairroDoCookie() ?? BAIRROS[0].nome;
-      const [salvos, pins] = await Promise.all([
-        api.salvos(token),
-        api.mapa(bairro).catch(() => []),
-      ]);
-      const lugares = await Promise.all(
-        salvos.map((s) => api.lugar(s.lugar_id).catch(() => null)),
-      );
-      if (!vivo) return;
-      setItens(
-        lugares
-          .filter((l) => l !== null)
-          .map((lugar) => ({
-            lugar,
-            // O rolê ativo só existe em /mapa; para lugar de outro bairro fica nulo.
-            role: pins.find((p) => p.lugar.id === lugar.id)?.role_ativo ?? null,
-          })),
-      );
-    })();
+    void api
+      .salvos(token)
+      .then((salvos) => {
+        if (!vivo) return;
+        setItens(salvos.map((s) => ({ lugar: s.lugar, role: s.role_ativo })));
+      })
+      .catch(() => {
+        if (vivo) setItens([]);
+      });
     return () => {
       vivo = false;
     };

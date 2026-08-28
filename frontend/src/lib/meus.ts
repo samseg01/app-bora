@@ -1,5 +1,5 @@
 import { api } from "./api";
-import type { SalvoPublic, SinalizacaoPublic } from "./types";
+import type { SalvoDetalhe, SinalizacaoPublic } from "./types";
 
 /**
  * O que é *meu* — salvos e sinais ativos — com uma busca só por tela.
@@ -14,7 +14,7 @@ import type { SalvoPublic, SinalizacaoPublic } from "./types";
  * home mostraria "salvo" num lugar que você acabou de tirar do caderninho.
  */
 let tokenDoCache = "";
-let salvos: Promise<SalvoPublic[]> | null = null;
+let salvos: Promise<SalvoDetalhe[]> | null = null;
 let sinais: Promise<SinalizacaoPublic[]> | null = null;
 
 export function invalidarMeus(): void {
@@ -30,7 +30,7 @@ function trocouDeConta(token: string): void {
 }
 
 /** Erro vira lista vazia de propósito: não saber o que é seu não pode quebrar a tela. */
-export function meusSalvos(token: string): Promise<SalvoPublic[]> {
+export function meusSalvos(token: string): Promise<SalvoDetalhe[]> {
   trocouDeConta(token);
   salvos ??= api.salvos(token).catch(() => []);
   return salvos;

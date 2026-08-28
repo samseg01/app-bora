@@ -252,22 +252,12 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        curador. É o "motivo pra ir" — o wireframe dedicou 3 telas (`1m`/`1n`/`1o`) a estudar esse
        copy e o schema não tem onde guardá-lo. Sem isso o detalhe do rolê é só título + horário.
        Lembrar do gotcha: migration à mão, no padrão do `0001_initial_schema.py`.
-- [ ] 16. **`GET /salvos` enriquecido** — devolver `LugarPublic` + `role_ativo` em vez de só
-       `lugar_id`, senão a tela `2g` precisa de uma chamada a `/lugares/{id}` por item salvo.
-- [ ] 17. **Expor `sinais_recentes` em `RolePublic`** — a contagem já é calculada dentro de
-       `frescor_de_role()`, mas só o rótulo sai. Destrava "6 sinalizaram nas últimas 2h" no `2d`.
-- [x] 18. **`GET /auth/me`** — nome e data de cadastro pro perfil (`2h`). O papel não precisa dele:
-       já viaja dentro do JWT e o front decodifica client-side pra decidir o gating de UI.
-- [~] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — `lugar_id` feito em 28/08: sem ele o
-       botão Salvar da home ficava `disabled` por falta de dado (parecia regra de produto e era
-       lacuna de schema). `lat`/`lng` continuam de fora — só entram junto com a distância "a pé",
-       que precisa de geolocalização e ainda não tem tela.
-- [x] 20. **`DELETE /sinalizacoes/{id}`** — feito, junto com `GET /sinalizacoes/minhas`, que é o
-       que faz o "Tá marcado" sobreviver a sair da tela e voltar.
-- [x] 21. **`Lugar.endereco`** — feito em 28/08 (migration 0003, nullable). O lugar já era
-       localizável por `geo`, então o endereço é para quem lê e vai a pé, não para o sistema —
-       e é opcional porque exigir o número transformaria uma anotação de calçada num formulário.
-       O JSON do seed já trazia o campo e o script o ignorava em silêncio; agora grava.
+- [x] 16. **`GET /salvos` enriquecido** — feito em 28/08, e não por desempenho: por correção.
+       A tela do caderninho montava o rolê de hoje cruzando com `GET /mapa`, que é **filtrado por
+       bairro**, então lugar salvo fora do recorte selecionado aparecia como "sem rolê hoje" mesmo
+       tendo rolê. O caderninho atravessa bairros por natureza — perguntar isso ao mapa de um
+       bairro só era a pergunta errada. Agora a rota devolve `lugar` + `role_ativo`, e as N+1
+       chamadas viraram uma. `POST /salvos` segue devolvendo só a confirmação.
 
 ### A escada bar simples → lugar com atração (refinamento de 27/08 no `conceito.md`)
 
