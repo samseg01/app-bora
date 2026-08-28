@@ -258,7 +258,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
 
           <div className="flex gap-2.5">
             <label className="flex flex-1 flex-col gap-1.5">
-              <span className="rotulo text-muted-3">horário</span>
+              <span className="rotulo text-muted-3">horário de funcionamento</span>
               <input
                 className={CAMPO}
                 value={horario}

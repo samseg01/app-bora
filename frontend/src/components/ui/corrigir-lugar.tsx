@@ -95,68 +95,97 @@ export function CorrigirLugar({
   }
 
   return (
-    <div className="mt-3 flex w-full flex-col gap-2 border-t border-white/8 pt-3">
-      <textarea
-        rows={3}
-        className={`${CAMPO} resize-none leading-relaxed`}
-        value={descricao}
-        onChange={(e) => setDescricao(e.target.value)}
-        placeholder="o que é a casa"
-        maxLength={2000}
-      />
-      <input
-        className={CAMPO}
-        value={endereco}
-        onChange={(e) => setEndereco(e.target.value)}
-        placeholder="endereço"
-        maxLength={255}
-      />
-      <div className="flex gap-2">
+    // Cada campo com rótulo. A primeira versão era uma pilha de inputs com placeholder e
+    // mais nada — e placeholder some quando o campo tem valor, que é justamente o caso
+    // aqui: este formulário abre com tudo preenchido. Resultado: sete caixas de texto
+    // sem nome, e ninguém achava o horário de funcionamento.
+    <div className="mt-3 flex w-full flex-col gap-2.5 border-t border-white/8 pt-3">
+      <Campo rotulo="o que é a casa">
+        <textarea
+          rows={3}
+          className={`${CAMPO} resize-none leading-relaxed`}
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+          placeholder="Boteco de esquina, mesa na calçada."
+          maxLength={2000}
+        />
+      </Campo>
+
+      <Campo rotulo="endereço">
         <input
-          className={`${CAMPO} flex-1`}
-          value={horario}
-          onChange={(e) => setHorario(e.target.value)}
-          placeholder="ter a dom, 18h–02h"
+          className={CAMPO}
+          value={endereco}
+          onChange={(e) => setEndereco(e.target.value)}
+          placeholder="Av. Prestes Maia, 78"
           maxLength={255}
         />
-        <input
-          className={`${CAMPO} w-24 shrink-0`}
-          value={preco}
-          onChange={(e) => setPreco(e.target.value)}
-          placeholder="12,00"
-          inputMode="decimal"
-        />
-      </div>
-      <textarea
-        rows={2}
-        className={`${CAMPO} resize-none leading-relaxed`}
-        value={programacao}
-        onChange={(e) => setProgramacao(e.target.value)}
-        placeholder="toda semana: quinta é forró"
-        maxLength={2000}
-      />
-      <input
-        className={CAMPO}
-        value={instagram}
-        onChange={(e) => setInstagram(e.target.value)}
-        placeholder="@perfil"
-        maxLength={80}
-      />
-      {/* URL enquanto não há armazenamento de arquivo (item 45 do TODO). Quando existir,
-          o campo continua o mesmo — só muda de onde a URL vem. */}
-      <input
-        className={CAMPO}
-        value={foto}
-        onChange={(e) => setFoto(e.target.value)}
-        placeholder="url da foto do lugar"
-      />
-      <input
-        className={`${CAMPO} font-mono`}
-        value={coords}
-        onChange={(e) => setCoords(e.target.value)}
-        placeholder="-23.5441, -46.6396"
-      />
+      </Campo>
+
       <div className="flex gap-2">
+        <div className="flex-1">
+          <Campo rotulo="horário de funcionamento">
+            <input
+              className={CAMPO}
+              value={horario}
+              onChange={(e) => setHorario(e.target.value)}
+              placeholder="ter a dom, 18h–02h"
+              maxLength={255}
+            />
+          </Campo>
+        </div>
+        <div className="w-24 shrink-0">
+          <Campo rotulo="longneck">
+            <input
+              className={CAMPO}
+              value={preco}
+              onChange={(e) => setPreco(e.target.value)}
+              placeholder="12,00"
+              inputMode="decimal"
+            />
+          </Campo>
+        </div>
+      </div>
+
+      <Campo rotulo="toda semana">
+        <textarea
+          rows={2}
+          className={`${CAMPO} resize-none leading-relaxed`}
+          value={programacao}
+          onChange={(e) => setProgramacao(e.target.value)}
+          placeholder="quinta é forró, sábado tem samba"
+          maxLength={2000}
+        />
+      </Campo>
+
+      <Campo rotulo="instagram">
+        <input
+          className={CAMPO}
+          value={instagram}
+          onChange={(e) => setInstagram(e.target.value)}
+          placeholder="@perfil"
+          maxLength={80}
+        />
+      </Campo>
+
+      <Campo rotulo="foto do lugar">
+        <input
+          className={CAMPO}
+          value={foto}
+          onChange={(e) => setFoto(e.target.value)}
+          placeholder="url da imagem"
+        />
+      </Campo>
+
+      <Campo rotulo="coordenadas">
+        <input
+          className={`${CAMPO} font-mono`}
+          value={coords}
+          onChange={(e) => setCoords(e.target.value)}
+          placeholder="-23.5441, -46.6396"
+        />
+      </Campo>
+
+      <div className="mt-1 flex gap-2">
         <button
           type="button"
           onClick={salvar}
@@ -175,5 +204,14 @@ export function CorrigirLugar({
       </div>
       {erro && <p className="text-[11.5px] text-amber">{erro}</p>}
     </div>
+  );
+}
+
+function Campo({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="rotulo text-muted-3">{rotulo}</span>
+      {children}
+    </label>
   );
 }
