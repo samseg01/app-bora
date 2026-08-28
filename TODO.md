@@ -317,6 +317,19 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        mais próximo e não até a fronteira do bairro (item 38) — alguém pode estar dentro da Vila
        Madalena e a 1 km do lugar mais próximo que a gente visitou.
 
+- [ ] 40. **[decisão] O que uma conta comum ganha ao entrar?** Hoje: salvar lugar e comentar. Não
+       sinalizar (ADR-0006). Testado em 28/08 com conta comum de verdade — salvar 201, comentar
+       201, sinalizar 403. Comentar acabou de ser destravado na interface, mas a pergunta de
+       produto continua: **"Tô indo" é a ação-título do app e a conta comum não a tem**, o que faz
+       entrar parecer não mudar nada.
+       Três saídas, e nenhuma é óbvia: (a) manter restrito até haver comunidade, que é o que o
+       ADR-0006 decidiu e continua defensável enquanto o frescor for o ativo mais frágil;
+       (b) liberar para todos e aceitar que o sinal fica forjável — o item 34, hoje resolvido pela
+       contagem por pessoa, mostra que isso não é hipotético; (c) o caminho do `plano-conexoes.md`
+       (item 24): o check-in de conta comum aparece para as conexões dela e **não** alimenta o
+       frescor público. A (c) resolve a sensação de app morto sem entregar o motor de confiança,
+       mas depende do backend de Conexões (itens 27–30), que não existe.
+
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`

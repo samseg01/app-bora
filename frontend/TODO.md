@@ -192,7 +192,10 @@ alguém trabalha sentado, depois de andar pelo bairro. Por isso tem nav própria
        de UI**, não prazo garantido pela API), "Contar como está lá dentro" (`POST /comentarios`) e
        "Cancelar meu sinal" (⚠️ sem rota: item 20 de `../TODO.md`). Implementar como estado do
        `2d`, não como rota nova.
-- [x] 31. **Comentar** a partir do `2e` — funciona para qualquer autenticado.
+- [x] 31. **Comentar** — feito, e desde 28/08 **fora** do `2e`, em `components/ui/contar-como-esta.tsx`.
+      Estava dentro da confirmação de sinalização, que só aparece depois de marcar presença — e
+      sinalizar é restrito a curador e dono (ADR-0006). A única contribuição que uma conta comum
+      tem permissão de dar estava trancada atrás da ação que ela não pode executar.
 - [ ] 31b. **Comentar do `LugarSheet` do `2f`** — ainda não.
 
 ## Conexões — feature nova (plano em `../docs/plano-conexoes.md`)

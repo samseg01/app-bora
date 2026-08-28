@@ -122,8 +122,6 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
       <Confirmado
         restante={restante}
         dataFim={dataFim}
-        roleId={roleId}
-        token={sessao.token}
         aoCancelar={cancelar}
         ocupado={ocupado}
       />
@@ -171,39 +169,23 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
   );
 }
 
-/** A 2e: “Tá marcado”, com o que fazer em seguida. */
+/** A 2e: “Tá marcado”, com o contador e o desfazer. Comentar saiu daqui para
+    `contar-como-esta.tsx`: estava trancando atrás da sinalização a única contribuição
+    que uma conta comum tem permissão de dar. */
 function Confirmado({
   restante,
   dataFim,
-  roleId,
-  token,
   aoCancelar,
   ocupado,
 }: {
   restante: number;
   dataFim: string;
-  roleId: string;
-  token: string;
   aoCancelar: () => void;
   ocupado: boolean;
 }) {
-  const [texto, setTexto] = useState("");
-  const [enviado, setEnviado] = useState(false);
-  const [abrindo, setAbrindo] = useState(false);
-
   const h = Math.floor(restante / 60);
   const m = restante % 60;
 
-  async function comentar() {
-    if (!texto.trim()) return;
-    try {
-      await api.comentar(token, roleId, texto.trim());
-      setEnviado(true);
-      setTexto("");
-    } catch {
-      /* silencioso: o sinal já está feito, o comentário é bônus */
-    }
-  }
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -231,37 +213,6 @@ function Confirmado({
           />
         </div>
       </div>
-
-      {enviado ? (
-        <p className="mt-4 w-full rounded-2xl border border-white/8 bg-card-alt px-4 py-3.5 text-[13px] text-text-faint">
-          Contado. Quem abrir o mapa vê.
-        </p>
-      ) : abrindo ? (
-        <div className="mt-4 flex w-full flex-col gap-2.5">
-          <textarea
-            rows={3}
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            placeholder="fila andando, som bom, cabe gente…"
-            className="w-full resize-none rounded-2xl border border-white/10 bg-sunken px-4 py-3 text-left text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-magenta"
-          />
-          <button
-            type="button"
-            onClick={comentar}
-            className="rounded-2xl bg-magenta py-3 text-[14px] font-bold text-white"
-          >
-            Contar
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setAbrindo(true)}
-          className="mt-4 w-full rounded-2xl border border-white/16 py-3.5 text-[14px] font-semibold text-text-soft"
-        >
-          Contar como está lá dentro
-        </button>
-      )}
 
       <button
         type="button"

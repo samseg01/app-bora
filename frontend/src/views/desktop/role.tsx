@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AcaoSalvar } from "@/components/ui/acao-salvar";
 import { AcaoSinalizar } from "@/components/ui/acao-sinalizar";
+import { ContarComoEsta } from "@/components/ui/contar-como-esta";
 import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MapaReal } from "@/components/ui/mapa-real";
 import { DesktopShell } from "./shell";
@@ -82,6 +83,8 @@ export function RoleDesktop({
             <AcaoSinalizar roleId={role.id} dataFim={role.data_fim} />
 
             {lugar && <AcaoSalvar lugarId={lugar.id} variante="botao" />}
+
+            <ContarComoEsta roleId={role.id} />
           </div>
 
           {lugar && (

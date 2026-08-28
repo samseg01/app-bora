@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AcaoSalvar } from "@/components/ui/acao-salvar";
 import { AcaoSinalizar } from "@/components/ui/acao-sinalizar";
+import { ContarComoEsta } from "@/components/ui/contar-como-esta";
 import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MobileShell } from "./shell";
 import { hora, idade } from "@/lib/tempo";
@@ -89,8 +90,9 @@ export function RoleMobile({
         </div>
       )}
 
-      <div className="mt-auto px-5.5 pt-4 pb-6.5">
+      <div className="mt-auto flex flex-col gap-3 px-5.5 pt-4 pb-6.5">
         <AcaoSinalizar roleId={role.id} dataFim={role.data_fim} />
+        <ContarComoEsta roleId={role.id} />
       </div>
     </MobileShell>
   );
