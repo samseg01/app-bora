@@ -211,22 +211,11 @@ tese (salvos das conexões) vem antes da mais pedida (check-in), e o v1 é sem p
 Depende de duas coisas que ainda não existem: **login no frontend** (fase 3 do `frontend/TODO.md`)
 e o **bairro piloto** (item 2 daqui) — sem concentração geográfica a rede de amigos não fecha.
 
-- [ ] 23. **Decidir o copy do anonimato.** O app promete hoje, na tela, "ninguém vê seu nome" no
-       `2d`/`2h` e "só seus, ninguém mais vê" no `2g`. Check-in e salvos compartilhados contradizem
-       as duas frases. A saída proposta: o mapa público continua anônimo (nenhum endpoint expõe
-       autor de sinalização) e só as conexões veem nome — mas **o copy precisa mudar antes**, não
-       depois. É a promessa mais explícita do produto.
-- [ ] 24. **Decidir se check-in de usuário comum alimenta o frescor público.** Recomendação do
-       plano: **não** no v1 (mantém o ADR-0006 intacto), e reavaliar com dado depois. Frescor
-       errado destrói confiança mais rápido que frescor ausente. Seja qual for a escolha, vira
-       **ADR novo ou emenda ao 0006** — não decisão implícita no código.
-- [x] 25. **Desenhar a aba de Conexões.** Feito: `docs/front-end-ideias/conexoes/` — aba em desktop
-       e telefone, estado vazio, convite e confirmação de check-in. O estado vazio resolve o cold
-       start colocando os salvos do curador no lugar, para a aba nunca nascer morta; o convite
-       lista o que a pessoa passa **e não passa** a ver; o check-in materializa o copy novo do
-       anonimato (item 23). **Falta desenhar:** o selo "N conexões salvaram" no card de descoberta.
-- [ ] 26. **Backend: `Conexao` + check-in + salvos compartilhados.** Detalhado abaixo, na seção do
-       backend (itens 27–30).
+- [x] 23. **Copy do anonimato — resolvido e verificado em 28/08.** A contradição era a home citar
+       quem sinalizou enquanto o detalhe prometia anonimato. O card social da home passou a citar
+       **comentário** (que é assinado, e por isso pode ser nomeado), e a promessa ficou coerente em
+       todo o app: sinal é anônimo, comentário é assinado. O perfil diz isso como texto em vez de
+       toggle, porque não há o que desligar — nenhum endpoint expõe autor de sinalização.
 
 ## UX / polish
 
