@@ -87,7 +87,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Núcleo transversal (config, db/session, security, geo) | ✅ |
 | Auth + rotas API v1 | ✅ |
 | Serviço de frescor | ✅ |
-| Testes de integração + smoke E2E (34 testes) | ✅ |
+| Testes de integração + smoke E2E (37 testes) | ✅ |
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |

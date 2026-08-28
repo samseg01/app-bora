@@ -90,7 +90,7 @@ de assumir que funciona como desenhado.
 
 | Camada | Tecnologia | Status |
 |---|---|---|
-| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, 34 testes |
+| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, 37 testes |
 | Frontend | Next.js + React + PWA — **decisão de stack, nada escrito ainda** | ❌ não iniciado |
 | Infra | Docker Compose local (api + postgres/postgis); produção planejada: Railway/Fly.io/Render (backend) + Vercel (Next.js) | ⚠️ só local, nada de produção configurado |
 
@@ -131,7 +131,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | inclui `GET /estabelecimento/meus`, que diz ao cliente qual casa é dele |
 | Frontend: painel do estabelecimento (`/estabelecimento`) | ✅ | terceira superfície do produto; sem design prévio — não havia no hi-fi |
 | Backend: serviço de frescor | ✅ | ADR-0001; conta **pessoas distintas**, não linhas (ver issues) |
-| Backend: testes (34, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
+| Backend: testes (37, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: criação de `Estabelecimento` via API | ❌ | não existe endpoint — só leitura pro dono; hoje só dá pra inserir direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + `frontend/TODO.md` |
@@ -164,7 +164,7 @@ Mais `GET /health` fora do prefixo versionado.
   uvicorn. Testes: `docker compose exec api uv run pytest` (ou `uv run pytest` com o Postgres do compose
   no ar — os testes batem em Postgres+PostGIS real, sem mock).
 - **Atenção:** o daemon do Docker Desktop precisa estar ligado. Na última verificação ele estava
-  parado, então nada do backend (incluindo os 34 testes) podia ser executado sem subir o Docker
+  parado, então nada do backend (incluindo os 37 testes) podia ser executado sem subir o Docker
   antes.
 - **Frontend:** `cd frontend && npm run dev` → `http://localhost:3000`.
 - **Atenção nos testes:** a suíte roda contra o **mesmo banco** do desenvolvimento, e os
