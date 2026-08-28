@@ -306,6 +306,29 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        mais próximo e não até a fronteira do bairro (item 38) — alguém pode estar dentro da Vila
        Madalena e a 1 km do lugar mais próximo que a gente visitou.
 
+- [ ] 44. **[decisão] Agenda recorrente: "quinta é forró" sem alguém publicar toda quinta.**
+       Levantado em 28/08. A ideia: casa com programação fixa não precisa de curador publicando
+       semanalmente — a recorrência gera o rolê, e o curador entra só quando há algo **além** do
+       calendário. Vale só para as casas que têm programação; a maioria não tem.
+       **O impedimento é arquitetural, não de esforço.** O ADR-004 recusou cron/worker nesta fase,
+       e o ADR-001 resolveu um problema desta mesma família derivando o frescor na leitura em vez
+       de materializar. O caminho coerente seria o mesmo: guardar a regra de recorrência no
+       `Lugar` e derivar o rolê de hoje em `listar_descoberta`.
+       **Mas há um nó real:** rolê derivado não tem linha no banco, e `Sinalizacao.role_id` e
+       `Comentario.role_id` são FK. Um forró de quinta que ninguém pode sinalizar nem comentar não
+       acende — e acender é o ponto. As saídas: materializar preguiçosamente na primeira leitura
+       do dia (escrita num GET, que é feio mas honesto), ou aceitar o cron e revisar o ADR-004.
+       Decidir junto com o 42: se o dono publica (ADR-008), talvez a recorrência seja só um
+       formulário que ele preenche uma vez, e o problema desaparece.
+- [ ] 45. **Foto do lugar, tirada pelo curador em campo.** Decidido em 28/08 que a origem é a foto
+       do curador — coerente com a tese e sem problema de direito de imagem. **Impedimento: não
+       existe armazenamento de arquivo em lugar nenhum do projeto**, nem local nem em nuvem.
+       `Lugar.fotos` existe como lista de URLs desde a migration inicial, nunca foi usada e nunca
+       foi renderizada.
+       Depende do R7: o destino do deploy decide onde os arquivos moram, e a maior parte dos PaaS
+       tem disco efêmero — foto salva em disco some no próximo deploy. Ou entra armazenamento de
+       objeto (S3/R2) desde o começo, o que pede conta e chave. **Não começar antes do R7.**
+
 ### O motor de contribuição — quatro decisões que são a mesma (28/08)
 
 Estavam soltas sob a subseção da "escada", que trata de outro assunto. Ficam juntas porque **não se

@@ -1,5 +1,5 @@
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -30,6 +30,13 @@ async def criar_lugar(body: LugarCreate, usuario: CuradorUser, db: DbSession) ->
         geo=point_from_latlng(body.lat, body.lng),
         bairro=body.bairro,
         endereco=body.endereco,
+        descricao=body.descricao,
+        instagram=body.instagram,
+        horario_funcionamento=body.horario_funcionamento,
+        preco_longneck=body.preco_longneck,
+        # Quem carimba a data é o servidor: "visto em" precisa dizer quando o dado
+        # entrou, não quando o cliente afirma que entrou.
+        preco_visto_em=date.today() if body.preco_longneck is not None else None,
         estabelecimento_id=body.estabelecimento_id,
         fotos=body.fotos,
         criado_por=usuario.id,
@@ -80,6 +87,11 @@ async def atualizar_lugar(
         lugar.geo = point_from_latlng(
             lat if lat is not None else current_lat, lng if lng is not None else current_lng
         )
+    # Corrigir o preço recarimba a data: um valor novo com data velha diria que o preço
+    # de hoje foi visto semana passada.
+    if "preco_longneck" in dados:
+        lugar.preco_visto_em = date.today() if dados["preco_longneck"] is not None else None
+
     for campo, valor in dados.items():
         setattr(lugar, campo, valor)
 

@@ -40,7 +40,9 @@ export function SalvosMobile({ itens }: { itens: ItemSalvo[] }) {
                 }`}
               />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[15px] font-bold">{lugar.nome}</div>
+                <Link href={`/lugar/${lugar.id}`} className="truncate text-[15px] font-bold hover:text-magenta-soft">
+                  {lugar.nome}
+                </Link>
                 <div className="mt-0.5 truncate text-xs text-muted-2">
                   {lugar.categoria} · {lugar.bairro}
                 </div>

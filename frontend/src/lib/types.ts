@@ -59,6 +59,17 @@ export interface LugarPublic {
   /** Existe no schema desde 28/08 (migration 0003). Nullable: o lugar é localizável por
       lat/lng sozinho, e nem todo cadastro de campo traz o número. */
   endereco: string | null;
+  /** A ficha do lugar (migration 0004). Permanente — não confundir com `Role.descricao`,
+      que é o motivo pra ir HOJE e morre com o rolê. Tudo nullable: o curador anota na
+      calçada o que conseguiu. */
+  descricao: string | null;
+  /** Só o identificador, sem @ nem URL — a tela monta o link. */
+  instagram: string | null;
+  horario_funcionamento: string | null;
+  /** Vem como string porque é Numeric no Postgres e float perderia centavo. */
+  preco_longneck: string | null;
+  /** Preço envelhece: a tela mostra "visto em", nunca o número sozinho. */
+  preco_visto_em: string | null;
 }
 
 export interface RolePin {

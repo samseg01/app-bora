@@ -73,7 +73,16 @@ export function RoleDesktop({
             <div className="flex items-center gap-3">
               <div className="h-11.5 w-11.5 shrink-0 rounded-[13px] bg-gradient-to-br from-cyan to-violet" />
               <div className="min-w-0">
-                <div className="truncate text-base font-bold">{lugar?.nome ?? "Lugar"}</div>
+                {lugar ? (
+                  <Link
+                    href={`/lugar/${lugar.id}`}
+                    className="block truncate text-base font-bold hover:text-magenta-soft"
+                  >
+                    {lugar.nome}
+                  </Link>
+                ) : (
+                  <div className="truncate text-base font-bold">Lugar</div>
+                )}
                 <div className="mt-0.5 truncate text-xs text-muted-2">
                   o lugar{lugar?.endereco ? ` · ${lugar.endereco}` : ""}
                 </div>

@@ -1,5 +1,6 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
+from decimal import Decimal
 
 from pydantic import BaseModel, Field
 
@@ -11,6 +12,10 @@ class LugarCreate(BaseModel):
     lng: float = Field(ge=-180, le=180)
     bairro: str = Field(min_length=1, max_length=80)
     endereco: str | None = Field(default=None, max_length=255)
+    descricao: str | None = Field(default=None, max_length=2000)
+    instagram: str | None = Field(default=None, max_length=80)
+    horario_funcionamento: str | None = Field(default=None, max_length=255)
+    preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
 
@@ -22,6 +27,10 @@ class LugarUpdate(BaseModel):
     lng: float | None = Field(default=None, ge=-180, le=180)
     bairro: str | None = Field(default=None, min_length=1, max_length=80)
     endereco: str | None = Field(default=None, max_length=255)
+    descricao: str | None = Field(default=None, max_length=2000)
+    instagram: str | None = Field(default=None, max_length=80)
+    horario_funcionamento: str | None = Field(default=None, max_length=255)
+    preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
 
@@ -34,6 +43,12 @@ class LugarPublic(BaseModel):
     lng: float
     bairro: str
     endereco: str | None
+    descricao: str | None
+    instagram: str | None
+    horario_funcionamento: str | None
+    preco_longneck: Decimal | None
+    #: Preço envelhece — a tela mostra "R$ 12, visto em 28/08", nunca o número sozinho.
+    preco_visto_em: date | None
     estabelecimento_id: uuid.UUID | None
     fotos: list[str] | None
     created_at: datetime

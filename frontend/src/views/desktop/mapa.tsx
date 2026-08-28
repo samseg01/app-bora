@@ -99,7 +99,9 @@ export function MapaDesktop({
         {selecionado && (
           <div className="absolute top-7 right-7 flex w-[332px] flex-col gap-3.5 rounded-[22px] border border-white/9 bg-sunken/96 p-5">
             <div>
-              <div className="text-lg font-bold">{selecionado.lugar.nome}</div>
+              <Link href={`/lugar/${selecionado.lugar.id}`} className="text-lg font-bold hover:text-magenta-soft">
+                {selecionado.lugar.nome}
+              </Link>
               <div className="mt-1 text-xs text-muted-2">
                 {selecionado.lugar.categoria}
                 {selecionado.lugar.endereco ? ` · ${selecionado.lugar.endereco}` : ""}
@@ -143,9 +145,12 @@ export function MapaDesktop({
                   Ver o rolê
                 </Link>
               ) : (
-                <span className="flex-1 rounded-2xl border border-white/10 py-3 text-center text-[13px] font-semibold text-muted-3">
-                  Sem rolê hoje
-                </span>
+                <Link
+                  href={`/lugar/${selecionado.lugar.id}`}
+                  className="flex-1 rounded-2xl border border-white/16 py-3 text-center text-[13px] font-semibold text-text-soft"
+                >
+                  Ver o lugar
+                </Link>
               )}
               <a
                 href={`https://www.google.com/maps/dir/?api=1&destination=${selecionado.lugar.lat},${selecionado.lugar.lng}`}

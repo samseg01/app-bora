@@ -59,7 +59,16 @@ export function RoleMobile({
         <div className="flex min-w-0 items-center gap-3">
           <div className="h-10.5 w-10.5 shrink-0 rounded-xl bg-gradient-to-br from-cyan to-violet" />
           <div className="min-w-0">
-            <div className="truncate text-[15px] font-bold">{lugar?.nome ?? "Lugar"}</div>
+            {lugar ? (
+              <Link
+                href={`/lugar/${lugar.id}`}
+                className="block truncate text-[15px] font-bold hover:text-magenta-soft"
+              >
+                {lugar.nome}
+              </Link>
+            ) : (
+              <div className="truncate text-[15px] font-bold">Lugar</div>
+            )}
             <div className="mt-0.5 truncate text-xs text-muted-2">
               o lugar{lugar?.endereco ? ` · ${lugar.endereco}` : ""}
             </div>

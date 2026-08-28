@@ -75,7 +75,9 @@ export function MapaMobile({
           <div className="absolute inset-x-4 bottom-4 flex flex-col gap-3 rounded-[22px] border border-white/9 bg-sunken/95 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="truncate text-[17px] font-bold">{selecionado.lugar.nome}</div>
+                <Link href={`/lugar/${selecionado.lugar.id}`} className="block truncate text-[17px] font-bold hover:text-magenta-soft">
+                  {selecionado.lugar.nome}
+                </Link>
                 <div className="mt-0.5 text-xs text-muted-2">
                   {selecionado.lugar.categoria} ·{" "}
                   {selecionado.total_comentarios === 0
@@ -112,9 +114,12 @@ export function MapaMobile({
                   Ver o rolê · até {hora(selecionado.role_ativo.data_fim)}
                 </Link>
               ) : (
-                <span className="flex-1 rounded-2xl border border-white/10 py-3 text-center text-[13.5px] font-semibold text-muted-3">
-                  Sem rolê hoje
-                </span>
+                <Link
+                  href={`/lugar/${selecionado.lugar.id}`}
+                  className="flex-1 rounded-2xl border border-white/16 py-3 text-center text-[13.5px] font-semibold text-text-soft"
+                >
+                  Ver o lugar
+                </Link>
               )}
               <a
                 href={`https://www.google.com/maps/dir/?api=1&destination=${selecionado.lugar.lat},${selecionado.lugar.lng}`}

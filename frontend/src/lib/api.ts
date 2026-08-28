@@ -178,8 +178,12 @@ export const api = {
       lat: number;
       lng: number;
       bairro: string;
-      /** Opcional: o curador em campo nem sempre tem o número na mão. */
+      /** Opcionais: o curador em campo anota o que conseguiu. */
       endereco?: string | null;
+      descricao?: string | null;
+      instagram?: string | null;
+      horario_funcionamento?: string | null;
+      preco_longneck?: number | null;
     },
   ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
 
@@ -189,6 +193,15 @@ export const api = {
   atualizarLugar: (
     token: string,
     id: string,
-    corpo: { nome?: string; endereco?: string | null; lat?: number; lng?: number },
+    corpo: {
+      nome?: string;
+      endereco?: string | null;
+      descricao?: string | null;
+      instagram?: string | null;
+      horario_funcionamento?: string | null;
+      preco_longneck?: number | null;
+      lat?: number;
+      lng?: number;
+    },
   ) => req<LugarPublic>(`/curador/lugares/${id}`, { token, metodo: "PATCH", corpo }),
 };

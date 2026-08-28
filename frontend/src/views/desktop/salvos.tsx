@@ -112,7 +112,9 @@ function CardSalvo({
       <div className={`h-33 bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`} />
       <div className="flex items-start justify-between gap-2.5 px-4 pt-3.5 pb-4.5">
         <div className="min-w-0">
-          <div className="truncate text-[15.5px] font-bold">{lugar.nome}</div>
+          <Link href={`/lugar/${lugar.id}`} className="truncate text-[15.5px] font-bold hover:text-magenta-soft">
+            {lugar.nome}
+          </Link>
           <div className="mt-1 truncate text-xs text-muted-2">
             {lugar.categoria} · {lugar.bairro}
           </div>

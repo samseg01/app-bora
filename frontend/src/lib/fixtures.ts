@@ -103,6 +103,14 @@ function lugar(
     fotos: null,
     created_at: emHoras(-720),
     endereco,
+    // A ficha do lugar fica vazia no exemplo de propósito: ela existe para o dado de
+    // campo, e inventar descrição e preço aqui é exatamente o que este arquivo não pode
+    // fazer — ele já é a única ficção do app, e só em dev.
+    descricao: null,
+    instagram: null,
+    horario_funcionamento: null,
+    preco_longneck: null,
+    preco_visto_em: null,
   };
 }
 

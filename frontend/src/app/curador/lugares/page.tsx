@@ -81,6 +81,10 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
   const [nome, setNome] = useState("");
   const [categoria, setCategoria] = useState<string>(CATEGORIAS_LUGAR[0]);
   const [endereco, setEndereco] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [horario, setHorario] = useState("");
+  const [preco, setPreco] = useState("");
   const [coords, setCoords] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
@@ -124,6 +128,12 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
         lng,
         bairro,
         endereco: endereco.trim() || null,
+        descricao: descricao.trim() || null,
+        // Guarda só o identificador: a pessoa cola @nome ou a URL inteira, e a tela
+        // monta o link. Normalizar aqui evita três formatos no banco.
+        instagram: instagram.trim().replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "") || null,
+        horario_funcionamento: horario.trim() || null,
+        preco_longneck: preco.trim() ? Number(preco.replace(",", ".")) : null,
       });
       // Fora do updater de propósito: a função passada ao setState precisa ser pura,
       // e avisar o pai lá dentro é efeito colateral.
@@ -133,6 +143,10 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       setNome("");
       setCoords("");
       setEndereco("");
+      setDescricao("");
+      setInstagram("");
+      setHorario("");
+      setPreco("");
     } catch (err) {
       setErro(
         err instanceof ApiError && err.status === 403
@@ -219,6 +233,57 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
               onChange={(e) => setCoords(e.target.value)}
               placeholder="-23.5441, -46.6396"
               required
+            />
+          </label>
+
+          {/* A ficha da casa. Tudo opcional: o curador anota na calçada o que conseguiu,
+              e exigir campo cheio transforma anotação rápida em formulário. */}
+          <label className="flex flex-col gap-1.5">
+            <span className="flex items-baseline justify-between">
+              <span className="rotulo text-muted-3">o que é a casa</span>
+              <span className="text-[11px] text-muted-3">opcional</span>
+            </span>
+            <textarea
+              rows={3}
+              className={`${CAMPO} resize-none leading-relaxed`}
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              placeholder="Boteco de esquina, mesa na calçada, forró às quintas."
+              maxLength={2000}
+            />
+          </label>
+
+          <div className="flex gap-2.5">
+            <label className="flex flex-1 flex-col gap-1.5">
+              <span className="rotulo text-muted-3">horário</span>
+              <input
+                className={CAMPO}
+                value={horario}
+                onChange={(e) => setHorario(e.target.value)}
+                placeholder="ter a dom, 18h–02h"
+                maxLength={255}
+              />
+            </label>
+            <label className="flex w-32 shrink-0 flex-col gap-1.5">
+              <span className="rotulo text-muted-3">longneck</span>
+              <input
+                className={CAMPO}
+                value={preco}
+                onChange={(e) => setPreco(e.target.value)}
+                placeholder="12,00"
+                inputMode="decimal"
+              />
+            </label>
+          </div>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="rotulo text-muted-3">instagram</span>
+            <input
+              className={CAMPO}
+              value={instagram}
+              onChange={(e) => setInstagram(e.target.value)}
+              placeholder="@bardochina"
+              maxLength={80}
             />
           </label>
 

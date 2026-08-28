@@ -1,16 +1,19 @@
 import enum
 import uuid
-from datetime import datetime
+from datetime import date, datetime
+from decimal import Decimal
 from typing import Any
 
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     ARRAY,
     CheckConstraint,
+    Date,
     DateTime,
     Enum,
     ForeignKey,
     Index,
+    Numeric,
     String,
     Text,
     UniqueConstraint,
@@ -97,6 +100,19 @@ class Lugar(Base):
     # Nullable: o lugar é localizável por `geo` sozinho, e o curador em campo nem sempre
     # tem o número na mão. Serve para quem lê ("Rua Aspicuelta, 340"), não para o sistema.
     endereco: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # O que a casa é, escrito por quem esteve lá. Permanente — não confundir com
+    # `Role.descricao`, que é o motivo pra ir HOJE e morre com o rolê.
+    descricao: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Só o identificador, sem @ nem URL: a tela monta o link.
+    instagram: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    # Texto livre ("ter a dom, 18h–02h"). Não é estrutura de horário: a casa do Centro
+    # muda de horário no feriado e ninguém vai manter sete faixas por dia atualizadas.
+    horario_funcionamento: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Quanto custa a cerveja mais comum — o "vai caber no meu bolso" que decide sair.
+    # Vem com a data porque preço envelhece: a tela mostra "visto em 28/08", não um número
+    # sem idade, que viraria promessa que ninguém pode cumprir.
+    preco_longneck: Mapped[Decimal | None] = mapped_column(Numeric(6, 2), nullable=True)
+    preco_visto_em: Mapped[date | None] = mapped_column(Date, nullable=True)
     estabelecimento_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("estabelecimento.id"), nullable=True
     )

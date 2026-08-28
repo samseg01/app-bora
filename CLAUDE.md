@@ -148,6 +148,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — indicar um lugar | ✅ | link para WhatsApp/email do curador, sem backend por decisão |
 | Frontend — onboarding de gostos (`2b`) | ❌ | segue sem uso funcional por decisão; o `2e` foi feito |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
+| Frontend — ficha do lugar (`/lugar/[id]`) | ✅ | descrição, horário, preço da longneck com data, Instagram |
 | Frontend — busca de bairro por localização | ✅ | `GET /lugares/proximos`; primeira consulta espacial do projeto |
 | Frontend — PWA instalável (manifest, ícones, service worker) | ✅ | o SW cacheia a casca, nunca o dado |
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
