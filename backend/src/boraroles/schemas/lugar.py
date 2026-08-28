@@ -15,6 +15,7 @@ class LugarCreate(BaseModel):
     descricao: str | None = Field(default=None, max_length=2000)
     instagram: str | None = Field(default=None, max_length=80)
     horario_funcionamento: str | None = Field(default=None, max_length=255)
+    programacao: str | None = Field(default=None, max_length=2000)
     preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
@@ -30,6 +31,7 @@ class LugarUpdate(BaseModel):
     descricao: str | None = Field(default=None, max_length=2000)
     instagram: str | None = Field(default=None, max_length=80)
     horario_funcionamento: str | None = Field(default=None, max_length=255)
+    programacao: str | None = Field(default=None, max_length=2000)
     preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
@@ -46,6 +48,7 @@ class LugarPublic(BaseModel):
     descricao: str | None
     instagram: str | None
     horario_funcionamento: str | None
+    programacao: str | None
     preco_longneck: Decimal | None
     #: Preço envelhece — a tela mostra "R$ 12, visto em 28/08", nunca o número sozinho.
     preco_visto_em: date | None

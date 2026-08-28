@@ -40,6 +40,7 @@ export function CorrigirLugar({
   const [descricao, setDescricao] = useState(lugar.descricao ?? "");
   const [instagram, setInstagram] = useState(lugar.instagram ?? "");
   const [horario, setHorario] = useState(lugar.horario_funcionamento ?? "");
+  const [programacao, setProgramacao] = useState(lugar.programacao ?? "");
   const [preco, setPreco] = useState(lugar.preco_longneck ?? "");
   const [foto, setFoto] = useState(lugar.fotos?.[0] ?? "");
   const [coords, setCoords] = useState(`${lugar.lat}, ${lugar.lng}`);
@@ -66,6 +67,7 @@ export function CorrigirLugar({
         descricao: descricao.trim() || null,
         instagram: soIdentificador(instagram) || null,
         horario_funcionamento: horario.trim() || null,
+        programacao: programacao.trim() || null,
         preco_longneck: valor ? Number(valor) : null,
         fotos: foto.trim() ? [foto.trim()] : null,
         lat,
@@ -125,6 +127,14 @@ export function CorrigirLugar({
           inputMode="decimal"
         />
       </div>
+      <textarea
+        rows={2}
+        className={`${CAMPO} resize-none leading-relaxed`}
+        value={programacao}
+        onChange={(e) => setProgramacao(e.target.value)}
+        placeholder="toda semana: quinta é forró"
+        maxLength={2000}
+      />
       <input
         className={CAMPO}
         value={instagram}

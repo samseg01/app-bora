@@ -39,6 +39,7 @@ def lugar_to_public(lugar: Lugar) -> LugarPublic:
         descricao=lugar.descricao,
         instagram=lugar.instagram,
         horario_funcionamento=lugar.horario_funcionamento,
+        programacao=lugar.programacao,
         preco_longneck=lugar.preco_longneck,
         preco_visto_em=lugar.preco_visto_em,
         estabelecimento_id=lugar.estabelecimento_id,

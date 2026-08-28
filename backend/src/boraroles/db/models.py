@@ -108,6 +108,13 @@ class Lugar(Base):
     # Texto livre ("ter a dom, 18h–02h"). Não é estrutura de horário: a casa do Centro
     # muda de horário no feriado e ninguém vai manter sete faixas por dia atualizadas.
     horario_funcionamento: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # "Quinta é forró, sábado tem samba" — o que a casa costuma ter, dito pela casa.
+    # É TEXTO, não recorrência que gera rolê: gerar exigiria cron (recusado no ADR-004) ou
+    # rolê derivado, que não tem linha no banco e por isso não poderia ser sinalizado nem
+    # comentado — e acender é o ponto. Ver item 44 do TODO.
+    # Também é de natureza diferente do rolê: programação é o que costuma acontecer,
+    # rolê é o que alguém foi ver hoje. A tela precisa manter as duas distintas.
+    programacao: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Quanto custa a cerveja mais comum — o "vai caber no meu bolso" que decide sair.
     # Vem com a data porque preço envelhece: a tela mostra "visto em 28/08", não um número
     # sem idade, que viraria promessa que ninguém pode cumprir.

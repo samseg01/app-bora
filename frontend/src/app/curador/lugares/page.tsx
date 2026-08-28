@@ -84,6 +84,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
   const [descricao, setDescricao] = useState("");
   const [instagram, setInstagram] = useState("");
   const [horario, setHorario] = useState("");
+  const [programacao, setProgramacao] = useState("");
   const [preco, setPreco] = useState("");
   const [coords, setCoords] = useState("");
   const [erro, setErro] = useState<string | null>(null);
@@ -133,6 +134,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
         // monta o link. Normalizar aqui evita três formatos no banco.
         instagram: instagram.trim().replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "") || null,
         horario_funcionamento: horario.trim() || null,
+        programacao: programacao.trim() || null,
         preco_longneck: preco.trim() ? Number(preco.replace(",", ".")) : null,
       });
       // Fora do updater de propósito: a função passada ao setState precisa ser pura,
@@ -146,6 +148,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       setDescricao("");
       setInstagram("");
       setHorario("");
+      setProgramacao("");
       setPreco("");
     } catch (err) {
       setErro(
@@ -275,6 +278,21 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
               />
             </label>
           </div>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="flex items-baseline justify-between">
+              <span className="rotulo text-muted-3">toda semana</span>
+              <span className="text-[11px] text-muted-3">só se tiver algo fixo</span>
+            </span>
+            <textarea
+              rows={2}
+              className={`${CAMPO} resize-none leading-relaxed`}
+              value={programacao}
+              onChange={(e) => setProgramacao(e.target.value)}
+              placeholder="quinta é forró, sábado tem samba"
+              maxLength={2000}
+            />
+          </label>
 
           <label className="flex flex-col gap-1.5">
             <span className="rotulo text-muted-3">instagram</span>

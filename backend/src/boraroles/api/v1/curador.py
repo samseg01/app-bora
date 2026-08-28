@@ -33,6 +33,7 @@ async def criar_lugar(body: LugarCreate, usuario: CuradorUser, db: DbSession) ->
         descricao=body.descricao,
         instagram=body.instagram,
         horario_funcionamento=body.horario_funcionamento,
+        programacao=body.programacao,
         preco_longneck=body.preco_longneck,
         # Quem carimba a data é o servidor: "visto em" precisa dizer quando o dado
         # entrou, não quando o cliente afirma que entrou.

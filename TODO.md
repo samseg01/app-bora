@@ -306,7 +306,12 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        mais próximo e não até a fronteira do bairro (item 38) — alguém pode estar dentro da Vila
        Madalena e a 1 km do lugar mais próximo que a gente visitou.
 
-- [ ] 44. **[decisão] Agenda recorrente: "quinta é forró" sem alguém publicar toda quinta.**
+- [~] 44. **[decisão] Agenda recorrente: "quinta é forró" sem alguém publicar toda quinta.**
+       **Parte informativa feita** (migration 0005): `Lugar.programacao` é texto livre, aparece na
+       ficha sob "toda semana", com a ressalva de que não quer dizer que está rolando agora. Isso
+       entrega o valor de leitura — quem abre a página numa terça descobre que quinta tem forró —
+       sem tocar em nada de arquitetura.
+       **Falta a parte que gera rolê**, e é ela que tem o impedimento. Enunciado original:
        Levantado em 28/08. A ideia: casa com programação fixa não precisa de curador publicando
        semanalmente — a recorrência gera o rolê, e o curador entra só quando há algo **além** do
        calendário. Vale só para as casas que têm programação; a maioria não tem.

@@ -100,6 +100,21 @@ export function LugarFicha({
         </div>
       )}
 
+      {/* Depois do bloco de hoje e mais discreta de propósito: programação é o que a casa
+          COSTUMA ter, dito por ela; rolê é o que alguém foi ver HOJE. Misturar as duas
+          faria a tela prometer um forró que ninguém confirmou. */}
+      {lugar.programacao && (
+        <div className="rounded-[20px] border border-white/7 bg-card px-4.5 py-4">
+          <div className="rotulo text-muted-3">toda semana</div>
+          <p className="mt-2 text-[13.5px] leading-relaxed whitespace-pre-line text-text-dim">
+            {lugar.programacao}
+          </p>
+          <p className="mt-2 text-[11.5px] leading-snug text-muted-3">
+            O que a casa costuma ter. Não quer dizer que está rolando agora.
+          </p>
+        </div>
+      )}
+
       {(lugar.horario_funcionamento || preco !== null || lugar.instagram) && (
         <dl className="flex flex-col gap-2.5 rounded-[20px] border border-white/7 bg-card-alt px-4.5 py-4">
           {lugar.horario_funcionamento && (

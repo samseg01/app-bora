@@ -66,6 +66,10 @@ export interface LugarPublic {
   /** Só o identificador, sem @ nem URL — a tela monta o link. */
   instagram: string | null;
   horario_funcionamento: string | null;
+  /** O que a casa costuma ter na semana ("quinta é forró"). É texto, e é declarado —
+      diferente do rolê, que é o que alguém foi ver hoje. A tela mantém as duas coisas
+      separadas de propósito. */
+  programacao: string | null;
   /** Vem como string porque é Numeric no Postgres e float perderia centavo. */
   preco_longneck: string | null;
   /** Preço envelhece: a tela mostra "visto em", nunca o número sozinho. */
