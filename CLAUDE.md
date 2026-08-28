@@ -219,9 +219,9 @@ contradisserem, o ADR ganha.
 - **Telas com dado de exemplo, não real** — `/salvos`, `/perfil` e `/curador` dependem de
   autenticação e hoje rodam de `frontend/src/lib/fixtures.ts`. `/`, `/mapa` e `/role/[id]` usam a
   API pública de verdade, caindo em exemplo só quando o backend está fora do ar em dev.
-- **O design pede coisas que o schema não tem**: `Role.descricao` (o "motivo pra ir", que o
-  wireframe estudou em 3 telas), endereço do lugar, preço/couvert, horário de funcionamento. Ver a
-  tabela de mudanças recomendadas em `docs/plano-frontend.md`.
+- **O design ainda pede coisas que o schema não tem**: preço/couvert e horário de funcionamento.
+  `Role.descricao` (migration 0002) e `Lugar.endereco` (0003) já existem. Ver a tabela de
+  mudanças recomendadas em `docs/plano-frontend.md`.
 - **Três contradições design ↔ backend ainda sem decisão**: o CTA "Tô indo" do detalhe dá 403 pro
   usuário comum (ADR-0006); a home mostra nome de quem sinalizou enquanto o detalhe promete
   anonimato; e não há tela de login/cadastro no design, embora salvar/sinalizar/comentar exijam

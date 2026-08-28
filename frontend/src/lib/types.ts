@@ -56,8 +56,9 @@ export interface LugarPublic {
   estabelecimento_id: string | null;
   fotos: string[] | null;
   created_at: string;
-  /** Não existe no schema ainda (../TODO.md item 21) — mesma regra do `descricao`. */
-  endereco?: string | null;
+  /** Existe no schema desde 28/08 (migration 0003). Nullable: o lugar é localizável por
+      lat/lng sozinho, e nem todo cadastro de campo traz o número. */
+  endereco: string | null;
 }
 
 export interface RolePin {

@@ -10,6 +10,7 @@ class LugarCreate(BaseModel):
     lat: float = Field(ge=-90, le=90)
     lng: float = Field(ge=-180, le=180)
     bairro: str = Field(min_length=1, max_length=80)
+    endereco: str | None = Field(default=None, max_length=255)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
 
@@ -20,6 +21,7 @@ class LugarUpdate(BaseModel):
     lat: float | None = Field(default=None, ge=-90, le=90)
     lng: float | None = Field(default=None, ge=-180, le=180)
     bairro: str | None = Field(default=None, min_length=1, max_length=80)
+    endereco: str | None = Field(default=None, max_length=255)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
 
@@ -31,6 +33,7 @@ class LugarPublic(BaseModel):
     lat: float
     lng: float
     bairro: str
+    endereco: str | None
     estabelecimento_id: uuid.UUID | None
     fotos: list[str] | None
     created_at: datetime

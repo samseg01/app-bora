@@ -188,12 +188,10 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        que precisa de geolocalização e ainda não tem tela.
 - [x] 20. **`DELETE /sinalizacoes/{id}`** — feito, junto com `GET /sinalizacoes/minhas`, que é o
        que faz o "Tá marcado" sobreviver a sair da tela e voltar.
-- [ ] 21. **`Lugar.endereco`** (nullable) — o `2d` mostra "Rua Aspicuelta, 340" e o schema só tem
-       `geo` e `bairro`.
-- [x] 22. **Seed de desenvolvimento.** Hoje popular o banco exige criar usuário, promover a curador
-       via `scripts/promote_role.py` e cadastrar lugares/rolês na mão. Um seed com a Vila Madalena
-       fictícia (14 lugares, 3 rolês, comentários, sinalizações recentes) faz o frontend ter contra
-       o que rodar desde o primeiro dia, e reproduz os estados `live`/`warm`/`new` de propósito.
+- [x] 21. **`Lugar.endereco`** — feito em 28/08 (migration 0003, nullable). O lugar já era
+       localizável por `geo`, então o endereço é para quem lê e vai a pé, não para o sistema —
+       e é opcional porque exigir o número transformaria uma anotação de calçada num formulário.
+       O JSON do seed já trazia o campo e o script o ignorava em silêncio; agora grava.
 
 ### A escada bar simples → lugar com atração (refinamento de 27/08 no `conceito.md`)
 

@@ -106,6 +106,7 @@ async def semear(caminho: Path) -> None:
                     categoria=item["categoria"],
                     geo=point_from_latlng(item["lat"], item["lng"]),
                     bairro=bairro,
+                    endereco=item.get("endereco"),
                     criado_por=curador.id,
                 )
                 db.add(lugar)
@@ -114,6 +115,7 @@ async def semear(caminho: Path) -> None:
             else:
                 lugar.categoria = item["categoria"]
                 lugar.geo = point_from_latlng(item["lat"], item["lng"])
+                lugar.endereco = item.get("endereco")
                 print(f"  ~ lugar {lugar.nome}")
 
             for c in item.get("comentarios", []):

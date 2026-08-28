@@ -29,6 +29,7 @@ async def criar_lugar(body: LugarCreate, usuario: CuradorUser, db: DbSession) ->
         categoria=body.categoria,
         geo=point_from_latlng(body.lat, body.lng),
         bairro=body.bairro,
+        endereco=body.endereco,
         estabelecimento_id=body.estabelecimento_id,
         fotos=body.fotos,
         criado_por=usuario.id,

@@ -280,8 +280,9 @@ ainda não existe.
   por rolê.
 - **`total_comentarios` é histórico total**, sem janela de tempo. O copy do design diz "4
   comentários na última hora" — usar "4 comentários".
-- **`Role` não tem `descricao`, `Lugar` não tem `endereco`, não há preço nem horário de
-  funcionamento.** Várias coisas do `2d` e do `2g` simplesmente não têm fonte de dado hoje.
+- **Não há preço nem horário de funcionamento** — o `2d` e o `2g` pedem os dois e não há fonte.
+  `Role.descricao` e `Lugar.endereco` já existem (migrations 0002 e 0003); `endereco` é nullable,
+  então a tela precisa continuar tratando a ausência (`lugar.endereco ?? lugar.bairro`).
 - **Nenhum estado vazio foi desenhado.** As 8 telas pressupõem a Vila Madalena cheia. Com o banco
   vazio — situação de hoje — não há design para seguir.
 - **Não há seed no backend.** Popular dados exige criar usuário, promover a curador com

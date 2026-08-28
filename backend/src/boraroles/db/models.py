@@ -94,6 +94,9 @@ class Lugar(Base):
     # banco, WKTElement/from_shape() na escrita) e não expõe um tipo estático único e correto aqui.
     geo: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
     bairro: Mapped[str] = mapped_column(String(80), index=True, nullable=False)
+    # Nullable: o lugar é localizável por `geo` sozinho, e o curador em campo nem sempre
+    # tem o número na mão. Serve para quem lê ("Rua Aspicuelta, 340"), não para o sistema.
+    endereco: Mapped[str | None] = mapped_column(String(255), nullable=True)
     estabelecimento_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("estabelecimento.id"), nullable=True
     )

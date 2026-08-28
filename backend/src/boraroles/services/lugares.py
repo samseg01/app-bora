@@ -35,6 +35,7 @@ def lugar_to_public(lugar: Lugar) -> LugarPublic:
         lat=lat,
         lng=lng,
         bairro=lugar.bairro,
+        endereco=lugar.endereco,
         estabelecimento_id=lugar.estabelecimento_id,
         fotos=lugar.fotos,
         created_at=lugar.created_at,

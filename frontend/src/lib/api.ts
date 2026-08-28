@@ -165,6 +165,14 @@ export const api = {
 
   criarLugar: (
     token: string,
-    corpo: { nome: string; categoria: string; lat: number; lng: number; bairro: string },
+    corpo: {
+      nome: string;
+      categoria: string;
+      lat: number;
+      lng: number;
+      bairro: string;
+      /** Opcional: o curador em campo nem sempre tem o número na mão. */
+      endereco?: string | null;
+    },
   ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
 };

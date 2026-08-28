@@ -55,6 +55,7 @@ function Lugares() {
   const [lista, setLista] = useState<LugarPublic[] | null>(null);
   const [nome, setNome] = useState("");
   const [categoria, setCategoria] = useState("bar");
+  const [endereco, setEndereco] = useState("");
   const [coords, setCoords] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
@@ -93,10 +94,12 @@ function Lugares() {
         lat,
         lng,
         bairro,
+        endereco: endereco.trim() || null,
       });
       setLista((l) => [...(l ?? []), novo]);
       setNome("");
       setCoords("");
+      setEndereco("");
     } catch (err) {
       setErro(
         err instanceof ApiError && err.status === 403
@@ -148,6 +151,20 @@ function Lugares() {
 
           <label className="flex flex-col gap-1.5">
             <span className="flex items-baseline justify-between">
+              <span className="rotulo text-muted-3">endereço</span>
+              <span className="text-[11px] text-muted-3">opcional</span>
+            </span>
+            <input
+              className={CAMPO}
+              value={endereco}
+              onChange={(e) => setEndereco(e.target.value)}
+              placeholder="Rua Aspicuelta, 340"
+              maxLength={255}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="flex items-baseline justify-between">
               <span className="rotulo text-muted-3">coordenadas</span>
               <span className="text-[11px] text-muted-3">botão direito no Google Maps</span>
             </span>
@@ -191,7 +208,7 @@ function Lugares() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[14.5px] font-bold">{l.nome}</div>
                   <div className="mt-0.5 truncate text-xs text-muted-2">
-                    {l.categoria} · {l.bairro}
+                    {l.endereco ?? `${l.categoria} · ${l.bairro}`}
                   </div>
                 </div>
                 <span className="shrink-0 font-mono text-[11px] text-muted-3">
