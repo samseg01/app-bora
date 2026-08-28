@@ -45,6 +45,12 @@ existe enquanto ele estava no banco alimentando o frescor.
 Instalado: Next 16.3.3, React 19.2.8, Tailwind v4, TypeScript, ESLint, Turbopack. Node v24.14.1,
 npm 11.11.0.
 
+**Nunca desabilitar um CTA primário por regra de negócio.** Um botão cinza com a explicação em
+letra miúda embaixo lê como app quebrado, não como decisão — e ainda provoca uma ação que não
+existe. Quando o papel não permite (conta comum e `POST /sinalizacoes`, ADR-0006), a tela diz a
+regra como regra e oferece a ação que a pessoa **tem**. `disabled` fica para estado transitório:
+enviando, carregando, campo vazio.
+
 **Categoria é do LUGAR, não do rolê.** Lista fechada em `lib/categorias.ts`; o formulário de rolê
 não pergunta categoria e herda a do lugar escolhido (o seletor mostra `nome · categoria` para a
 herança ficar visível). Antes os botões estavam no rolê e o lugar tinha texto livre, o que produzia

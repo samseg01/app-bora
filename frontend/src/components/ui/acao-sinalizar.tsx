@@ -15,8 +15,9 @@ import { hora } from "@/lib/tempo";
  *
  * Três públicos, três comportamentos, todos honestos:
  * - deslogado: leva para entrar, guardando o destino (auth preguiçosa);
- * - papel comum: botão desabilitado com o motivo, porque `POST /sinalizacoes` responde
- *   403 por decisão registrada (ADR-0006) — o motor de frescor começa restrito;
+ * - papel comum: **nenhum botão** — a regra é dita como regra. `POST /sinalizacoes`
+ *   responde 403 por decisão registrada (ADR-0006), e um CTA primário cinza com a
+ *   explicação em letra miúda lia como app quebrado em vez de escolha deliberada;
  * - curador ou dono: sinaliza de verdade.
  *
  * O contador de expiração é **convenção de interface**, não promessa da API: o backend
@@ -145,25 +146,35 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     );
   }
 
+  // Papel comum: nada de botão desabilitado. Um CTA primário cinza com a explicação em
+  // letra miúda embaixo lê como app quebrado, não como decisão — e ainda provoca uma
+  // ação que não existe. Aqui a regra é dita como regra, e a ação que a pessoa TEM
+  // (contar como está) fica logo abaixo, no detalhe do rolê.
+  if (!podeSinalizar) {
+    return (
+      <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
+        <div className="rotulo text-muted-2">marcar presença</div>
+        <p className="mt-2 text-[13px] leading-relaxed text-muted text-pretty">
+          Por enquanto é dos curadores do bairro. O sinal de que tem gente agora é a coisa mais
+          frágil que o app tem — se qualquer um puder acender, ele deixa de valer. Curador é
+          convite: a gente chama quem já conhece o bairro a pé.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <button
         type="button"
         onClick={sinalizar}
-        disabled={!podeSinalizar || ocupado}
-        className={`w-full rounded-2xl py-4 text-[15px] font-bold ${
-          podeSinalizar
-            ? "bg-magenta text-white disabled:opacity-60"
-            : "cursor-not-allowed bg-magenta/40 text-white/70"
-        }`}
+        disabled={ocupado}
+        className="w-full rounded-2xl bg-magenta py-4 text-[15px] font-bold text-white disabled:opacity-60"
       >
         {ocupado ? "Marcando…" : "Tô indo — vale por 2h"}
       </button>
       <p className="mt-2.5 text-center text-[11.5px] leading-snug text-muted-3">
-        {erro ??
-          (podeSinalizar
-            ? "Expira sozinho. Ninguém vê seu nome."
-            : "Sinalizar ainda está com os curadores do bairro.")}
+        {erro ?? "Expira sozinho. Ninguém vê seu nome."}
       </p>
     </div>
   );
