@@ -51,6 +51,12 @@ existe. Quando o papel não permite (conta comum e `POST /sinalizacoes`, ADR-000
 regra como regra e oferece a ação que a pessoa **tem**. `disabled` fica para estado transitório:
 enviando, carregando, campo vazio.
 
+**E a regra se explica pelo que a pessoa ganha, não pelo que o produto teme.** A primeira versão
+desse texto dizia que o sinal "é a coisa mais frágil que o app tem" — verdadeiro, e conversa de
+bastidor: quem está decidindo aonde ir não precisa saber onde o produto é vulnerável. O texto fala
+de quem são os curadores e do que dá pra fazer agora. Vale para todo estado vazio e toda recusa: o
+`conceito.md` justifica as decisões para nós, não para a tela.
+
 **Categoria é do LUGAR, não do rolê.** Lista fechada em `lib/categorias.ts`; o formulário de rolê
 não pergunta categoria e herda a do lugar escolhido (o seletor mostra `nome · categoria` para a
 herança ficar visível). Antes os botões estavam no rolê e o lugar tinha texto livre, o que produzia

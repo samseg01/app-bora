@@ -148,16 +148,20 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
 
   // Papel comum: nada de botão desabilitado. Um CTA primário cinza com a explicação em
   // letra miúda embaixo lê como app quebrado, não como decisão — e ainda provoca uma
-  // ação que não existe. Aqui a regra é dita como regra, e a ação que a pessoa TEM
-  // (contar como está) fica logo abaixo, no detalhe do rolê.
+  // ação que não existe.
+  //
+  // O texto fala de quem são os curadores e do que a pessoa PODE fazer. A versão
+  // anterior explicava a lógica interna ("o sinal é a coisa mais frágil do app"), que é
+  // conversa de bastidor: quem está decidindo aonde ir não precisa saber onde o produto
+  // é vulnerável. A ação que essa pessoa tem — contar como está — fica logo abaixo.
   if (!podeSinalizar) {
     return (
       <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
         <div className="rotulo text-muted-2">marcar presença</div>
         <p className="mt-2 text-[13px] leading-relaxed text-muted text-pretty">
-          Por enquanto é dos curadores do bairro. O sinal de que tem gente agora é a coisa mais
-          frágil que o app tem — se qualquer um puder acender, ele deixa de valer. Curador é
-          convite: a gente chama quem já conhece o bairro a pé.
+          Quem sinaliza são os curadores do bairro — gente que passa nos lugares e confirma na
+          hora. Se você estiver por lá, conta como está: seu comentário aparece pra quem ainda
+          está decidindo aonde ir.
         </p>
       </div>
     );
