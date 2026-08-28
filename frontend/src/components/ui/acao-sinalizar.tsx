@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { guardarDestino, useSessao } from "@/lib/auth";
+import { invalidarMeus, meusSinais } from "@/lib/meus";
 import { hora } from "@/lib/tempo";
 
 /**
@@ -56,8 +57,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
   useEffect(() => {
     if (!token) return;
     let vivo = true;
-    void api
-      .meusSinais(token)
+    void meusSinais(token)
       .then((sinais) => {
         const meu = sinais.find((s) => s.role_id === roleId);
         if (!vivo || !meu) return;
@@ -88,6 +88,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
       const s = await api.sinalizar(sessao.token, roleId);
       setSinalId(s.id);
       setRestante(minutosRestantes(s.timestamp));
+      invalidarMeus();
       router.refresh();
     } catch (e) {
       setErro(
@@ -107,6 +108,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
       await api.cancelarSinal(sessao.token, sinalId);
       setSinalId(null);
       setRestante(null);
+      invalidarMeus();
       router.refresh();
     } catch {
       setErro("Não deu pra cancelar. Tenta de novo.");

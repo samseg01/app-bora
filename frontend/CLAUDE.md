@@ -228,9 +228,16 @@ ainda não existe.
 
 ## Armadilhas conhecidas
 
-- **`RoleDescoberta` não traz `lugar_id` nem `lat`/`lng`.** Navegar do card da home direto pro lugar
-  ou calcular distância exige a mudança 19 do `../TODO.md`. Navegar card → detalhe do rolê funciona
-  (o `id` do rolê basta).
+- **`RoleDescoberta` traz `lugar_id` desde 28/08**, mas ainda não `lat`/`lng` — calcular distância
+  "a pé" continua dependendo da mudança 19 do `../TODO.md`.
+- **Altura de mapa: nunca `h-full` dentro de um pai que só tem altura por `flex-1`.**
+  `height:100%` resolve contra a altura do pai, e a de um item de flex vem do crescimento — o
+  MapLibre mede zero, cai num fallback interno de 400x300 e nunca desenha. O padrão que funciona
+  é `flex-1` na própria raiz do `MapaReal` (home mobile, `/mapa` mobile) ou altura explícita
+  (`h-dvh` no `/mapa` desktop). A caixa âmbar de diagnóstico em dev diz qual foi o caso.
+- **O que é *meu* (salvos e sinais) vem de `lib/meus.ts`, não de `api.*` direto.** Cada botão
+  buscando a própria lista viraria dez chamadas na home de desktop. Quem escreve chama
+  `invalidarMeus()`.
 - **`GET /salvos` é cru.** Montar a tela `2g` com a API atual custa uma chamada a `/lugares/{id}`
   por item salvo. Ver mudança 16 do `../TODO.md`.
 - **O comentário da 2e é gravado no rolê, não no lugar** (`POST /comentarios` com `role_id`),

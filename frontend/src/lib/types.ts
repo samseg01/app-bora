@@ -10,9 +10,11 @@ export type PapelUsuario = "comum" | "curador" | "dono_estabelecimento";
 
 export type TipoSinalizacao = "presenca" | "fila" | "lotado";
 
-/** GET /descoberta — nota: não traz lugar_id nem lat/lng (ver ../TODO.md item 19). */
+/** GET /descoberta — traz `lugar_id` desde 28/08; lat/lng continuam de fora (item 19). */
 export interface RoleDescoberta {
   id: string;
+  /** Necessário para salvar o lugar direto do card da home. */
+  lugar_id: string;
   titulo: string;
   /** O "motivo pra ir" — vem de /descoberta desde a migration 0002. */
   descricao: string | null;

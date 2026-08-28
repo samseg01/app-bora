@@ -44,6 +44,9 @@ class RoleDescoberta(BaseModel):
     """Item de GET /descoberta — inclui o Lugar embutido pra a tela não precisar de outra chamada."""
 
     id: uuid.UUID
+    # Sem isto a home não conseguia salvar o lugar de um card: só tinha o nome dele, e
+    # `POST /salvos` pede o id. O botão ficava desabilitado por falta de dado, não por regra.
+    lugar_id: uuid.UUID
     titulo: str
     descricao: str | None
     categoria: str

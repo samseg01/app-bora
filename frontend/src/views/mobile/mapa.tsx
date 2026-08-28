@@ -34,10 +34,15 @@ export function MapaMobile({
 
   return (
     <MobileShell>
-      <div className="relative flex-1">
+      {/* O mapa recebe `flex-1` na própria raiz, como na home mobile, em vez de `h-full`
+          dentro de um pai `flex-1`. `height:100%` resolve contra a altura do pai, e a
+          altura de um item de flex vem do crescimento — é exatamente o caso em que o
+          MapLibre mede zero, cai no fallback interno de 400x300 e nunca desenha. Ser
+          item de flex dá altura de verdade, sem depender de porcentagem. */}
+      <div className="relative flex flex-1 flex-col">
         <MapaReal
           pins={visiveis}
-          className="h-full min-h-100"
+          className="min-h-100 flex-1"
           selecionadoId={selecionadoId}
           onSelecionar={setSelecionadoId}
         />

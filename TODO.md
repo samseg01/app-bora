@@ -177,8 +177,10 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        `frescor_de_role()`, mas só o rótulo sai. Destrava "6 sinalizaram nas últimas 2h" no `2d`.
 - [ ] 18. **`GET /auth/me`** — nome e data de cadastro pro perfil (`2h`). O papel não precisa dele:
        já viaja dentro do JWT e o front decodifica client-side pra decidir o gating de UI.
-- [ ] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — destrava distância "a pé" (com
-       geolocalização) e navegação direta do card pro lugar.
+- [~] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — `lugar_id` feito em 28/08: sem ele o
+       botão Salvar da home ficava `disabled` por falta de dado (parecia regra de produto e era
+       lacuna de schema). `lat`/`lng` continuam de fora — só entram junto com a distância "a pé",
+       que precisa de geolocalização e ainda não tem tela.
 - [x] 20. **`DELETE /sinalizacoes/{id}`** — feito, junto com `GET /sinalizacoes/minhas`, que é o
        que faz o "Tá marcado" sobreviver a sair da tela e voltar.
 - [ ] 21. **`Lugar.endereco`** (nullable) — o `2d` mostra "Rua Aspicuelta, 340" e o schema só tem

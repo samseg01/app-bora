@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { AcaoSalvar } from "./acao-salvar";
+import { BotaoToIndo } from "./botao-to-indo";
 import { FrescorPill } from "./frescor-pill";
 import { hora } from "@/lib/tempo";
 import type { RoleDescoberta } from "@/lib/types";
@@ -9,7 +11,12 @@ import type { RoleDescoberta } from "@/lib/types";
  *
  * "Tô indo" navega para o detalhe em vez de sinalizar daqui: a sinalização é um
  * compromisso, e o lugar de assumi-lo é a tela que mostra o rolê inteiro. (Além
- * disso `POST /sinalizacoes` responde 403 para papel comum — ver ADR-0006.)
+ * disso `POST /sinalizacoes` responde 403 para papel comum — ver ADR-0006.) Mas ele
+ * mostra se você já marcou, em vez de convidar a marcar de novo.
+ *
+ * Salvar ficava `disabled` com um aviso sobre "a fase 3", que já passou. O motivo real
+ * era outro: `RoleDescoberta` não trazia `lugar_id`, e `POST /salvos` precisa dele. O
+ * botão estava desabilitado por falta de dado, não por regra — agora o schema traz.
  */
 
 const GRADIENTES = [
@@ -52,20 +59,8 @@ export function RoleRow({ role, indice }: { role: RoleDescoberta; indice: number
       </div>
 
       <div className="flex w-[132px] shrink-0 flex-col justify-center gap-2.5 border-l border-white/7 pl-[18px]">
-        <Link
-          href={`/role/${role.id}`}
-          className="rounded-2xl bg-magenta py-2.5 text-center text-[13px] font-bold text-white"
-        >
-          Tô indo
-        </Link>
-        <button
-          type="button"
-          disabled
-          title="Entrar para salvar — o login chega na fase 3"
-          className="cursor-not-allowed rounded-2xl border border-white/18 py-2.5 text-[13px] font-semibold text-text-soft opacity-45"
-        >
-          Salvar
-        </button>
+        <BotaoToIndo roleId={role.id} />
+        <AcaoSalvar lugarId={role.lugar_id} variante="botao" />
       </div>
     </div>
   );

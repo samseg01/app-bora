@@ -65,6 +65,7 @@ function PainelCarregado() {
         ).length,
         roles: roles.map((r) => ({
           id: r.id,
+          lugar_id: r.lugar_id,
           titulo: r.titulo,
           descricao: r.descricao ?? null,
           categoria: r.categoria,

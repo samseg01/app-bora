@@ -44,6 +44,7 @@ const ID = {
 export const ROLES_EXEMPLO: RoleDescoberta[] = [
   {
     id: ID.roleAurora,
+    lugar_id: ID.aurora,
     titulo: "Selo aberto no rooftop",
     descricao:
       "Entrada livre até meia-noite. Set de house às 23h30, teto aberto. Depois da meia-noite a fila dobra a esquina — vale chegar antes.",
@@ -56,6 +57,7 @@ export const ROLES_EXEMPLO: RoleDescoberta[] = [
   },
   {
     id: ID.roleBoteco,
+    lugar_id: ID.boteco,
     titulo: "Samba de quinta no boteco",
     descricao:
       "Roda de samba na calçada desde as 21h. Sem couvert, cerveja a 12. Cabe pouca gente sentada.",
@@ -68,6 +70,7 @@ export const ROLES_EXEMPLO: RoleDescoberta[] = [
   },
   {
     id: ID.roleGaragem,
+    lugar_id: ID.garagem,
     titulo: "Sarau na garagem",
     descricao:
       "Microfone aberto à meia-noite. Cabem 40 pessoas, chega cedo se quiser ler.",

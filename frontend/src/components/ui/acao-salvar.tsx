@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { guardarDestino, useSessao } from "@/lib/auth";
+import { invalidarMeus, meusSalvos } from "@/lib/meus";
 
 /**
  * Salvar um lugar no caderninho.
@@ -37,14 +38,10 @@ export function AcaoSalvar({
   useEffect(() => {
     if (!token) return;
     let vivo = true;
-    void api
-      .salvos(token)
-      .then((lista) => {
-        if (vivo) setDoServidor(lista.some((s) => s.lugar_id === lugarId));
-      })
-      .catch(() => {
-        if (vivo) setDoServidor(false);
-      });
+    // Compartilhado: numa home com cinco cards isto é uma chamada, não cinco.
+    void meusSalvos(token).then((lista) => {
+      if (vivo) setDoServidor(lista.some((s) => s.lugar_id === lugarId));
+    });
     return () => {
       vivo = false;
     };
@@ -65,10 +62,12 @@ export function AcaoSalvar({
         await api.salvar(token, lugarId);
         setDoServidor(true);
       }
+      invalidarMeus();
       router.refresh();
     } catch (e) {
       // 409 = já estava salvo; para quem tocou, o resultado é o mesmo.
       if (e instanceof ApiError && e.status === 409) setDoServidor(true);
+      invalidarMeus();
     } finally {
       setOcupado(false);
     }

@@ -17,6 +17,7 @@ async def descoberta(db: DbSession, bairro: str = Query(min_length=1)) -> list[R
     return [
         RoleDescoberta(
             id=item.role.id,
+            lugar_id=item.role.lugar_id,
             titulo=item.role.titulo,
             descricao=item.role.descricao,
             categoria=item.role.categoria,
