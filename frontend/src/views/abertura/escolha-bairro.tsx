@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BAIRROS, COOKIE_BAIRRO, COOKIE_MAX_AGE } from "@/lib/bairros";
+import { BAIRROS, salvarBairro } from "@/lib/bairros";
 
 /**
  * Abertura do app — a tela 2a do hi-fi, com uma diferença deliberada.
@@ -29,7 +29,7 @@ export function EscolhaBairro({
 
   function continuar() {
     setIndo(true);
-    document.cookie = `${COOKIE_BAIRRO}=${encodeURIComponent(escolhido)}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+    salvarBairro(escolhido);
     router.replace("/");
     router.refresh();
   }

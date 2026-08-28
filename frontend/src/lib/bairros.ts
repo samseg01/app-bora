@@ -42,3 +42,14 @@ export function bairroDoCookie(): string | null {
   const m = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_BAIRRO}=([^;]*)`));
   return bairroValido(m ? decodeURIComponent(m[1]) : undefined);
 }
+
+/**
+ * Grava a escolha. Fica aqui, e não no componente, porque escrever em `document.cookie`
+ * de dentro de um componente é modificar valor externo — o React Compiler recusa, e com
+ * razão: efeito de fora do React merece uma fronteira explícita.
+ */
+export function salvarBairro(nome: string): void {
+  const valido = bairroValido(nome);
+  if (!valido) return;
+  document.cookie = `${COOKIE_BAIRRO}=${encodeURIComponent(valido)}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+}

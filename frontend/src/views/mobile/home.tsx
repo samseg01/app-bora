@@ -1,6 +1,6 @@
 import { MapaReal } from "@/components/ui/mapa-real";
 import { RoleCard } from "@/components/ui/role-card";
-import Link from "next/link";
+import { SeletorBairro } from "@/components/ui/seletor-bairro";
 import { MobileShell } from "./shell";
 import type { MapaPin, RoleDescoberta } from "@/lib/types";
 
@@ -23,14 +23,8 @@ export function HomeMobile({
       <header className="flex items-center justify-between px-5.5 pt-9 pb-3">
         <div className="flex flex-col gap-0.5">
           <span className="rotulo text-muted-2">você está em</span>
-          {/* Trocar de bairro não pode depender de conta: o app é público por decisão. */}
-          <Link href="/abertura" className="flex items-center gap-1.5 text-[17px] font-bold">
-            <PinIcone />
-            {bairro}
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8478a0" strokeWidth={2.5}>
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </Link>
+          {/* O nome do bairro é o próprio seletor — trocar não tira ninguém da tela. */}
+          <SeletorBairro atual={bairro} />
         </div>
         <div className="h-9 w-9 rounded-full bg-gradient-to-br from-magenta to-amber" />
       </header>
@@ -78,13 +72,5 @@ export function HomeMobile({
         className="mx-4 mb-3 min-h-45 flex-1 rounded-[22px] border border-white/7"
       />
     </MobileShell>
-  );
-}
-
-function PinIcone() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="#ff3d81">
-      <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
-    </svg>
   );
 }
