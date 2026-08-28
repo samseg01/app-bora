@@ -50,6 +50,7 @@ backend/
 │       ├── descoberta.py             # queries agregadas: listar_descoberta, frescor_de_role, frescor_de_lugar
 │       │                             # conta PESSOAS (count distinct usuario_id), não linhas — ver nota abaixo
 │       ├── lugares.py, roles.py      # serializadores ORM -> schema (evitam duplicar Geometry->lat/lng em 3 rotas)
+│       │                             # lugares.comentarios_do_lugar(): comentários do lugar E dos rolês dele
 │       └── engajamento.py            # agregação pro painel do estabelecimento
 └── tests/
     ├── conftest.py                   # Postgres+PostGIS real via docker-compose local, sem mock; isolamento por
@@ -87,7 +88,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Núcleo transversal (config, db/session, security, geo) | ✅ |
 | Auth + rotas API v1 | ✅ |
 | Serviço de frescor | ✅ |
-| Testes de integração + smoke E2E (37 testes) | ✅ |
+| Testes de integração + smoke E2E (39 testes) | ✅ |
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
@@ -104,6 +105,15 @@ outros sinais ativos da mesma pessoa no mesmo alvo, senão cancelar não cancela
 
 `services/engajamento.py` continua contando linhas de propósito: o painel do dono fala de
 eventos ("sinais de presença", somados desde sempre), não de pessoas únicas.
+
+## Nota sobre comentários
+
+`Comentario` aceita `lugar_id` **ou** `role_id`, e a tela 2e ("Contar como está lá dentro")
+grava com `role_id`. Até 28/08/2026 as duas únicas leituras — `GET /lugares/{id}` e o
+`total_comentarios` do `GET /mapa` — filtravam só por `lugar_id`, então todo comentário feito
+pela 2e ficava gravado e **invisível em todas as telas**. Agora as duas usam
+`services/lugares.comentarios_do_lugar()`, que junta os dois alvos. Qualquer leitura nova de
+comentário precisa usar esse predicado, não `Comentario.lugar_id ==` direto.
 
 ## Rodar os testes
 

@@ -14,7 +14,7 @@ Isso sobe o Postgres (com PostGIS) e a API; o container da API aplica as migrati
 ## Rodando os testes
 
 ```bash
-docker compose exec api uv run pytest   # 37 testes, contra o Postgres/PostGIS do compose
+docker compose exec api uv run pytest   # 39 testes, contra o Postgres/PostGIS do compose
 ```
 
 ## Promovendo um usuário a curador/dono_estabelecimento

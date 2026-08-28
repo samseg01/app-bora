@@ -233,6 +233,10 @@ ainda não existe.
   (o `id` do rolê basta).
 - **`GET /salvos` é cru.** Montar a tela `2g` com a API atual custa uma chamada a `/lugares/{id}`
   por item salvo. Ver mudança 16 do `../TODO.md`.
+- **O comentário da 2e é gravado no rolê, não no lugar** (`POST /comentarios` com `role_id`),
+  mas aparece em `GET /lugares/{id}` — o backend junta os dois alvos. A tela `/role/[id]` lê
+  `lugar.comentarios_recentes`, e é por isso que funciona. Não existe leitura de comentário
+  por rolê.
 - **`total_comentarios` é histórico total**, sem janela de tempo. O copy do design diz "4
   comentários na última hora" — usar "4 comentários".
 - **`Role` não tem `descricao`, `Lugar` não tem `endereco`, não há preço nem horário de

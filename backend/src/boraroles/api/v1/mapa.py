@@ -8,7 +8,7 @@ from boraroles.api.deps import DbSession
 from boraroles.db.models import Comentario, Lugar, Usuario
 from boraroles.schemas.lugar import LugarDetalhe, MapaPin, RolePin
 from boraroles.services.descoberta import frescor_de_lugar, frescor_de_role, role_ativo_de_lugar
-from boraroles.services.lugares import lugar_to_public
+from boraroles.services.lugares import comentarios_do_lugar, lugar_to_public
 
 router = APIRouter(tags=["mapa"])
 
@@ -43,7 +43,7 @@ async def mapa(
     pins = []
     for lugar in lugares:
         total_comentarios = await db.scalar(
-            select(func.count(Comentario.id)).where(Comentario.lugar_id == lugar.id)
+            select(func.count(Comentario.id)).where(comentarios_do_lugar(lugar.id))
         )
         role_ativo = await role_ativo_de_lugar(db, lugar.id)
         role_pin = None
@@ -76,7 +76,7 @@ async def obter_lugar(lugar_id: uuid.UUID, db: DbSession) -> LugarDetalhe:
     comentarios_stmt = (
         select(Comentario.texto, Comentario.created_at, Usuario.nome)
         .join(Usuario, Usuario.id == Comentario.autor_id)
-        .where(Comentario.lugar_id == lugar.id)
+        .where(comentarios_do_lugar(lugar.id))
         .order_by(Comentario.created_at.desc())
         .limit(10)
     )
