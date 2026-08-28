@@ -233,7 +233,12 @@ segue o hi-fi.
 - [ ] 34. "N sinalizaram nas últimas 2h" no `2d`, quando `RolePublic` expuser a contagem (item 17).
 - [ ] 35. Distância "a pé" com geolocalização do browser, quando `RoleDescoberta` trouxer
       `lat`/`lng` (item 19).
-- [ ] 36. **PWA de verdade:** `manifest.json` com ícones reais (não array vazio) e service worker
+- [ ] 36. **PWA de verdade — subiu de prioridade em 28/08.** O ADR-001 (`docs/adr/`) fixou que
+      nativo é o destino, mas depois da validação; até lá o PWA é o produto, e hoje ele não
+      existe: `public/` só tem os SVGs do scaffold. É perto de um dia de trabalho e entrega
+      ícone na tela inicial, abertura em tela cheia e tolerância a sinal ruim — que é o
+      cenário de rua. Detalhe original:
+      **PWA de verdade:** `manifest.json` com ícones reais (não array vazio) e service worker
       para cache offline. O argumento do PWA no `conceito.md` é não ter fricção de loja — sem ícone
       e sem SW, "instalável" não funciona.
 - [x] 37. **Mapa real com MapLibre + basemap CARTO dark-matter.** `components/ui/mapa-real.tsx`,

@@ -18,8 +18,10 @@ import type { MapaPin, RoleDescoberta } from "@/lib/types";
  * duas visualizações. É o ponto onde a partição fica barata: uma busca, duas
  * composições.
  *
- * O bairro ainda é fixo — o piloto não foi escolhido (../TODO.md item 1) e não há
- * endpoint de bairros. Vira localStorage + onboarding na fase 2.
+ * O bairro vem de cookie (`lib/bairro-servidor.ts`), escolhido em `/abertura`. Fica em
+ * cookie, e não em `localStorage`, porque esta rota é renderizada no servidor e precisa
+ * saber o bairro antes de responder. É um dos dois pontos que um cliente nativo teria de
+ * trocar — ver `docs/adr/0001-pwa-agora-nativo-depois.md`.
  */
 
 /**

@@ -92,6 +92,13 @@ src/
 diverge. No minuto em que uma regra de negócio for parar dentro de `views/`, viram dois apps para
 manter em sincronia — que é exatamente o custo que essa arquitetura precisa não pagar.
 
+**A mesma regra tem um segundo motivo desde 28/08:** o destino declarado do produto é um app
+nativo (ADR-001 em `docs/adr/`), e `lib/` é *exatamente o que sobrevive* a essa migração.
+Regra de negócio dentro de `views/` é regra que será reescrita duas vezes. Corolário prático:
+**nada de `localStorage`, `document.cookie` ou `window` fora de `lib/`** — hoje isso está
+restrito a `lib/auth.ts` (token) e `lib/bairros.ts` (bairro), e são os dois únicos pontos que um
+cliente nativo precisaria trocar.
+
 **Como o corte é feito:** por CSS, em `lg` (1024px). O servidor renderiza as duas árvores e o
 breakpoint decide qual aparece. Custa DOM duplicado (verificado: exatamente 2× cada card, nada
 além disso) e compra três coisas: nada de detecção de user-agent — que erra com tablet e com "modo

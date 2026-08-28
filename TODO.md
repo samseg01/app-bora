@@ -159,7 +159,8 @@ e o **bairro piloto** (item 2 daqui) — sem concentração geográfica a rede d
        (efêmero)** — pergunta 4 em aberto no `docs/conceito.md`. O hi-fi aposta na hipótese `1e`
        (dois gestos, dois lugares na tela); validar em campo se isso resolve de fato na cabeça do
        usuário, ou se as hipóteses `1f`/`1g` do wireframe voltam à mesa.
-- [ ] 11. **Ícones do PWA e service worker**, quando o frontend existir — sem ícone real e sem SW,
+- [ ] 11. **Ícones do PWA e service worker** (ver ADR-001 do frontend: o PWA é o produto até a
+       validação; nativo é o destino, não o próximo passo) — sem ícone real e sem SW,
        "instalável" e cache offline não funcionam de verdade.
 
 ## Backend — lacunas que o design revelou

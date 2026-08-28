@@ -177,7 +177,11 @@ Mais `GET /health` fora do prefixo versionado.
 - **Duas camadas na tela** (descoberta empurra no topo, mapa puxa embaixo) em vez de abrir no mapa
   — mapa é cruel com vazio e pressupõe intenção que quem "decide se sair" ainda não tem. Ver
   `docs/conceito.md`.
-- **PWA em vez de app nativo** — descoberta espontânea não pode ter fricção de "baixar da loja".
+- **PWA agora, nativo depois** — descoberta espontânea não pode ter fricção de "baixar da loja",
+  e sem base instalada o link compartilhado *é* o canal de distribuição. Mas **nativo é o destino
+  declarado**, não uma possibilidade remota: a decisão é de ordem, não de permanência. Gatilhos
+  de reavaliação, caminho de migração (Capacitor vs. RN) e as três regras que mantêm o código
+  portável estão em `frontend/docs/adr/0001-pwa-agora-nativo-depois.md`.
 - **Monetização por destaque verificado, não ranking pago** — no minuto em que o topo parece pago,
   a confiança (único ativo do app) morre. Destaque exige validação de curador em campo.
 - **Ordem de construção deliberada**: manual antes de sistema, comunidade antes de painel do
@@ -257,6 +261,8 @@ contradisserem, o ADR ganha.
   anonimato): `docs/plano-conexoes.md`; design em `docs/front-end-ideias/conexoes/`
 - Design de desktop das telas do app: `docs/front-end-ideias/desktop/`
 - Frontend — convenções, tokens e contratos da API: `frontend/CLAUDE.md`
+- **Por que ainda não é nativo, e o que dispara a migração:**
+  `frontend/docs/adr/0001-pwa-agora-nativo-depois.md`
 - Frontend — as 37 tasks em 6 fases: `frontend/TODO.md`
 - Design hi-fi do frontend: `docs/front-end-ideias/seguir-ideia-da-documenta-o/project/Rolês - Telas hi-fi.dc.html`
 - Backend — árvore completa e ADRs: `backend/CLAUDE.md`
