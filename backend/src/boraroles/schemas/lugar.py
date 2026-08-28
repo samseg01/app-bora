@@ -2,7 +2,26 @@ import uuid
 from datetime import date, datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+class FaixaHorario(BaseModel):
+    """Uma faixa de funcionamento: quais dias, de que hora a que hora.
+
+    `dias` usa 0 = domingo. `fecha` menor que `abre` atravessa a meia-noite — que neste
+    produto é a regra, não a exceção.
+    """
+
+    dias: list[int] = Field(min_length=1, max_length=7)
+    abre: str = Field(pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    fecha: str = Field(pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+
+    @field_validator("dias")
+    @classmethod
+    def _dias_validos(cls, v: list[int]) -> list[int]:
+        if any(d < 0 or d > 6 for d in v):
+            raise ValueError("dia fora de 0 (domingo) a 6 (sábado)")
+        return sorted(set(v))
 
 
 class LugarCreate(BaseModel):
@@ -16,6 +35,7 @@ class LugarCreate(BaseModel):
     instagram: str | None = Field(default=None, max_length=80)
     horario_funcionamento: str | None = Field(default=None, max_length=255)
     programacao: str | None = Field(default=None, max_length=2000)
+    horarios: list[FaixaHorario] | None = None
     preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
@@ -32,6 +52,7 @@ class LugarUpdate(BaseModel):
     instagram: str | None = Field(default=None, max_length=80)
     horario_funcionamento: str | None = Field(default=None, max_length=255)
     programacao: str | None = Field(default=None, max_length=2000)
+    horarios: list[FaixaHorario] | None = None
     preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
@@ -49,6 +70,7 @@ class LugarPublic(BaseModel):
     instagram: str | None
     horario_funcionamento: str | None
     programacao: str | None
+    horarios: list[FaixaHorario] | None
     preco_longneck: Decimal | None
     #: Preço envelhece — a tela mostra "R$ 12, visto em 28/08", nunca o número sozinho.
     preco_visto_em: date | None

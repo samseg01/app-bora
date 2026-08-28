@@ -337,6 +337,12 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        tem disco efêmero — foto salva em disco some no próximo deploy. Ou entra armazenamento de
        objeto (S3/R2) desde o começo, o que pede conta e chave. **Não começar antes do R7.**
 
+- [ ] 46. **Dropar `Lugar.horario_funcionamento`.** A migration 0006 adicionou `horarios`
+       (estruturado) e **não** removeu o texto livre, de propósito: havia um registro real
+       preenchido em campo ("segunda a sexta - 12:00 às 01:00", no Bar do China) e dropar junto
+       perderia o dado. Ele foi convertido para faixa na mão e a interface já não lê mais a coluna
+       antiga. Expandir, migrar, contrair — falta contrair. Conferir que nada lê antes de dropar.
+
 ### O motor de contribuição — quatro decisões que são a mesma (28/08)
 
 Estavam soltas sob a subseção da "escada", que trata de outro assunto. Ficam juntas porque **não se

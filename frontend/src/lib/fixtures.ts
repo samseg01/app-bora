@@ -109,6 +109,7 @@ function lugar(
     descricao: null,
     instagram: null,
     horario_funcionamento: null,
+    horarios: null,
     programacao: null,
     preco_longneck: null,
     preco_visto_em: null,

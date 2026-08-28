@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AcaoSalvar } from "@/components/ui/acao-salvar";
 import { FrescorPill } from "@/components/ui/frescor-pill";
+import { abertaAgora, faixaLegivel } from "@/lib/horarios";
 import { hora } from "@/lib/tempo";
 import type { LugarDetalhe, RolePin } from "@/lib/types";
 
@@ -20,10 +21,15 @@ import type { LugarDetalhe, RolePin } from "@/lib/types";
 export function LugarFicha({
   lugar,
   roleHoje,
+  agora,
 }: {
   lugar: LugarDetalhe;
   roleHoje: RolePin | null;
+  /** Calculado no servidor: ler o relógio durante o render é impuro e diverge na
+      hidratação — mesma regra do resto do app. */
+  agora: string;
 }) {
+  const aberta = abertaAgora(lugar.horarios, new Date(agora));
   const preco = lugar.preco_longneck ? Number(lugar.preco_longneck) : null;
 
   const foto = lugar.fotos?.[0];
@@ -59,7 +65,20 @@ export function LugarFicha({
         <h1 className="mt-2 font-display text-[34px] leading-none uppercase lg:text-[42px]">
           {lugar.nome}
         </h1>
-        <p className="mt-2 text-[13px] text-muted-2">{lugar.endereco ?? lugar.bairro}</p>
+        <div className="mt-2 flex items-center gap-2.5">
+          <p className="text-[13px] text-muted-2">{lugar.endereco ?? lugar.bairro}</p>
+          {/* Só aparece quando há horário cadastrado. Sem faixa não dá para afirmar
+              "fechado" — seria dizer que sabemos algo que não sabemos. */}
+          {lugar.horarios?.length ? (
+            <span
+              className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                aberta ? "bg-magenta/16 text-magenta-soft" : "bg-white/6 text-muted-3"
+              }`}
+            >
+              {aberta ? "aberto agora" : "fechado agora"}
+            </span>
+          ) : null}
+        </div>
       </div>
 
       {/* O que a casa é, escrito por quem esteve lá. */}
@@ -115,11 +134,13 @@ export function LugarFicha({
         </div>
       )}
 
-      {(lugar.horario_funcionamento || preco !== null || lugar.instagram) && (
+      {(lugar.horarios?.length || preco !== null || lugar.instagram) && (
         <dl className="flex flex-col gap-2.5 rounded-[20px] border border-white/7 bg-card-alt px-4.5 py-4">
-          {lugar.horario_funcionamento && (
-            <Linha rotulo="horário">{lugar.horario_funcionamento}</Linha>
-          )}
+          {lugar.horarios?.map((faixa, i) => (
+            <Linha key={i} rotulo={i === 0 ? "funcionamento" : ""}>
+              {faixaLegivel(faixa)}
+            </Linha>
+          ))}
           {preco !== null && (
             <Linha rotulo="longneck">
               {preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}

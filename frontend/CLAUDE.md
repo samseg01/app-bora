@@ -64,6 +64,17 @@ e o detalhe do rolê não têm gaveta: sem o balão, o pin ali era um ponto colo
 destino. O estilo está em `globals.css` (`.popup-bora`, `.balao-pin`) porque o popup do MapLibre
 nasce branco e brigaria com o dark-matter. **O nome vem do banco e vira HTML — escapar sempre.**
 
+**Funcionamento é estruturado, não texto.** `Lugar.horarios` é uma lista de faixas
+(`{dias: [0..6], abre, fecha}`, 0 = domingo), editada por `components/ui/editor-horarios.tsx` —
+botões de dia e `input type="time"`, que no telefone abre a roleta nativa. É lista porque
+"ter a qui até 2h, sex e sáb até 4h" é o caso comum num bar.
+
+O que a estrutura destrava e o texto não dava: **"aberta agora?"**. `lib/horarios.abertaAgora()`
+responde, e cuida do caso que erra fácil — faixa que fecha antes de abrir atravessa a meia-noite,
+e às 00h30 de sábado quem está aberto é a faixa de **sexta**. Errar isso faria o app dizer
+"fechado" na hora em que o bar está cheio. O selo só aparece quando há horário cadastrado: sem
+faixa não dá para afirmar "fechado" sem inventar.
+
 **Categoria é do LUGAR, não do rolê.** Lista fechada em `lib/categorias.ts`; o formulário de rolê
 não pergunta categoria e herda a do lugar escolhido (o seletor mostra `nome · categoria` para a
 herança ficar visível). Antes os botões estavam no rolê e o lugar tinha texto livre, o que produzia

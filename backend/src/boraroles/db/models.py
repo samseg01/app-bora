@@ -19,7 +19,7 @@ from sqlalchemy import (
     UniqueConstraint,
     func,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from boraroles.db.base import Base
@@ -107,7 +107,16 @@ class Lugar(Base):
     instagram: Mapped[str | None] = mapped_column(String(80), nullable=True)
     # Texto livre ("ter a dom, 18h–02h"). Não é estrutura de horário: a casa do Centro
     # muda de horário no feriado e ninguém vai manter sete faixas por dia atualizadas.
+    # DEPRECADO: substituído por `horarios`, estruturado. Continua aqui só até o dado
+    # existente ser convertido — expandir, migrar, contrair (ver item 46 do TODO).
     horario_funcionamento: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Faixas de funcionamento: [{"dias": [1,2,3,4,5], "abre": "12:00", "fecha": "01:00"}],
+    # com 0 = domingo. Lista porque "ter a qui até 2h, sex e sáb até 4h" é o caso comum
+    # num bar, e uma faixa só não daria conta.
+    #
+    # Estruturado, e não texto, porque destrava a pergunta que o produto faz: **esta casa
+    # está aberta agora?** Com texto livre isso é impossível sem adivinhar.
+    horarios: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB, nullable=True)
     # "Quinta é forró, sábado tem samba" — o que a casa costuma ter, dito pela casa.
     # É TEXTO, não recorrência que gera rolê: gerar exigiria cron (recusado no ADR-004) ou
     # rolê derivado, que não tem linha no banco e por isso não poderia ser sinalizado nem

@@ -34,7 +34,10 @@ export default async function LugarPage({ params }: PageProps<"/lugar/[id]">) {
   const dados = await carregar(id);
   if (!dados) notFound();
 
-  const ficha = <LugarFicha lugar={dados.lugar} roleHoje={dados.hoje} />;
+  // O relógio é lido aqui, fora de componente, e desce por prop.
+  const ficha = (
+    <LugarFicha lugar={dados.lugar} roleHoje={dados.hoje} agora={new Date().toISOString()} />
+  );
 
   return (
     <>

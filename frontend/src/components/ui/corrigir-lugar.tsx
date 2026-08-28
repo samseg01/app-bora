@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
-import type { LugarPublic } from "@/lib/types";
+import { EditorHorarios } from "./editor-horarios";
+import { faixaNova } from "@/lib/horarios";
+import type { FaixaHorario, LugarPublic } from "@/lib/types";
 
 /**
  * Corrigir a ficha de um lugar já cadastrado.
@@ -39,7 +41,9 @@ export function CorrigirLugar({
   const [endereco, setEndereco] = useState(lugar.endereco ?? "");
   const [descricao, setDescricao] = useState(lugar.descricao ?? "");
   const [instagram, setInstagram] = useState(lugar.instagram ?? "");
-  const [horario, setHorario] = useState(lugar.horario_funcionamento ?? "");
+  const [horarios, setHorarios] = useState<FaixaHorario[]>(
+    lugar.horarios?.length ? lugar.horarios : [faixaNova()],
+  );
   const [programacao, setProgramacao] = useState(lugar.programacao ?? "");
   const [preco, setPreco] = useState(lugar.preco_longneck ?? "");
   const [foto, setFoto] = useState(lugar.fotos?.[0] ?? "");
@@ -66,7 +70,9 @@ export function CorrigirLugar({
         endereco: endereco.trim() || null,
         descricao: descricao.trim() || null,
         instagram: soIdentificador(instagram) || null,
-        horario_funcionamento: horario.trim() || null,
+        horarios: horarios.filter((f) => f.dias.length > 0).length
+          ? horarios.filter((f) => f.dias.length > 0)
+          : null,
         programacao: programacao.trim() || null,
         preco_longneck: valor ? Number(valor) : null,
         fotos: foto.trim() ? [foto.trim()] : null,
@@ -121,29 +127,20 @@ export function CorrigirLugar({
         />
       </Campo>
 
-      <div className="flex gap-2">
-        <div className="flex-1">
-          <Campo rotulo="horário de funcionamento">
-            <input
-              className={CAMPO}
-              value={horario}
-              onChange={(e) => setHorario(e.target.value)}
-              placeholder="ter a dom, 18h–02h"
-              maxLength={255}
-            />
-          </Campo>
-        </div>
-        <div className="w-24 shrink-0">
-          <Campo rotulo="longneck">
-            <input
-              className={CAMPO}
-              value={preco}
-              onChange={(e) => setPreco(e.target.value)}
-              placeholder="12,00"
-              inputMode="decimal"
-            />
-          </Campo>
-        </div>
+      <Campo rotulo="funcionamento">
+        <EditorHorarios faixas={horarios} aoMudar={setHorarios} />
+      </Campo>
+
+      <div className="w-24">
+        <Campo rotulo="longneck">
+          <input
+            className={CAMPO}
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+            placeholder="12,00"
+            inputMode="decimal"
+          />
+        </Campo>
       </div>
 
       <Campo rotulo="toda semana">

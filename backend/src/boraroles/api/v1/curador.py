@@ -34,6 +34,7 @@ async def criar_lugar(body: LugarCreate, usuario: CuradorUser, db: DbSession) ->
         instagram=body.instagram,
         horario_funcionamento=body.horario_funcionamento,
         programacao=body.programacao,
+        horarios=[f.model_dump() for f in body.horarios] if body.horarios else None,
         preco_longneck=body.preco_longneck,
         # Quem carimba a data é o servidor: "visto em" precisa dizer quando o dado
         # entrou, não quando o cliente afirma que entrou.
@@ -90,6 +91,10 @@ async def atualizar_lugar(
         )
     # Corrigir o preço recarimba a data: um valor novo com data velha diria que o preço
     # de hoje foi visto semana passada.
+    # `horarios` é lista de modelos Pydantic; a coluna é JSONB e precisa de dicionário.
+    if dados.get("horarios") is not None:
+        dados["horarios"] = [f.model_dump() for f in dados["horarios"]]
+
     if "preco_longneck" in dados:
         lugar.preco_visto_em = date.today() if dados["preco_longneck"] is not None else None
 

@@ -46,6 +46,13 @@ export interface RolePublic {
   sinais_recentes?: number | null;
 }
 
+export interface FaixaHorario {
+  /** 0 = domingo, seguindo `Date.getDay()`. */
+  dias: number[];
+  abre: string;
+  fecha: string;
+}
+
 export interface LugarPublic {
   id: string;
   nome: string;
@@ -66,6 +73,9 @@ export interface LugarPublic {
   /** Só o identificador, sem @ nem URL — a tela monta o link. */
   instagram: string | null;
   horario_funcionamento: string | null;
+  /** Faixas de funcionamento. 0 = domingo. `fecha` menor que `abre` atravessa a
+      meia-noite, que neste produto é a regra. */
+  horarios: FaixaHorario[] | null;
   /** O que a casa costuma ter na semana ("quinta é forró"). É texto, e é declarado —
       diferente do rolê, que é o que alguém foi ver hoje. A tela mantém as duas coisas
       separadas de propósito. */

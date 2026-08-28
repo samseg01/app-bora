@@ -12,6 +12,9 @@ import { api, ApiError } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
 import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
 import { CATEGORIAS_LUGAR } from "@/lib/categorias";
+import { EditorHorarios } from "@/components/ui/editor-horarios";
+import { faixaNova } from "@/lib/horarios";
+import type { FaixaHorario } from "@/lib/types";
 import type { LugarPublic } from "@/lib/types";
 
 /**
@@ -83,7 +86,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
   const [endereco, setEndereco] = useState("");
   const [descricao, setDescricao] = useState("");
   const [instagram, setInstagram] = useState("");
-  const [horario, setHorario] = useState("");
+  const [horarios, setHorarios] = useState<FaixaHorario[]>([faixaNova()]);
   const [programacao, setProgramacao] = useState("");
   const [preco, setPreco] = useState("");
   const [coords, setCoords] = useState("");
@@ -133,7 +136,10 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
         // Guarda só o identificador: a pessoa cola @nome ou a URL inteira, e a tela
         // monta o link. Normalizar aqui evita três formatos no banco.
         instagram: instagram.trim().replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "") || null,
-        horario_funcionamento: horario.trim() || null,
+        // Só vai o que tem dia marcado: faixa sem dia é rascunho, não horário.
+        horarios: horarios.filter((f) => f.dias.length > 0).length
+          ? horarios.filter((f) => f.dias.length > 0)
+          : null,
         programacao: programacao.trim() || null,
         preco_longneck: preco.trim() ? Number(preco.replace(",", ".")) : null,
       });
@@ -147,7 +153,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       setEndereco("");
       setDescricao("");
       setInstagram("");
-      setHorario("");
+      setHorarios([faixaNova()]);
       setProgramacao("");
       setPreco("");
     } catch (err) {
@@ -256,28 +262,21 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
             />
           </label>
 
-          <div className="flex gap-2.5">
-            <label className="flex flex-1 flex-col gap-1.5">
-              <span className="rotulo text-muted-3">horário de funcionamento</span>
-              <input
-                className={CAMPO}
-                value={horario}
-                onChange={(e) => setHorario(e.target.value)}
-                placeholder="ter a dom, 18h–02h"
-                maxLength={255}
-              />
-            </label>
-            <label className="flex w-32 shrink-0 flex-col gap-1.5">
-              <span className="rotulo text-muted-3">longneck</span>
-              <input
-                className={CAMPO}
-                value={preco}
-                onChange={(e) => setPreco(e.target.value)}
-                placeholder="12,00"
-                inputMode="decimal"
-              />
-            </label>
+          <div className="flex flex-col gap-1.5">
+            <span className="rotulo text-muted-3">funcionamento</span>
+            <EditorHorarios faixas={horarios} aoMudar={setHorarios} />
           </div>
+
+          <label className="flex w-32 flex-col gap-1.5">
+            <span className="rotulo text-muted-3">longneck</span>
+            <input
+              className={CAMPO}
+              value={preco}
+              onChange={(e) => setPreco(e.target.value)}
+              placeholder="12,00"
+              inputMode="decimal"
+            />
+          </label>
 
           <label className="flex flex-col gap-1.5">
             <span className="flex items-baseline justify-between">

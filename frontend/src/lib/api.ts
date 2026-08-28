@@ -1,5 +1,6 @@
 import type {
   EngajamentoEstabelecimento,
+  FaixaHorario,
   EstabelecimentoPublic,
   LugarDetalhe,
   LugarProximo,
@@ -184,6 +185,7 @@ export const api = {
       instagram?: string | null;
       horario_funcionamento?: string | null;
       programacao?: string | null;
+      horarios?: FaixaHorario[] | null;
       preco_longneck?: number | null;
     },
   ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
@@ -201,6 +203,7 @@ export const api = {
       instagram?: string | null;
       horario_funcionamento?: string | null;
       programacao?: string | null;
+      horarios?: FaixaHorario[] | null;
       preco_longneck?: number | null;
       /** Lista de URLs. A primeira é a que a ficha usa como imagem de topo. */
       fotos?: string[] | null;
