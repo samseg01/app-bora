@@ -283,11 +283,15 @@ e o **bairro piloto** (item 2 daqui) — sem concentração geográfica a rede d
       entrar em jogo — não pode ser ambíguo, é o que preserva a confiança no ranking curatorial.
       O schema já tem `Estabelecimento.plano` (`organico`/`destacado`), mas nada na API de leitura
       usa esse campo hoje.
-- [ ] 10. **Distinção clara na interface entre "favoritar lugar" (permanente) e "sinalizar rolê"
-       (efêmero)** — pergunta 4 em aberto no `docs/conceito.md`. O hi-fi aposta na hipótese `1e`
+- [ ] 10. **[campo] Validar a distinção entre "favoritar lugar" e "sinalizar rolê".**
+       **A interface já implementa** a hipótese `1e` — são dois gestos em lugares diferentes:
+       salvar mora no lugar (coração no detalhe e na ficha), sinalizar mora no rolê ("Tô indo").
+       O que continua aberto é o que sempre foi: **validar em campo** se isso resolve na cabeça de
+       quem usa, e é pergunta 4 do `conceito.md`, não tarefa de código. Enunciado original: o
+       hi-fi aposta na hipótese `1e`
        (dois gestos, dois lugares na tela); validar em campo se isso resolve de fato na cabeça do
        usuário, ou se as hipóteses `1f`/`1g` do wireframe voltam à mesa.
-- [x] 11. **Ícones do PWA e service worker** — feito em 28/08 (item 36 do frontend). O app agora
+- [x] 11. **Ícones do PWA e service worker** — feito em 28/08 (item F36). O app agora
        é instalável de fato. A regra que vale registrar: o service worker cacheia a casca
        (JS/CSS/fontes/ícones) e **nunca o dado** — cache de rolê é cache de mentira num produto
        que responde "o que está rolando agora".
