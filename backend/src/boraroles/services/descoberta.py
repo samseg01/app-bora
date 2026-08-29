@@ -101,6 +101,27 @@ async def frescor_de_role(
     return classificar_frescor(recentes, medios, role.created_at, agora)
 
 
+async def contar_sinais_de_role(
+    db: AsyncSession, role: Role, agora: datetime | None = None
+) -> int:
+    """Quantas PESSOAS distintas sinalizaram este rolê dentro da janela warm.
+
+    Existe separado de `frescor_de_role` porque só a tela de detalhe precisa do número —
+    obrigar os outros seis pontos de chamada a carregar uma contagem que descartam sairia
+    mais caro que a consulta a mais aqui.
+
+    A janela é a warm (2h) e não a live (30min), porque é a que o hi-fi desenhou:
+    "6 sinalizaram nas últimas 2h". Contar na janela curta daria um número menor que o
+    frescor que a mesma tela exibe, e as duas coisas ficariam se contradizendo.
+    """
+    agora = agora or datetime.now(UTC)
+    _, warm_since = _janelas(agora)
+    total = await db.scalar(
+        select(_pessoas).where(Sinalizacao.role_id == role.id, Sinalizacao.timestamp >= warm_since)
+    )
+    return total or 0
+
+
 async def frescor_de_lugar(
     db: AsyncSession, lugar: Lugar, agora: datetime | None = None
 ) -> FrescorEstado | None:

@@ -296,7 +296,10 @@ export function MapaReal({
 
       marcadores.current.forEach((mk) => mk.remove());
       marcadores.current = pins.map((pin) => {
-        const ui = frescorUI(pin.role_ativo?.frescor ?? null);
+        // Sem rolê o pin caía sempre em `bg-pin-off`, mesmo com o lugar aceso por sinal
+        // próprio — um bar cheio numa terça ficava apagado para sempre. O frescor do rolê
+        // vem primeiro por ser mais específico; o do lugar é a rede de segurança.
+        const ui = frescorUI(pin.role_ativo?.frescor ?? pin.frescor);
         const temRole = pin.role_ativo !== null;
 
         const el = document.createElement("button");

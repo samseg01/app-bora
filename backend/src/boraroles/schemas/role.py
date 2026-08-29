@@ -37,6 +37,10 @@ class RolePublic(BaseModel):
     data_inicio: datetime
     data_fim: datetime
     frescor: str | None
+    #: Pessoas distintas que sinalizaram nas últimas 2h — a janela warm. É o
+    #: "6 sinalizaram nas últimas 2h" do hi-fi. Zero é resposta válida; quem decide se
+    #: mostra ou esconde é a tela.
+    sinais_recentes: int
     created_at: datetime
 
 

@@ -146,6 +146,7 @@ export const PINS_EXEMPLO: MapaPin[] = [
       data_fim: emHoras(5),
       frescor: "live",
     },
+    frescor: null,
     total_comentarios: 4,
   },
   {
@@ -158,6 +159,7 @@ export const PINS_EXEMPLO: MapaPin[] = [
       data_fim: emHoras(3),
       frescor: "warm",
     },
+    frescor: null,
     total_comentarios: 1,
   },
   {
@@ -170,10 +172,11 @@ export const PINS_EXEMPLO: MapaPin[] = [
       data_fim: emHoras(4),
       frescor: "new",
     },
+    frescor: null,
     total_comentarios: 0,
   },
-  { lugar: porId(ID.casa47), role_ativo: null, total_comentarios: 2 },
-  { lugar: porId(ID.cru), role_ativo: null, total_comentarios: 0 },
+  { lugar: porId(ID.casa47), role_ativo: null, frescor: null, total_comentarios: 2 },
+  { lugar: porId(ID.cru), role_ativo: null, frescor: null, total_comentarios: 0 },
 ];
 
 export const COMENTARIOS_EXEMPLO: ComentarioResumo[] = [

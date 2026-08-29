@@ -42,8 +42,9 @@ export interface RolePublic {
    * não vier, sem inventar texto.
    */
   descricao?: string | null;
-  /** Idem: contagem de sinais ainda não é exposta pela API (item 17). */
-  sinais_recentes?: number | null;
+  /** Pessoas distintas que sinalizaram nas últimas 2h — a janela warm. Zero é resposta
+      válida e vem como 0, não como null; quem decide mostrar ou esconder é a tela. */
+  sinais_recentes: number;
 }
 
 export interface FaixaHorario {
@@ -99,6 +100,9 @@ export interface RolePin {
 export interface MapaPin {
   lugar: LugarPublic;
   role_ativo: RolePin | null;
+  /** Frescor do LUGAR, de sinalizações com `lugar_id` — vale mesmo sem rolê. É o que faz
+      um bar cheio numa terça acender no mapa em vez de ficar apagado para sempre. */
+  frescor: Frescor | null;
   /** Total histórico, sem janela de tempo — o copy do design ("na última hora") não se aplica. */
   total_comentarios: number;
 }

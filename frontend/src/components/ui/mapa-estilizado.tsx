@@ -77,7 +77,7 @@ export function MapaEstilizado({
       )}
 
       {posicionados.map(({ pin, left, top }) => {
-        const ui = frescorUI(pin.role_ativo?.frescor ?? null);
+        const ui = frescorUI(pin.role_ativo?.frescor ?? pin.frescor);
         const temRole = pin.role_ativo !== null;
         const classe = `absolute z-4 -translate-x-1/2 -translate-y-1/2 rounded-full ${
           temRole ? "h-3.5 w-3.5" : "h-2.5 w-2.5"

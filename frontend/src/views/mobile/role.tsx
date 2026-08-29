@@ -92,7 +92,7 @@ export function RoleMobile({
         </div>
       )}
 
-      {typeof role.sinais_recentes === "number" && (
+      {role.sinais_recentes > 0 && (
         <div className="mx-5.5 mt-3 rounded-2xl border border-white/6 bg-sunken px-4 py-3.5">
           <div className="font-display text-[26px] leading-none">{role.sinais_recentes}</div>
           <div className="mt-1 text-[11.5px] text-muted-2">sinalizaram nas últimas 2h</div>

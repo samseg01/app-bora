@@ -19,7 +19,7 @@ export function RoleDesktop({
   comentarios: ComentarioResumo[];
 }) {
   const pins: MapaPin[] = lugar
-    ? [{ lugar, role_ativo: null, total_comentarios: comentarios.length }]
+    ? [{ lugar, role_ativo: null, frescor: lugar.frescor, total_comentarios: comentarios.length }]
     : [];
 
   return (
@@ -60,7 +60,7 @@ export function RoleDesktop({
           )}
 
           <div className="mt-5.5 flex gap-3.5">
-            {typeof role.sinais_recentes === "number" && (
+            {role.sinais_recentes > 0 && (
               <Stat valor={String(role.sinais_recentes)} rotulo="sinalizaram nas últimas 2h" />
             )}
             <Stat valor={hora(role.data_inicio)} rotulo="começou" />

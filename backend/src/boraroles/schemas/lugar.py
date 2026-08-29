@@ -93,6 +93,10 @@ class RolePin(BaseModel):
 class MapaPin(BaseModel):
     lugar: LugarPublic
     role_ativo: RolePin | None
+    #: Frescor do LUGAR, de sinalizações com `lugar_id` — independente de haver rolê.
+    #: Sem isto um bar cheio numa terça, sem nada programado, fica com pin apagado para
+    #: sempre: é o degrau de baixo da escada do `conceito.md`, invisível no mapa.
+    frescor: str | None
     total_comentarios: int
 
 

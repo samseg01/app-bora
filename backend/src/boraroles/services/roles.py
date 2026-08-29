@@ -3,7 +3,9 @@ from boraroles.schemas.role import RolePublic
 from boraroles.services.frescor import FrescorEstado
 
 
-def role_to_public(role: Role, frescor: FrescorEstado | None) -> RolePublic:
+def role_to_public(
+    role: Role, frescor: FrescorEstado | None, sinais_recentes: int = 0
+) -> RolePublic:
     return RolePublic(
         id=role.id,
         lugar_id=role.lugar_id,
@@ -13,5 +15,6 @@ def role_to_public(role: Role, frescor: FrescorEstado | None) -> RolePublic:
         data_inicio=role.data_inicio,
         data_fim=role.data_fim,
         frescor=frescor.value if frescor else None,
+        sinais_recentes=sinais_recentes,
         created_at=role.created_at,
     )

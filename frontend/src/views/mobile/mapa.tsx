@@ -85,9 +85,9 @@ export function MapaMobile({
                     : `${selecionado.total_comentarios} ${selecionado.total_comentarios === 1 ? "comentário" : "comentários"}`}
                 </div>
               </div>
-              {selecionado.role_ativo && (
+              {frescorUI(selecionado.role_ativo?.frescor ?? selecionado.frescor) && (
                 <span
-                  className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${frescorUI(selecionado.role_ativo.frescor)?.pin ?? "bg-pin-off"}`}
+                  className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${frescorUI(selecionado.role_ativo?.frescor ?? selecionado.frescor)!.pin}`}
                 />
               )}
             </div>

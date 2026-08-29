@@ -58,10 +58,12 @@ async def mapa(
                 data_fim=role_ativo.data_fim,
                 frescor=frescor.value if frescor else None,
             )
+        frescor_lugar = await frescor_de_lugar(db, lugar)
         pins.append(
             MapaPin(
                 lugar=lugar_to_public(lugar),
                 role_ativo=role_pin,
+                frescor=frescor_lugar.value if frescor_lugar else None,
                 total_comentarios=total_comentarios or 0,
             )
         )
