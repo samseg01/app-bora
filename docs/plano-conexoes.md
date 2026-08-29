@@ -252,7 +252,7 @@ que o usuário instala o PWA na tela inicial. É um subprojeto, não um detalhe.
 
 **Recomendação:** v1 **sem push**. O aviso é in-app — a aba mostra quem está fora agora, e um selo
 na barra indica novidade. Push entra depois, junto com o resto do trabalho de PWA (ícones reais e
-service worker, itens já listados no `frontend/TODO.md`).
+service worker, itens já listados no `TODO.md`, seção Frontend).
 
 Isso derruba muito o custo do v1 e não tira o valor central: quem abre o app à noite vê onde os
 amigos estão.
@@ -272,7 +272,7 @@ Deliberadamente na ordem "o que serve à tese primeiro, o que é caro depois":
 5. **Push** — só junto com service worker e ícones do PWA.
 6. **Reavaliar se check-in alimenta o frescor público** (a decisão (b) da seção 6), com dado.
 
-**Pré-requisitos duros:** login no frontend (fase 3 do `frontend/TODO.md` — nada disso funciona sem
+**Pré-requisitos duros:** login no frontend (fase 3 da seção Frontend do `TODO.md` — nada disso funciona sem
 usuário autenticado) e o bairro piloto (item 1 do `TODO.md` — sem concentração geográfica a rede de
 amigos não fecha).
 

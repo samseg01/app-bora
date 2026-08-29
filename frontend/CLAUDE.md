@@ -1,6 +1,7 @@
 # CLAUDE.md — frontend do bora-roles
 
-Leia este arquivo e `TODO.md` no início de cada sessão de frontend. Antes de escrever a primeira
+Leia este arquivo e o `../TODO.md` da raiz no início de cada sessão de frontend — as tarefas
+de todo o projeto vivem num arquivo só, e as das telas estão na seção **Frontend** (prefixo `F`). Antes de escrever a primeira
 linha de código, leia também **`../docs/plano-frontend.md`** — é a especificação: traz o cruzamento
 tela a tela do design com a API real, as lacunas de cada tela e as decisões pendentes. Este arquivo
 é a referência de trabalho (o que já existe, convenções, contratos); o plano é o porquê.

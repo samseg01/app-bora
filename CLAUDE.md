@@ -2,7 +2,8 @@
 
 Leia este arquivo e `TODO.md` no início de cada sessão que toque mais de uma parte do projeto.
 Para trabalho **dentro do backend**, leia `backend/CLAUDE.md` e `backend/TODO.md`; para trabalho
-**dentro do frontend**, leia `frontend/CLAUDE.md`, `frontend/TODO.md` e `docs/plano-frontend.md`.
+**dentro do frontend**, leia `frontend/CLAUDE.md` e `docs/plano-frontend.md`. As tarefas de todo o
+projeto ficam num `TODO.md` só, na raiz — a seção **Frontend** cobre as telas.
 Esses arquivos são mais detalhados e têm precedência sobre este em qualquer conflito de escopo.
 Este arquivo cobre o que amarra as partes: produto, arquitetura acordada e status geral.
 
@@ -134,7 +135,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: testes (42, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: criação de `Estabelecimento` via API | ❌ | não existe endpoint — só leitura pro dono; hoje só dá pra inserir direto no banco |
-| Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + `frontend/TODO.md` |
+| Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + seção Frontend do `TODO.md` |
 | Frontend — scaffold, sistema visual e camada de dados | ✅ | Next 16.3.3 + React 19 + Tailwind v4; `npm run build` e `lint` limpos |
 | Frontend — partição mobile/desktop | ✅ | mesmo app e mesmas URLs, composições separadas cortadas por CSS em `lg` |
 | Frontend — todas as telas do hi-fi menos o `2b` | ✅ | 10 rotas, cada uma nas duas visualizações |
@@ -222,7 +223,7 @@ contradisserem, o ADR ganha.
   (`Rolês - Telas hi-fi.dc.html`), não o wireframe, apesar de o `README.md` do bundle mandar ler o
   wireframe primeiro: o hi-fi é posterior e já resolve as variantes que o wireframe deixou
   abertas. Cruzamento tela-a-tela com a API em `docs/plano-frontend.md`; progresso em
-  `frontend/TODO.md`.
+  a seção Frontend do `TODO.md`.
 - **O painel do curador é a superfície desktop-native do produto** — decisão tomada e desenhada.
   A tela existe nas duas visualizações, mas **não está ligada ao backend**: o CRUD de
   `/curador/*` exige token e papel `curador`, e o login ainda não existe no frontend. A nav dele
@@ -282,7 +283,7 @@ contradisserem, o ADR ganha.
 - Frontend — convenções, tokens e contratos da API: `frontend/CLAUDE.md`
 - **Por que ainda não é nativo, e o que dispara a migração:**
   `frontend/docs/adr/0001-pwa-agora-nativo-depois.md`
-- Frontend — as 37 tasks em 6 fases: `frontend/TODO.md`
+- Frontend — as tasks das telas, em fases: seção **Frontend** do `TODO.md` (itens com prefixo `F`)
 - Design hi-fi do frontend: `docs/front-end-ideias/seguir-ideia-da-documenta-o/project/Rolês - Telas hi-fi.dc.html`
 - Backend — árvore completa e ADRs: `backend/CLAUDE.md`
 - Backend — como rodar: `backend/README.md`
