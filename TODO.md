@@ -311,16 +311,40 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        tendo rolê. O caderninho atravessa bairros por natureza — perguntar isso ao mapa de um
        bairro só era a pergunta errada. Agora a rota devolve `lugar` + `role_ativo`, e as N+1
        chamadas viraram uma. `POST /salvos` segue devolvendo só a confirmação.
+- [x] 17. **`sinais_recentes` em `RolePublic`** — feito em 29/08. É o "6 sinalizaram nas últimas
+       2h" do hi-fi, e conta **pessoas distintas**, não linhas. A janela é a warm (2h) e não a live
+       (30min): contar na janela curta daria um número menor que o frescor exibido na mesma tela, e
+       as duas coisas se contradiriam. Vive em `contar_sinais_de_role()` porque só a tela de
+       detalhe precisa do número — os outros seis pontos que calculam frescor o descartariam. Zero
+       vem como 0 e a tela esconde o bloco: "0 sinalizaram" é pior que silêncio.
+- [x] 18. **`GET /auth/me`** — nome e data de cadastro pro perfil (`2h`). O papel não precisa dele:
+       já viaja dentro do JWT e o front decodifica client-side pra decidir o gating de UI.
+- [~] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — `lugar_id` feito em 28/08: sem ele o
+       botão Salvar da home ficava `disabled` por falta de dado (parecia regra de produto e era
+       lacuna de schema). `lat`/`lng` continuam de fora — só entram junto com a distância "a pé",
+       que precisa de geolocalização e ainda não tem tela.
+- [x] 20. **`DELETE /sinalizacoes/{id}`** — feito, junto com `GET /sinalizacoes/minhas`, que é o
+       que faz o "Tá marcado" sobreviver a sair da tela e voltar.
+- [x] 21. **`Lugar.endereco`** — feito em 28/08 (migration 0003, nullable). O lugar já era
+       localizável por `geo`, então o endereço é para quem lê e vai a pé, não para o sistema —
+       e é opcional porque exigir o número transformaria uma anotação de calçada num formulário.
+       O JSON do seed já trazia o campo e o script o ignorava em silêncio; agora grava.
+
 
 ### A escada bar simples → lugar com atração (refinamento de 27/08 no `conceito.md`)
 
 O degrau mais simples — bar aberto e com movimento, sem nada programado — hoje é **estruturalmente
 invisível** nas duas camadas, embora o backend já calcule o frescor dele.
 
-- [ ] 31. **`/mapa` expor o frescor do próprio lugar.** `MapaPin` só tem `role_ativo.frescor`, então
-       um bar cheio sem rolê fica com pin cinza para sempre. `frescor_de_lugar()` já existe e já é
-       usado em `GET /lugares/{id}` — falta só incluir no pin. É a menor mudança com mais efeito:
-       destrava a "camada social e de novidade" que o `conceito.md` diz ser o valor do mapa.
+- [x] 22. **Seed de desenvolvimento.** Hoje popular o banco exige criar usuário, promover a curador
+       via `scripts/promote_role.py` e cadastrar lugares/rolês na mão. Um seed com a Vila Madalena
+       fictícia (14 lugares, 3 rolês, comentários, sinalizações recentes) faz o frontend ter contra
+       o que rodar desde o primeiro dia, e reproduz os estados `live`/`warm`/`new` de propósito.
+
+- [x] 31. **`/mapa` expõe o frescor do próprio lugar** — feito em 29/08. `MapaPin.frescor` vem de
+       `frescor_de_lugar()`, que já existia e só era usado em `GET /lugares/{id}`. O pin usa o
+       frescor do rolê quando há um e cai no do lugar quando não há — antes um bar cheio numa terça,
+       sem nada programado, ficava apagado para sempre. Vale no mapa real, no abstrato e na gaveta.
 - [ ] 32. **Decidir se `/descoberta` pode devolver lugar sem rolê.** Hoje ela parte de `Role`, então
        um lugar sem nada publicado nunca aparece na descoberta. Duas saídas: (a) o curador escreve
        um rolê mesmo para oferta simples — mantém um conceito só e é o que o piloto deve fazer; ou
@@ -470,6 +494,18 @@ depende do R9 e da conversa com o dono.
        casa, sem GPS, avisa amigos — a fase 2 do `conceito.md`).
 
 ### Backend da feature de Conexões (ver `docs/plano-conexoes.md`, seções 5 e 6)
+
+- [ ] 24. **Decidir se check-in de usuário comum alimenta o frescor público.** Recomendação do
+       plano: **não** no v1 (mantém o ADR-0006 intacto), e reavaliar com dado depois. Frescor
+       errado destrói confiança mais rápido que frescor ausente. Seja qual for a escolha, vira
+       **ADR novo ou emenda ao 0006** — não decisão implícita no código.
+- [x] 25. **Desenhar a aba de Conexões.** Feito: `docs/front-end-ideias/conexoes/` — aba em desktop
+       e telefone, estado vazio, convite e confirmação de check-in. O estado vazio resolve o cold
+       start colocando os salvos do curador no lugar, para a aba nunca nascer morta; o convite
+       lista o que a pessoa passa **e não passa** a ver; o check-in materializa o copy novo do
+       anonimato (item 23). **Falta desenhar:** o selo "N conexões salvaram" no card de descoberta.
+- [ ] 26. **Backend: `Conexao` + check-in + salvos compartilhados.** Detalhado abaixo, na seção do
+       backend (itens 27–30).
 
 - [ ] 27. **Entidade `Conexao`** — `solicitante_id`, `destinatario_id`, `status`
        (`pendente`/`aceita`/`bloqueada`), `created_at`, `respondida_em`. Uma linha por par, com as
@@ -742,7 +778,8 @@ segue o hi-fi.
 - [~] F33. **Endereço do lugar: feito** (migration 0003; aparece no `2d` nas duas visualizações).
       **Card do curador ("VALIDOU EM CAMPO"): não.** Falta decidir o que ele afirma — assinar
       com nome do curador é promessa de responsabilidade que ninguém combinou ainda.
-- [ ] F34. "N sinalizaram nas últimas 2h" no `2d`, quando `RolePublic` expuser a contagem (item 17).
+- [x] F34. **"N sinalizaram nas últimas 2h" no `2d`** — feito junto com o item 17, nas duas
+      visualizações. Só aparece quando há alguém: zero fica escondido.
 - [ ] F35. Distância "a pé" com geolocalização do browser, quando `RoleDescoberta` trouxer
       `lat`/`lng` (item 19).
 - [x] F36. **PWA de verdade** — feito em 28/08. `app/manifest.ts`, ícones reais gerados
