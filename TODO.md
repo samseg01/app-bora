@@ -394,25 +394,23 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        mais próximo e não até a fronteira do bairro (item 38) — alguém pode estar dentro da Vila
        Madalena e a 1 km do lugar mais próximo que a gente visitou.
 
-- [~] 44. **[decisão] Agenda recorrente: "quinta é forró" sem alguém publicar toda quinta.**
-       **Parte informativa feita** (migration 0005): `Lugar.programacao` é texto livre, aparece na
-       ficha sob "toda semana", com a ressalva de que não quer dizer que está rolando agora. Isso
-       entrega o valor de leitura — quem abre a página numa terça descobre que quinta tem forró —
-       sem tocar em nada de arquitetura.
-       **Falta a parte que gera rolê**, e é ela que tem o impedimento. Enunciado original:
-       Levantado em 28/08. A ideia: casa com programação fixa não precisa de curador publicando
-       semanalmente — a recorrência gera o rolê, e o curador entra só quando há algo **além** do
-       calendário. Vale só para as casas que têm programação; a maioria não tem.
-       **O impedimento é arquitetural, não de esforço.** O ADR-004 recusou cron/worker nesta fase,
-       e o ADR-001 resolveu um problema desta mesma família derivando o frescor na leitura em vez
-       de materializar. O caminho coerente seria o mesmo: guardar a regra de recorrência no
-       `Lugar` e derivar o rolê de hoje em `listar_descoberta`.
-       **Mas há um nó real:** rolê derivado não tem linha no banco, e `Sinalizacao.role_id` e
-       `Comentario.role_id` são FK. Um forró de quinta que ninguém pode sinalizar nem comentar não
-       acende — e acender é o ponto. As saídas: materializar preguiçosamente na primeira leitura
-       do dia (escrita num GET, que é feio mas honesto), ou aceitar o cron e revisar o ADR-004.
-       Decidir junto com o 42: se o dono publica (ADR-008), talvez a recorrência seja só um
-       formulário que ele preenche uma vez, e o problema desaparece.
+- [x] 44. **[decisão, 29/08] A programação fixa fica informativa. Não gera rolê.**
+       `Lugar.programacao` aparece na ficha sob "toda semana", e o rolê de cada noite continua
+       sendo publicado por alguém. Fechado por decisão, não por implementação.
+
+       **Por que não gerar.** Um rolê nascido de recorrência é um rolê que ninguém foi ver — é
+       declaração, não observação, e é a mesma linha que o ADR-008 traça. Mas o argumento que
+       decidiu foi outro: **o modo de falhar do automático é pior que o do manual.** Se a casa
+       cancelar o forró numa quinta, o cron publica assim mesmo; um humano não publicaria. Num
+       produto que se vende por não afirmar o que não sabe, errar para o lado de publicar demais
+       é pior do que publicar de menos.
+
+       **O que foi descartado junto:** revisar o ADR-004 para admitir cron, e materializar o rolê
+       preguiçosamente durante um `GET` — as duas saídas técnicas ficam sem uso.
+
+       **O que reabre isto:** o curador reclamar de republicar o mesmo rolê toda semana (aí a
+       saída é um toque de confirmação no painel, não automação), ou o ADR-008 ser aceito e o dono
+       passar a preencher a programação — nesse caso quem afirma é a casa, e a pergunta muda.
 - [~] 45. **Foto do lugar, tirada pelo curador em campo.** A ficha já **exibe** a foto em primeiro
        plano (`views/lugar-ficha.tsx`, lendo `fotos[0]`), e o formulário de correção aceita a URL.
        Sem foto, cai no bloco de cor do design — que não é provisório, é a escolha visual do
