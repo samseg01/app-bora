@@ -133,6 +133,11 @@ class Lugar(Base):
         UUID(as_uuid=True), ForeignKey("estabelecimento.id"), nullable=True
     )
     fotos: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
+    # O que a casa TEM, enquanto `categoria` é o que ela É. Um boteco com mesa na
+    # calçada e um sem são a mesma categoria e decisões diferentes para quem lê.
+    # Vocabulário fechado no cliente (`frontend/src/lib/tags.ts`), como `categoria` —
+    # a coluna é livre de propósito, para a lista crescer sem migration.
+    tags: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
     criado_por: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("usuario.id"), nullable=False
     )

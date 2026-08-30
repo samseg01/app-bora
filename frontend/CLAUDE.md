@@ -82,6 +82,20 @@ herança ficar visível). Antes os botões estavam no rolê e o lugar tinha text
 o que está no banco: Bar do China cadastrado como "forró" publicando rolê como "Bar". `Role.categoria`
 segue existindo no schema e na API — só o formulário parou de perguntar.
 
+**Tag é o que a casa TEM; categoria é o que ela É.** `lib/tags.ts` fecha o vocabulário (21 tags,
+máximo 6 por lugar), pelo mesmo motivo de `categorias.ts`: sem normalização, "forró", "Forró" e
+"forro" viram três tags. A coluna `lugar.tags` (migration 0007) é `ARRAY(String)` livre de
+propósito — a lista cresce sem migration. **Só exibem, não filtram**: com dois lugares curados não
+há o que filtrar, e quando houver o passo é um índice GIN na mesma coluna, sem mudar o dado.
+
+A ordem da lista é deliberada, como a de categoria: preço e mesa na calçada vêm antes do gênero
+musical, porque decidem mais — e uma lista que começa em "Forró" conta para quem cadastra que o app
+é sobre programação, que é o topo da escada do `conceito.md` e não a base que ele quer atender.
+
+`TagsLugar` **não renderiza nada** sem tag — nem rótulo, nem caixa vazia, mesma regra do frescor
+`null`. E usa ciano, nunca magenta ou âmbar: essas duas dizem "está acontecendo agora" em todo o
+app, e tag é permanente — tag magenta faria a ficha de uma casa vazia parecer acesa.
+
 **Painel do curador — três etapas, nesta ordem: região → lugar → rolê.**
 `components/ui/passos-curador.tsx` mostra a sequência nas duas visualizações. A ordem é dependência
 real, não enfeite: um rolê acontece num lugar, e um lugar pertence a um recorte.

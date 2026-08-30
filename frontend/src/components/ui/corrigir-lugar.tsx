@@ -4,6 +4,7 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
 import { EditorHorarios } from "./editor-horarios";
+import { SeletorTags } from "./seletor-tags";
 import { faixaNova } from "@/lib/horarios";
 import type { FaixaHorario, LugarPublic } from "@/lib/types";
 
@@ -44,6 +45,7 @@ export function CorrigirLugar({
   const [horarios, setHorarios] = useState<FaixaHorario[]>(
     lugar.horarios?.length ? lugar.horarios : [faixaNova()],
   );
+  const [tags, setTags] = useState<string[]>(lugar.tags ?? []);
   const [programacao, setProgramacao] = useState(lugar.programacao ?? "");
   const [preco, setPreco] = useState(lugar.preco_longneck ?? "");
   const [foto, setFoto] = useState(lugar.fotos?.[0] ?? "");
@@ -74,6 +76,7 @@ export function CorrigirLugar({
           ? horarios.filter((f) => f.dias.length > 0)
           : null,
         programacao: programacao.trim() || null,
+        tags: tags.length ? tags : null,
         preco_longneck: valor ? Number(valor) : null,
         fotos: foto.trim() ? [foto.trim()] : null,
         lat,
@@ -126,6 +129,8 @@ export function CorrigirLugar({
           maxLength={255}
         />
       </Campo>
+
+      <SeletorTags valor={tags} onChange={setTags} />
 
       <Campo rotulo="funcionamento">
         <EditorHorarios faixas={horarios} aoMudar={setHorarios} />

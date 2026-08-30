@@ -12,6 +12,7 @@ import { api, ApiError } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
 import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
 import { CATEGORIAS_LUGAR } from "@/lib/categorias";
+import { SeletorTags } from "@/components/ui/seletor-tags";
 import { EditorHorarios } from "@/components/ui/editor-horarios";
 import { faixaNova } from "@/lib/horarios";
 import type { FaixaHorario } from "@/lib/types";
@@ -87,6 +88,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
   const [descricao, setDescricao] = useState("");
   const [instagram, setInstagram] = useState("");
   const [horarios, setHorarios] = useState<FaixaHorario[]>([faixaNova()]);
+  const [tags, setTags] = useState<string[]>([]);
   const [programacao, setProgramacao] = useState("");
   const [preco, setPreco] = useState("");
   const [coords, setCoords] = useState("");
@@ -141,6 +143,9 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
           ? horarios.filter((f) => f.dias.length > 0)
           : null,
         programacao: programacao.trim() || null,
+        // Lista vazia vira null: [] afirmaria "conferi e esta casa nao tem nenhuma",
+        // e o que houve foi ninguem ter marcado.
+        tags: tags.length ? tags : null,
         preco_longneck: preco.trim() ? Number(preco.replace(",", ".")) : null,
       });
       // Fora do updater de propósito: a função passada ao setState precisa ser pura,
@@ -154,6 +159,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       setDescricao("");
       setInstagram("");
       setHorarios([faixaNova()]);
+      setTags([]);
       setProgramacao("");
       setPreco("");
     } catch (err) {
@@ -216,6 +222,11 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
               ))}
             </div>
           </label>
+
+          {/* Logo depois da categoria de propósito: uma responde o que o lugar é, a
+              outra o que ele tem, e lê-las juntas é o que evita marcar "Bar" e achar
+              que já se disse tudo. */}
+          <SeletorTags valor={tags} onChange={setTags} />
 
           <label className="flex flex-col gap-1.5">
             <span className="flex items-baseline justify-between">

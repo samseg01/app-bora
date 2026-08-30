@@ -41,6 +41,7 @@ async def criar_lugar(body: LugarCreate, usuario: CuradorUser, db: DbSession) ->
         preco_visto_em=date.today() if body.preco_longneck is not None else None,
         estabelecimento_id=body.estabelecimento_id,
         fotos=body.fotos,
+        tags=body.tags,
         criado_por=usuario.id,
     )
     db.add(lugar)

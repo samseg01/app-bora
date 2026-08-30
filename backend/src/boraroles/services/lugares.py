@@ -45,5 +45,6 @@ def lugar_to_public(lugar: Lugar) -> LugarPublic:
         preco_visto_em=lugar.preco_visto_em,
         estabelecimento_id=lugar.estabelecimento_id,
         fotos=lugar.fotos,
+        tags=lugar.tags,
         created_at=lugar.created_at,
     )

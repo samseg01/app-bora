@@ -438,6 +438,25 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        tem disco efêmero — foto salva em disco some no próximo deploy. Ou entra armazenamento de
        objeto (S3/R2) desde o começo, o que pede conta e chave. **Não começar antes do R7.**
 
+- [x] 47. **Tags do lugar, e o pin apagado que parecia inexistente.** Feito em 30/08, os dois juntos
+       porque eram a mesma queixa: olhar o mapa e não ver o que existe.
+       **O pin:** `--color-pin-off` era `#6a5f88`, praticamente `--color-muted-3` (`#6f6690`), a cor
+       de **texto desabilitado** — sobre o dark-matter o lugar sumia, e quem olhava concluía que ali
+       não havia nada, quando havia uma casa visitada a pé. Agora é lilás claro (`#ded4ff`) e o pin
+       subiu de `h-2.5` para `h-3`. **Neutro de propósito:** magenta, âmbar e ciano continuam
+       significando "está acontecendo agora", que é o que não podia ser diluído — um pin sem rolê
+       tão chamativo quanto um `live` mataria a leitura do mapa.
+       **As tags:** migration 0007, `ARRAY(String)` nullable como `fotos`. Vocabulário fechado em
+       `frontend/src/lib/tags.ts` (21 tags, máximo 6 por lugar), coluna livre no banco — o mesmo
+       arranjo de `categoria`, para a lista crescer sem migration. Entram no cadastro e na correção
+       de lugar, e aparecem na ficha. **Só exibem, não filtram**, por decisão: com dois lugares
+       curados não há o que filtrar, e o passo, quando houver, é um índice GIN na mesma coluna.
+       **O que isso resolve, concretamente:** o Bar do China está no banco com `categoria = "forró"`,
+       que nem existe no vocabulário fechado. Não era descuido — era falta de onde pôr "tem forró".
+       Ver item 48.
+- [ ] 48. **Corrigir a categoria do Bar do China.** Está `"forró"`, fora do vocabulário fechado de
+       `lib/categorias.ts`. Com o item 47 no ar, o certo é `categoria = "Boteco"` (ou "Bar", decidir
+       no R3 vendo a casa) e `Forró` como **tag**. Um registro só, corrigível pelo próprio painel.
 - [ ] 46. **Dropar `Lugar.horario_funcionamento`.** A migration 0006 adicionou `horarios`
        (estruturado) e **não** removeu o texto livre, de propósito: havia um registro real
        preenchido em campo ("segunda a sexta - 12:00 às 01:00", no Bar do China) e dropar junto

@@ -39,6 +39,8 @@ class LugarCreate(BaseModel):
     preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
+    #: Vocabulário fechado no cliente; a coluna é livre para a lista crescer sem migration.
+    tags: list[str] | None = Field(default=None, max_length=8)
 
 
 class LugarUpdate(BaseModel):
@@ -56,6 +58,8 @@ class LugarUpdate(BaseModel):
     preco_longneck: Decimal | None = Field(default=None, ge=0, le=9999)
     estabelecimento_id: uuid.UUID | None = None
     fotos: list[str] | None = None
+    #: Vocabulário fechado no cliente; a coluna é livre para a lista crescer sem migration.
+    tags: list[str] | None = Field(default=None, max_length=8)
 
 
 class LugarPublic(BaseModel):
@@ -76,6 +80,7 @@ class LugarPublic(BaseModel):
     preco_visto_em: date | None
     estabelecimento_id: uuid.UUID | None
     fotos: list[str] | None
+    tags: list[str] | None
     created_at: datetime
 
 

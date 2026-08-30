@@ -63,6 +63,9 @@ export interface LugarPublic {
   bairro: string;
   estabelecimento_id: string | null;
   fotos: string[] | null;
+  /** O que a casa TEM, enquanto `categoria` é o que ela É (migration 0007). Vocabulário
+      fechado em `lib/tags.ts`; a coluna é livre para a lista crescer sem migration. */
+  tags: string[] | null;
   created_at: string;
   /** Existe no schema desde 28/08 (migration 0003). Nullable: o lugar é localizável por
       lat/lng sozinho, e nem todo cadastro de campo traz o número. */

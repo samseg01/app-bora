@@ -187,6 +187,8 @@ export const api = {
       programacao?: string | null;
       horarios?: FaixaHorario[] | null;
       preco_longneck?: number | null;
+      /** Vocabulário fechado em `lib/tags.ts`. Lista vazia nunca vai: vira null. */
+      tags?: string[] | null;
     },
   ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
 
@@ -207,6 +209,7 @@ export const api = {
       preco_longneck?: number | null;
       /** Lista de URLs. A primeira é a que a ficha usa como imagem de topo. */
       fotos?: string[] | null;
+      tags?: string[] | null;
       lat?: number;
       lng?: number;
     },

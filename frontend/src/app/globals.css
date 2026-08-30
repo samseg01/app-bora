@@ -25,7 +25,13 @@
   --color-muted: #9083ad;
   --color-muted-2: #8478a0;
   --color-muted-3: #6f6690;
-  --color-pin-off: #6a5f88;
+  /* Pin de lugar curado SEM sinal de frescor. Era #6a5f88 — o mesmo tom de
+     --color-muted-3, a cor de texto desabilitado —, e sobre o mapa dark-matter
+     o lugar sumia: quem olhava concluía que não havia nada ali, quando havia uma
+     casa que alguém foi visitar a pé. Um lilás claro é o mais visível possível
+     sobre o mapa escuro e continua NEUTRO: magenta, âmbar e ciano seguem
+     significando "está acontecendo agora", que é o que não pode ser diluído. */
+  --color-pin-off: #ded4ff;
 
   --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

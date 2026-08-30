@@ -307,7 +307,9 @@ export function MapaReal({
         el.setAttribute("aria-label", pin.lugar.nome);
         el.className = [
           "rounded-full border border-black/40 shadow-lg",
-          temRole ? "h-3.5 w-3.5" : "h-2.5 w-2.5",
+          // O pin sem rolê continua menor que o com rolê — a hierarquia é real e
+          // fica de pé —, mas 2.5 sobre a cor apagada antiga somava para invisível.
+          temRole ? "h-3.5 w-3.5" : "h-3 w-3",
           ui ? ui.pin : "bg-pin-off",
           ui?.pulsa ? "pulse-agora" : "",
           selecionadoId === pin.lugar.id ? "ring-3 ring-white/70" : "",

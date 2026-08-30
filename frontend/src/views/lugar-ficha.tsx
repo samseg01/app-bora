@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AcaoSalvar } from "@/components/ui/acao-salvar";
 import { FrescorPill } from "@/components/ui/frescor-pill";
+import { TagsLugar } from "@/components/ui/tags-lugar";
 import { abertaAgora, faixaLegivel } from "@/lib/horarios";
 import { hora } from "@/lib/tempo";
 import type { LugarDetalhe, RolePin } from "@/lib/types";
@@ -80,6 +81,11 @@ export function LugarFicha({
           ) : null}
         </div>
       </div>
+
+      {/* Acima da descrição de propósito: são o resumo escaneável do que a descrição
+          conta em prosa, e quem está decidindo aonde ir lê antes de ler o parágrafo.
+          Sem tag anotada, o componente não rende nada — nem rótulo, nem caixa vazia. */}
+      <TagsLugar tags={lugar.tags} />
 
       {/* O que a casa é, escrito por quem esteve lá. */}
       {lugar.descricao && (

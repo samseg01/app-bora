@@ -91,6 +91,7 @@ function lugar(
   lng: number,
   endereco: string,
   bairro: string = BAIRRO_EXEMPLO,
+  tags: string[] | null = null,
 ) {
   return {
     id,
@@ -101,6 +102,10 @@ function lugar(
     bairro,
     estabelecimento_id: null,
     fotos: null,
+    // Tags entram no exemplo (e descrição/preço não) porque são vocabulário fechado:
+    // não são dado de campo inventado, são rótulos que já existem em `lib/tags.ts`.
+    // Sem elas o componente nunca aparece em dev e ninguém vê o que construiu.
+    tags,
     created_at: emHoras(-720),
     endereco,
     // A ficha do lugar fica vazia no exemplo de propósito: ela existe para o dado de
@@ -117,9 +122,23 @@ function lugar(
 }
 
 export const LUGARES_EXEMPLO = [
-  lugar(ID.aurora, "Bar Aurora", "bar", -23.5541, -46.6902, "Rua Aspicuelta, 340"),
-  lugar(ID.boteco, "Boteco do Zé", "boteco", -23.5563, -46.6871, "Rua Fidalga, 112"),
-  lugar(ID.garagem, "Garagem 9", "sarau", -23.5528, -46.6858, "Rua Harmonia, 9"),
+  lugar(ID.aurora, "Bar Aurora", "bar", -23.5541, -46.6902, "Rua Aspicuelta, 340", BAIRRO_EXEMPLO, [
+    "Em pé",
+    "Eletrônica",
+    "LGBT+",
+  ]),
+  lugar(ID.boteco, "Boteco do Zé", "boteco", -23.5563, -46.6871, "Rua Fidalga, 112", BAIRRO_EXEMPLO, [
+    "Barato",
+    "Mesa na calçada",
+    "Petisco",
+    "Samba",
+  ]),
+  lugar(ID.garagem, "Garagem 9", "sarau", -23.5528, -46.6858, "Rua Harmonia, 9", BAIRRO_EXEMPLO, [
+    "Sem couvert",
+    "Sossegado",
+  ]),
+  // Sem tag de propósito: é o estado mais comum de um lugar recém-cadastrado, e a ficha
+  // precisa ficar de pé sem elas.
   lugar(ID.casa47, "Casa 47", "show ao vivo", -23.5575, -46.6925, "Rua Girassol, 47"),
   lugar(ID.cru, "Espaço Cru", "galeria", -23.5519, -46.6935, "Rua Wisard, 88"),
   lugar(
@@ -130,6 +149,7 @@ export const LUGARES_EXEMPLO = [
     -46.6889,
     "Praça Benedito Calixto, s/n",
     "Pinheiros",
+    ["Ao ar livre", "Cabe grupo", "Pet friendly"],
   ),
 ];
 
