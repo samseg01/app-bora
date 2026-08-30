@@ -133,10 +133,38 @@ pública temporária.
 **O que funciona por esse túnel:** home, mapa, detalhe, abertura — são server components, então
 a busca à API acontece na máquina de desenvolvimento. **O que não funciona:** login, salvar,
 sinalizar e os painéis, porque saem do navegador para `NEXT_PUBLIC_API_URL`, que aponta para
-`localhost:8000` — no telefone, o próprio telefone. Para exercitar essas ações é preciso um
-segundo túnel para a API e o domínio do front em `CORS_ORIGINS`.
+`localhost:8000` — no telefone, o próprio telefone.
 
-A URL é **pública** enquanto o túnel viver. Fechar ao terminar.
+#### O segundo túnel, para exercitar login/salvar/sinalizar
+
+Verificado ponta a ponta em 29/08/2026 (signup 201, login 200 pelo telefone). São quatro passos, e
+os dois últimos são onde se perde tempo:
+
+1. `cloudflared tunnel --url http://localhost:8000` — o túnel da API.
+2. `frontend/.env.local` com `NEXT_PUBLIC_API_URL=https://<tunel-api>/api/v1`. **O arquivo não
+   existe no repositório** (só o `.env.local.example`), então sem criá-lo o `lib/api.ts` cai no
+   default `http://localhost:8000/api/v1` e a chamada morre no próprio telefone. O `next dev`
+   relê o arquivo sozinho — não precisa reiniciar.
+3. `CORS_ORIGINS` no `backend/.env` recebe o domínio do **front** (não o da API), separado por
+   vírgula. Sem isso o preflight volta `400 Disallowed CORS origin`, **sem** cabeçalho
+   `access-control-allow-origin` — e o navegador só diz "erro de rede".
+4. **`docker compose up -d api`, não `restart`.** `docker compose restart` **não relê o
+   `env_file`**: o container sobe com o CORS antigo e o sintoma do passo 3 continua igual,
+   apontando para o lugar errado. Só `up -d` recria o container.
+
+Para conferir sem o telefone na mão, o preflight direto responde tudo:
+
+```
+curl -i -X OPTIONS "$API/api/v1/auth/signup" -H "Origin: $FRONT" \
+  -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: content-type"
+```
+
+As URLs são **públicas** enquanto os túneis viverem, e a da API aceita signup de qualquer um.
+Fechar ao terminar — e **reverter o `.env.local` e o `CORS_ORIGINS`**, senão os dois arquivos
+ficam apontando para túneis mortos e o app quebra em `localhost` sem dizer por quê.
+
+Conta manual de teste: usar domínio `@local.dev`. Os fixtures da suíte usam e-mails fixos em
+`@exemplo.com` e uma conta manual com esses e-mails faz o teste falhar por unicidade.
 
 ```
 npm run dev     # http://localhost:3000

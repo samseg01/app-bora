@@ -80,6 +80,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | [0007](docs/adr/0007-promocao-de-papel-manual.md) | Promoção de papel é sempre manual (script), nunca self-service |
 | [0008](docs/adr/0008-estabelecimento-publica-com-atribuicao.md) | **Proposto** — dono publica o próprio rolê, com atribuição em vez de fila de aprovação |
 | [0009](docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md) | **Proposto** — sinalizar exige estar perto, verificado no servidor; separa "Tô aqui" de "Tô indo" |
+| [0010](docs/adr/0010-vinculo-de-estabelecimento-e-ato-de-curadoria.md) | Vincular estabelecimento é ato de curadoria, num ato só — sem autocadastro do dono |
 
 ## Status
 
@@ -94,7 +95,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
-| Criação de `Estabelecimento` via API | ❌ não existe endpoint ainda — hoje só é possível inserir direto no banco; ver `TODO.md` |
+| Vínculo de `Estabelecimento` | ⚠️ decidido (ADR-010: curador vincula, sem endpoint isolado); falta `scripts/vincular_estabelecimento.py` |
 
 ## Nota sobre a janela de "hoje"
 
@@ -141,11 +142,21 @@ comentário precisa usar esse predicado, não `Comentario.lugar_id ==` direto.
 no `.dockerignore`, então a suíte nunca entrava na imagem e o pytest respondia "no files were
 found in testpaths" — parecendo sucesso. A linha foi removida.
 
-## Gap conhecido: criação de Estabelecimento
+## Vínculo de Estabelecimento — decidido no ADR-010, falta o script
 
-Não há rota para criar um `Estabelecimento` — só rotas de leitura pro dono (`GET .../lugares`,
-`GET .../engajamento`). Isso não estava no escopo de rotas do plano original. Pra testar o painel
-manualmente, insira a linha direto no Postgres (ver o smoke test em `tests/test_smoke_e2e.py` e
-`tests/test_estabelecimento_panel.py` pra ver os testes usando a fixture `criar_estabelecimento`,
-que insere direto via `db_session`). Decidir o fluxo real (curador cria? Onboarding próprio?) é
-trabalho de produto ainda em aberto, não uma lacuna técnica a preencher às pressas.
+`Estabelecimento` **não é a casa**: não tem geografia, bairro nem endereço. É a conta comercial do
+dono (`dono_usuario_id` NOT NULL, `nome`, `plano`), e a casa entra no app como `Lugar`, curada a pé.
+O app inteiro funciona sem ela — o que ela destrava é o painel do dono, o `plano` e (se o ADR-008 for
+aceito) o direito de publicar rolê na própria casa.
+
+Não há rota para criar um `Estabelecimento`, e **não deve haver uma isolada**: `Estabelecimento` não
+tem FK para `Lugar` (o elo é `Lugar.estabelecimento_id`, nullable, do outro lado), então o banco
+aceita um órfão sem lugar nenhum, e o painel responde `[]` e zeros. A cardinalidade "pelo menos um
+lugar" não é expressável em FK — quem a garante é o ato ser único e transacional.
+
+O ADR-010 decidiu: **o curador cria e vincula, num ato só; o dono cria a própria conta** por signup
+normal. Falta implementar `scripts/vincular_estabelecimento.py`, no molde do `promote_role.py`.
+
+Pra testar o painel manualmente enquanto isso, insira a linha direto no Postgres (ver o smoke test em
+`tests/test_smoke_e2e.py` e `tests/test_estabelecimento_panel.py` usando a fixture
+`criar_estabelecimento`, que insere via `db_session`).

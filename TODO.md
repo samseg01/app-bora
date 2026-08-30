@@ -87,11 +87,22 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.
 - [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Resolve de uma vez a ressalva
       de altura das duas camadas na home, pendente desde o começo (item F19).
-- [ ] R9. **[decisão] Definir como um estabelecimento é cadastrado** (item 3). Não existe endpoint
-      nenhum; hoje só dá pra inserir no Postgres na mão. É a primeira coisa necessária se o dono
-      disser sim. **A conversa com o dono que você já conhece pode acontecer antes de tudo isso** —
-      como ensaio, mostrando o canvas de design no celular. Não vira o bairro piloto por isso, e
-      ensina como a conversa corre sem custar nenhuma semana.
+- [~] R9. **Vincular uma casa já curada ao dono dela** (item 3). **Decidido em 29/08 — ADR-010.**
+      O enunciado mudou: não existe "cadastrar estabelecimento". `Estabelecimento` não é a casa (não
+      tem geografia, bairro nem endereço) — é a **conta comercial do dono**, e a casa já entra no app
+      como `Lugar`, no R3. O que falta é o vínculo.
+      **Quem faz:** o curador, num ato único e transacional (cria o `Estabelecimento`, vincula o
+      `Lugar` existente, promove o papel). O **dono cria a própria conta** por signup normal — o
+      curador não manuseia senha de ninguém.
+      **O que derrubou o autocadastro:** ele não tem saída boa. Ou o dono cria só a conta e nasce um
+      **órfão** (o banco aceita: `Estabelecimento` não tem FK para `Lugar`, e o painel responde `[]` e
+      zeros), ou ele cria a casa junto e um `Lugar` entra no app **sem ninguém ter ido lá** — a única
+      coisa que o produto não pode fazer.
+      **Falta implementar:** `scripts/vincular_estabelecimento.py`, no molde do `promote_role.py`.
+      Sem rota HTTP: um endpoint "criar estabelecimento" isolado é a porta do órfão.
+      **A conversa com o dono que você já conhece pode acontecer antes de tudo isso** — como ensaio,
+      mostrando o canvas de design no celular. Não vira o bairro piloto por isso, e ensina como a
+      conversa corre sem custar nenhuma semana.
 - [ ] R10. **A conversa.** Mostrar a tela de descoberta com o bar dele e o pin aceso no mapa.
       O painel do estabelecimento **existe** desde 28/08 (`/estabelecimento`), mas o conselho não
       mudou: **não** abrir ele na conversa. Num bairro que ainda não foi curado ele mostra zeros
@@ -213,10 +224,12 @@ na interface — justamente o degrau de baixo da escada do `conceito.md`.
       Conferido que `.env` real, `node_modules`, `.next` e os canvas gerados ficaram de fora.
 - [x] 1b. **Criar o remote e dar push.** Feito — ver R2.
 - [x] 2. **Bairro piloto: Anhangabaú.** Pergunta 1 de `docs/conceito.md`, respondida. Ver R1.
-- [ ] 3. **Decidir o fluxo de criação de `Estabelecimento`.** Hoje não existe endpoint — só rotas
-      de leitura pro dono (`backend/CLAUDE.md`, seção "Gap conhecido"). Decisão de produto: curador
-      cadastra em campo? Dono faz onboarding self-service (contraria ADR-0007 de promoção manual de
-      papel, então provavelmente não)? Definir antes de implementar a rota.
+- [~] 3. **Decidido em 29/08 — ADR-010: quem vincula é o curador, em campo.** O autocadastro do dono
+      foi rejeitado, e não por contrariar o ADR-0007: por não ter saída boa (órfão, ou lugar sem
+      visita). Falta só implementar o script. Detalhes no R9, que é o mesmo item. Enunciado original:
+      Decisão de produto: curador cadastra em campo? Dono faz onboarding self-service (contraria
+      ADR-0007 de promoção manual de papel, então provavelmente não)? Definir antes de implementar a
+      rota.
 
 ## Diferenciais / features principais
 
@@ -364,10 +377,12 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        decidindo se saía, a noite inteira estava invisível. Agora `services/descoberta._dia_local`
        calcula o dia em `settings.fuso_local` e converte para UTC; o banco segue todo em UTC.
 
-- [ ] 35. **Não há autocadastro de estabelecimento, e agora dá pra ver isso na tela.** Com o
+- [~] 35. **Não há autocadastro de estabelecimento — e, desde o ADR-010, não vai haver.** Com o
        painel do dono no ar, a lacuna do R9 deixou de ser abstrata: uma conta de dono sem casa
        vinculada cai num recado explicando que o vínculo é manual. Isso é honesto e sustentável
        enquanto forem poucas casas visitadas a pé — vira gargalo no dia em que não for.
+       O que muda com o ADR-010: esse recado deixa de ser estado provisório e passa a ser o desenho.
+       O gargalo, quando vier, vira **tela no painel do curador**, não onboarding do dono.
 - [ ] 36. **As métricas do painel do dono não têm janela de tempo.** `total_salvos` e
        `total_sinalizacoes` somam tudo desde sempre (`services/engajamento.py`). A tela diz isso
        com todas as letras em vez de fingir uma janela, mas "salvaram esta semana" é a pergunta

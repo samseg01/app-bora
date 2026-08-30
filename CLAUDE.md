@@ -134,7 +134,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: serviço de frescor | ✅ | ADR-0001; conta **pessoas distintas**, não linhas (ver issues) |
 | Backend: testes (42, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
-| Backend: criação de `Estabelecimento` via API | ❌ | não existe endpoint — só leitura pro dono; hoje só dá pra inserir direto no banco |
+| Backend: vínculo de `Estabelecimento` | ⚠️ | decidido (ADR-010: curador vincula, sem endpoint isolado); falta o script — hoje só direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + seção Frontend do `TODO.md` |
 | Frontend — scaffold, sistema visual e camada de dados | ✅ | Next 16.3.3 + React 19 + Tailwind v4; `npm run build` e `lint` limpos |
 | Frontend — partição mobile/desktop | ✅ | mesmo app e mesmas URLs, composições separadas cortadas por CSS em `lg` |
@@ -214,8 +214,9 @@ contradisserem, o ADR ganha.
 
 ## Issues conhecidos / débitos
 
-- **Sem fluxo de criação de `Estabelecimento`** — decisão de produto em aberto (curador cria? dono
-  faz onboarding próprio?), não lacuna técnica a preencher às pressas. Ver `backend/CLAUDE.md`.
+- **Sem fluxo de vínculo de `Estabelecimento`** — a decisão saiu (ADR-010: o curador vincula em
+  campo, num ato só; o dono cria a própria conta), falta o script. `Estabelecimento` não é a casa:
+  é a conta comercial do dono, e a casa já entra como `Lugar`. Ver `backend/CLAUDE.md`.
 - **Nenhuma curadoria de campo feita ainda** — o bairro está escolhido (República), mas nenhum
   lugar foi visitado. `backend/seed/republica.json` está esperando; enquanto isso o app só tem
   dado fictício de Vila Madalena, que é fictício de propósito para não ser confundido com real.
