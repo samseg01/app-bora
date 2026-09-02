@@ -12,14 +12,21 @@ hi-fi só falta o `2b` (onboarding de gostos), e por decisão.
 "item 15" nos dois arquivos, querendo dizer coisas diferentes. Itens sem prefixo são de produto,
 backend ou infra; `P`, `C`, `S` e `X` são partição, curador, sugestão e conexões.
 
-## Por onde começar (revisto em 31/08)
+## Por onde começar (revisto em 02/09)
 
-Os pontos 4 e 5 da revisão de 28/08 (itens 17 e 31) foram feitos em 29/08, e o R9 foi decidido
-em 29/08 pelo ADR-010. Sobrou o que não é código — e é justamente o que trava:
+Em 01 e 02/09 saiu bastante código: o regressivo virou um comando, o ADR-009 foi aceito e a
+presença verificada foi construída (itens 40, 41, 43, 57, 58). O que **não** saiu continua sendo o
+mesmo de 31/08 — e ficou mais urgente, porque agora existe uma feature inteira cuja validação
+depende de alguém ir à rua:
 
-1. **R3 — curadoria a pé.** É seu, e é o gargalo. **Dois lugares em República** hoje (Bar do
-   China e Tokyo); a meta são 10 a 15. Nada que se construa substitui isso, e o app já está
-   pronto o bastante para que construir mais seja fuga.
+1. **R3 + R8, na mesma noite — curadoria a pé, agora com o telefone na mão.** É seu, e é o
+   gargalo. **Dois lugares em República** hoje (Bar do China e Tokyo); a meta são 10 a 15. Nada
+   que se construa substitui isso, e o app já está pronto o bastante para que construir mais seja
+   fuga.
+   Desde 02/09 os dois viraram a mesma caminhada: o curador anda o recorte, cadastra o lugar,
+   **mede o raio de pé na porta** (itens 57 e 58) e **testa o "Tô aqui" lá dentro** — que é a
+   única coisa capaz de dizer se a feature de presença funciona ou se ela recusa quem está mesmo
+   lá. Fazer em duas viagens seria andar o bairro duas vezes.
 2. **R7 — deploy.** O app só existe nesta máquina, e um dia inteiro já dependeu de túnel — três
    quedas e quatro URLs. Precisa de contas suas. O detalhe que decide o provedor é o **PostGIS**,
    que nem todo Postgres gerenciado entrega. Destrava também o item 45 (foto), parado à espera de
@@ -91,8 +98,30 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
 - [ ] R7. **Deploy** (item 12). Backend + Postgres gerenciado **com PostGIS** (essa extensão é o
       detalhe que costuma dar trabalho — nem todo provedor entrega), frontend na Vercel,
       `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.
-- [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Resolve de uma vez a ressalva
-      de altura das duas camadas na home, pendente desde o começo (item F19).
+- [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Cresceu muito em 02/09: era
+      só a ressalva de altura, e virou o único juiz da feature de presença. **Cinco perguntas, e a
+      segunda é a que decide se a feature presta:**
+      1. **Altura das duas camadas na home** (item F19) — a pergunta original, pendente desde o
+         começo: o mini-mapa cabe sem scroll num telefone real (~650px úteis) ou fica abaixo da
+         dobra? Se não couber, encolher o mapa; **não** virar abas, porque a convivência vertical
+         é a tese da tela.
+      2. **"Tô aqui" aceita quem está mesmo lá?** O modo de falha que a suíte não consegue
+         reproduzir: coordenada de teste não é GPS, e o erro real piora justamente **dentro** do
+         bar, entre prédios altos — 50 a 200 m, segundo o ADR-009. Punir o honesto é a pior falha
+         possível desta feature, e só este teste a revela. Entrar no bar, tocar, ver o que
+         acontece.
+      3. **Calibrar o padrão de 150 m** (`presenca_raio_padrao_metros`). É chute de escritório, e
+         o precedente do item 39 é forte: o limiar da busca por bairro nasceu de 1500 m e caiu
+         para 700 m no primeiro teste em aparelho real, no mesmo dia.
+      4. **Medir o raio de cada casa curada** e gravar pelo painel (itens 57 e 58). Isto **é** o
+         R3: quem está na calçada curando o lugar é quem mede. Fazer as duas coisas em viagens
+         diferentes seria andar o bairro duas vezes.
+      5. **Confirmar que o GPS existe pelo túnel.** `navigator.geolocation` **não existe** fora de
+         contexto seguro — em HTTP de rede local a feature inteira cai em "sem-suporte". Precisa
+         do túnel HTTPS do `frontend/CLAUDE.md`, incluindo o segundo túnel (o da API), senão
+         sinalizar nem sai do telefone.
+      **Faça junto com o R3, na mesma noite.** Depois de 02/09 são a mesma caminhada: o curador
+      anda o recorte, cadastra o lugar, mede o raio de pé na porta e testa o "Tô aqui" lá dentro.
 - [ ] R9. **Vincular uma casa já curada ao dono dela** (item 3). **Decisão fechada em 29/08 (ADR-010);
       falta escrever o script — ninguém está nele agora.**
       O enunciado mudou: não existe "cadastrar estabelecimento". `Estabelecimento` não é a casa (não
