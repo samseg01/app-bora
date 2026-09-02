@@ -21,8 +21,12 @@ desconhecido de hoje) é o filtro de escopo do produto inteiro.
 bora-roles/                          # repositório git único na raiz (backend + frontend + docs)
 ├── CLAUDE.md, TODO.md               # este arquivo — visão geral do monorepo
 ├── docs/
-│   ├── conceito.md                  # tese de produto, motores de incentivo, monetização (118 linhas)
+│   ├── conceito.md                  # tese de produto, motores de incentivo, monetização (135 linhas)
 │   ├── arquitetura-backend-frontend.md  # arquitetura acordada (schema, stack, sequenciamento)
+│   ├── plano-frontend.md            # as 8 telas hi-fi cruzadas com a API real
+│   ├── plano-conexoes.md            # check-in social e a colisão com a promessa de anonimato
+│   ├── front-end-ideias/desktop/    # 5 artboards da partição de tela grande
+│   ├── front-end-ideias/conexoes/   # design da aba de Conexões (sem backend ainda)
 │   └── front-end-ideias/seguir-ideia-da-documenta-o/
 │       ├── README.md                # handoff do Claude Design: "recriar pixel-perfect, não copiar
 │       │                            # a estrutura interna do HTML"; manda ler o wireframe primeiro,
@@ -40,10 +44,16 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   └── preview-tela.jsx             # mockup React solto, 282 linhas (rail de descoberta + mapa),
 │                                     # ANTERIOR ao bundle de design acima; ver nota de escopo abaixo
 ├── backend/                         # FastAPI + Postgres/PostGIS — esqueleto completo e testado
-│   ├── CLAUDE.md, TODO.md           # fonte da verdade pro backend — ler antes de mexer aqui
-│   └── docs/adr/0001..0007-*.md     # decisões de design do backend, uma por arquivo
-└── frontend/                        # Next 16 + React 19 + Tailwind v4 — Home implementada
-    ├── CLAUDE.md, TODO.md           # convenções, partição, contratos da API, progresso
+│   ├── CLAUDE.md                    # fonte da verdade pro backend — ler antes de mexer aqui
+│   ├── TODO.md                      # só o registro do esqueleto inicial; as tasks vivas do
+│   │                                # backend estão no TODO.md da raiz
+│   ├── alembic/versions/0001..0007  # migrations, escritas à mão (ver tabela de status)
+│   ├── seed/                        # exemplo-ficticio.json (dev) + republica.json (campo)
+│   └── docs/adr/0001..0010-*.md     # decisões de design do backend, uma por arquivo
+└── frontend/                        # Next 16 + React 19 + Tailwind v4 — 14 rotas no ar
+    ├── CLAUDE.md                    # convenções, partição, contratos da API
+    │                                # (não há frontend/TODO.md: unificado na raiz em 28/08)
+    ├── docs/adr/0001-pwa-agora-nativo-depois.md
     └── src/
         ├── app/                     # layout, tokens, page.tsx (busca uma vez, alimenta as duas)
         ├── components/              # viewport.tsx (o corte) + ui/ compartilhado
@@ -91,8 +101,8 @@ de assumir que funciona como desenhado.
 
 | Camada | Tecnologia | Status |
 |---|---|---|
-| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, 42 testes |
-| Frontend | Next 16 + React 19 + Tailwind v4 + PWA instalável (manifest, ícones, service worker) | ✅ |
+| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, **49 testes** |
+| Frontend | Next 16.3.3 + React 19.2.8 + Tailwind v4 + MapLibre GL 5 (CARTO dark-matter, sem chave) + PWA instalável (manifest, ícones, service worker) | ✅ 14 rotas |
 | Infra | Docker Compose local (api + postgres/postgis); produção planejada: Railway/Fly.io/Render (backend) + Vercel (Next.js) | ⚠️ só local, nada de produção configurado |
 
 ## Modelo de dados (resumo — schema completo em `backend/src/boraroles/db/models.py`)
@@ -105,18 +115,26 @@ curador/dono_estabelecimento), `Estabelecimento` (plano: organico/destacado), `L
 (presenca/fila/lotado — o sinal de frescor), `Salvo` (curtir reenquadrado como "salvar pra si"),
 `Comentario`.
 
+`Lugar` cresceu bastante desde a migration inicial e hoje carrega a ficha inteira: `endereco`
+(0003), `descricao`/`instagram`/`preco_longneck`/`preco_visto_em` (0004), `programacao` (0005),
+`horarios` — JSONB de faixas dia+hora, o que destravou "aberta agora" (0006) — e `tags` (0007).
+`horario_funcionamento` (texto livre) sobrevive como legado que o 0006 substituiu; ver item 46.
+
 ## Superfície da API (backend, tudo sob `/api/v1`)
 
-26 rotas, todas implementadas e cobertas por teste:
+27 rotas, todas implementadas e cobertas por teste:
 
 | Grupo | Rotas |
 |---|---|
-| Auth | `POST /auth/signup`, `POST /auth/login` |
+| Auth | `POST /auth/signup`, `POST /auth/login`, `GET /auth/me` |
 | Descoberta | `GET /descoberta`, `GET /roles/{id}` |
 | Mapa | `GET /mapa`, `GET /lugares/{id}`, `GET /lugares/proximos` |
-| Contribuição | `POST/GET /salvos`, `DELETE /salvos/{lugar_id}`, `POST /sinalizacoes`, `POST /comentarios` |
-| Curador (papel=curador) | CRUD completo de `/curador/lugares` e `/curador/roles` |
-| Estabelecimento (dono) | `GET /{id}/lugares`, `GET /{id}/engajamento` — só leitura |
+| Contribuição | `POST/GET /salvos`, `DELETE /salvos/{lugar_id}`, `POST /sinalizacoes`, `GET /sinalizacoes/minhas`, `DELETE /sinalizacoes/{id}`, `POST /comentarios` |
+| Curador (papel=curador) | CRUD completo de `/curador/lugares` (5) e `/curador/roles` (4) |
+| Estabelecimento (dono) | `GET /meus`, `GET /{id}/lugares`, `GET /{id}/engajamento` — só leitura |
+
+`GET /sinalizacoes/minhas` é o que faz o "Tá marcado" sobreviver a sair da tela e voltar; sem ele
+o botão esquecia o próprio estado a cada navegação.
 
 Mais `GET /health` fora do prefixo versionado.
 
@@ -124,21 +142,21 @@ Mais `GET /health` fora do prefixo versionado.
 
 | Área | Status | Nota |
 |---|---|---|
-| Backend: modelo de dados + migration inicial | ✅ | `backend/alembic/versions/0001_initial_schema.py`, escrita à mão |
+| Backend: modelo de dados + 7 migrations | ✅ | todas escritas à mão, `0001_initial_schema` a `0007_lugar_tags` |
 | Backend: auth (signup/login/me JWT) | ✅ | ADR-0003; `GET /auth/me` adicionado junto com o login do frontend |
 | Backend: API de leitura (`/descoberta`, `/mapa`) | ✅ | curatorial, sem ranking algorítmico (decisão registrada) |
 | Backend: API de contribuição (salvar, sinalizar, comentar, cancelar sinal) | ✅ | sinalização restrita (ADR-0006); `DELETE /sinalizacoes/{id}` adicionado |
-| Backend: painel do curador (CRUD lugar/role) | ✅ | API pronta; UI não existe |
+| Backend: painel do curador (CRUD lugar/role) | ✅ | API e UI prontas, ligadas ao backend com token |
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | inclui `GET /estabelecimento/meus`, que diz ao cliente qual casa é dele |
 | Frontend: painel do estabelecimento (`/estabelecimento`) | ✅ | terceira superfície do produto; sem design prévio — não havia no hi-fi |
 | Backend: serviço de frescor | ✅ | ADR-0001; conta **pessoas distintas**, não linhas (ver issues) |
-| Backend: testes (42, contra Postgres/PostGIS real) + ruff/mypy | ✅ | exige Docker rodando; ver "Como rodar" |
+| Backend: testes (49, contra Postgres/PostGIS real) + ruff/mypy | ✅ | **verificado em 31/08: 49 passam, ruff e mypy limpos**; exige Docker — ver "Como rodar" |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: vínculo de `Estabelecimento` | ⚠️ | decidido (ADR-010: curador vincula, sem endpoint isolado); falta o script — hoje só direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + seção Frontend do `TODO.md` |
 | Frontend — scaffold, sistema visual e camada de dados | ✅ | Next 16.3.3 + React 19 + Tailwind v4; `npm run build` e `lint` limpos |
 | Frontend — partição mobile/desktop | ✅ | mesmo app e mesmas URLs, composições separadas cortadas por CSS em `lg` |
-| Frontend — todas as telas do hi-fi menos o `2b` | ✅ | 10 rotas, cada uma nas duas visualizações |
+| Frontend — todas as telas do hi-fi menos o `2b` | ✅ | **14 rotas**, cada uma nas duas visualizações; `npm run build` e `lint` limpos em 31/08 |
 | Frontend — painel do curador | ✅ | lista real, publica rolê e cadastra lugar — substitui a planilha |
 | Frontend — salvar lugar | ✅ | coração no detalhe do rolê, com 409 tratado como sucesso |
 | Frontend — sair da conta | ✅ | no perfil; JWT é sem estado, então sair é apagar o token local |
@@ -149,11 +167,13 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — indicar um lugar | ✅ | link para WhatsApp/email do curador, sem backend por decisão |
 | Frontend — onboarding de gostos (`2b`) | ❌ | segue sem uso funcional por decisão; o `2e` foi feito |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
-| Frontend — ficha do lugar (`/lugar/[id]`) | ✅ | foto, descrição, programação, preço datado, Instagram |
+| Frontend — ficha do lugar (`/lugar/[id]`) | ✅ | foto, descrição, programação, preço datado, Instagram, tags |
+| Frontend — tags do lugar | ✅ | migration 0007; vocabulário em `lib/tags.ts`, editor no painel do curador |
 | Backend — funcionamento estruturado (`Lugar.horarios`) | ✅ | faixas dia+hora; destrava "aberta agora" |
 | Frontend — busca de bairro por localização | ✅ | `GET /lugares/proximos`; primeira consulta espacial do projeto |
 | Frontend — PWA instalável (manifest, ícones, service worker) | ✅ | o SW cacheia a casca, nunca o dado |
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
+| Curadoria de campo no piloto | ⚠️ | **2 de 10–15 lugares** no banco (Bar do China, Tokyo); o resto é o R3, e é o gargalo |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
 | Deploy de produção | ❌ | só `docker compose` local hoje |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
@@ -167,9 +187,15 @@ Mais `GET /health` fora do prefixo versionado.
   `http://localhost:8000`, `/health` responde. O entrypoint roda `alembic upgrade head` antes do
   uvicorn. Testes: `docker compose exec api uv run pytest` (ou `uv run pytest` com o Postgres do compose
   no ar — os testes batem em Postgres+PostGIS real, sem mock).
-- **Atenção:** o daemon do Docker Desktop precisa estar ligado. Na última verificação ele estava
-  parado, então nada do backend (incluindo os 42 testes) podia ser executado sem subir o Docker
-  antes.
+- **Atenção:** o daemon do Docker Desktop precisa estar ligado. Sem ele, nada do backend
+  (incluindo os 49 testes) roda. Em 31/08 estava no ar e a suíte inteira foi executada.
+- **Gotcha do `docker compose exec api`: o código é assado na imagem, não montado.** O serviço
+  `api` do `docker-compose.yml` não tem bind mount — só o Postgres tem volume. Então
+  `docker compose exec api uv run pytest` testa **o código de quando a imagem foi construída**,
+  não a árvore de trabalho: em 31/08 o container estava de pé havia 22 horas e rodou a suíte
+  contra código velho, alegremente verde. Depois de qualquer edição em `backend/`, rode
+  `docker compose up -d --build api` antes de confiar no resultado. É o tipo de erro que não
+  aparece: os testes passam, só que não são os seus.
 - **Frontend:** `cd frontend && npm run dev` → `http://localhost:3000`.
 - **Atenção nos testes:** a suíte roda contra o **mesmo banco** do desenvolvimento, e os
   fixtures usam e-mails fixos (`dono@exemplo.com` e afins). Uma conta de teste criada à mão
@@ -217,32 +243,44 @@ contradisserem, o ADR ganha.
 - **Sem fluxo de vínculo de `Estabelecimento`** — a decisão saiu (ADR-010: o curador vincula em
   campo, num ato só; o dono cria a própria conta), falta o script. `Estabelecimento` não é a casa:
   é a conta comercial do dono, e a casa já entra como `Lugar`. Ver `backend/CLAUDE.md`.
-- **Nenhuma curadoria de campo feita ainda** — o bairro está escolhido (República), mas nenhum
-  lugar foi visitado. `backend/seed/republica.json` está esperando; enquanto isso o app só tem
-  dado fictício de Vila Madalena, que é fictício de propósito para não ser confundido com real.
-- **Faltam onboarding, login e a confirmação de sinal (`2e`)** no frontend. Seguir o hi-fi
-  (`Rolês - Telas hi-fi.dc.html`), não o wireframe, apesar de o `README.md` do bundle mandar ler o
-  wireframe primeiro: o hi-fi é posterior e já resolve as variantes que o wireframe deixou
-  abertas. Cruzamento tela-a-tela com a API em `docs/plano-frontend.md`; progresso em
-  a seção Frontend do `TODO.md`.
-- **O painel do curador é a superfície desktop-native do produto** — decisão tomada e desenhada.
-  A tela existe nas duas visualizações, mas **não está ligada ao backend**: o CRUD de
-  `/curador/*` exige token e papel `curador`, e o login ainda não existe no frontend. A nav dele
-  aponta para `/curador/lugares` e `/curador/roles`, que ainda dão 404.
-- **Telas com dado de exemplo, não real** — `/salvos`, `/perfil` e `/curador` dependem de
-  autenticação e hoje rodam de `frontend/src/lib/fixtures.ts`. `/`, `/mapa` e `/role/[id]` usam a
-  API pública de verdade, caindo em exemplo só quando o backend está fora do ar em dev.
-- **O design ainda pede coisas que o schema não tem**: preço/couvert e horário de funcionamento.
-  `Role.descricao` (migration 0002) e `Lugar.endereco` (0003) já existem. Ver a tabela de
-  mudanças recomendadas em `docs/plano-frontend.md`.
-- **Três contradições design ↔ backend ainda sem decisão**: o CTA "Tô indo" do detalhe dá 403 pro
-  usuário comum (ADR-0006); a home mostra nome de quem sinalizou enquanto o detalhe promete
-  anonimato; e não há tela de login/cadastro no design, embora salvar/sinalizar/comentar exijam
-  token. Detalhadas em `docs/plano-frontend.md`.
-- **Nenhum estado vazio foi desenhado** — as 8 telas hi-fi pressupõem a Vila Madalena cheia. Com o
-  banco vazio (situação de hoje) não há design pra seguir.
-- **Não há seed de desenvolvimento no backend** — popular dados exige criar usuário, promover a
-  curador via `scripts/promote_role.py` e cadastrar lugares/rolês na mão pelo painel do curador.
+- **A curadoria de campo mal começou: 2 lugares de 10–15.** O banco tem Bar do China e Tokyo em
+  República, mais 5 lugares fictícios de Vila Madalena — fictícios de propósito, para não serem
+  confundidos com real. `backend/seed/republica.json` ainda tem só o Bar do China, e sem bairro
+  nem coordenada: quem entrou no banco entrou pelo painel do curador, não pelo seed. **Os dois
+  estão fora de sincronia**, e o seed é que está atrás. É o R3, e segue sendo o gargalo.
+- **Do hi-fi, só o `2b` (onboarding de gostos) não foi construído** — e por decisão, não por
+  falta de tempo: chips de gosto sem uso funcional não filtram nada hoje. Onboarding de bairro
+  (`2a`), login/cadastro e a confirmação de sinal (`2e`) estão no ar desde 29/08. Ao construir
+  tela nova, seguir o hi-fi (`Rolês - Telas hi-fi.dc.html`), não o wireframe, apesar de o
+  `README.md` do bundle mandar ler o wireframe primeiro: o hi-fi é posterior e já resolve as
+  variantes que o wireframe deixou abertas. Cruzamento tela-a-tela com a API em
+  `docs/plano-frontend.md`; progresso na seção Frontend do `TODO.md`.
+- **O painel do curador é a superfície desktop-native do produto** — decisão tomada, desenhada e
+  **ligada ao backend** desde que o login existe: publica rolê, cadastra e corrige lugar com token
+  e papel `curador`. A nav tem duas rotas, `/curador` e `/curador/lugares`, e as duas existem —
+  não há página `/curador/roles` (esse caminho é só chamada de API em `lib/api.ts`).
+- **`fixtures.ts` é fallback de desenvolvimento, e só isso** — desde o R6, `/salvos`, `/perfil`,
+  `/curador` e `/conexoes` mostram "precisa entrar" em build de produção; as fixtures só aparecem
+  em dev. `/`, `/mapa`, `/role/[id]` e `/lugar/[id]` usam a API pública de verdade, caindo em
+  exemplo só com o backend fora do ar em dev. Verificado contra o build de produção: zero
+  vazamento de exemplo.
+- **O schema alcançou o design.** O que faltava foi entrando: `Role.descricao` (0002),
+  `Lugar.endereco` (0003), preço datado + descrição + Instagram (0004), `programacao` (0005),
+  `horarios` estruturados (0006) e `tags` (0007). O que o design ainda pede e não existe é
+  **foto de verdade** — `Lugar.fotos` guarda URL, mas não há armazenamento de arquivo em lugar
+  nenhum do projeto (item 45, travado no R7).
+- **As três contradições design ↔ backend foram decididas e implementadas** (item 4a do
+  `TODO.md`): (i) o CTA "Tô indo" fica desabilitado com o motivo dito em voz alta, em vez de dar
+  403 mudo (`components/ui/acao-sinalizar.tsx`); (ii) o card social cita comentário, não
+  sinalização, então o anonimato do sinal não é quebrado na home; (iii) a auth é preguiçosa —
+  entra-se quando a ação exige, não na porta. O enunciado original segue em
+  `docs/plano-frontend.md`, que **não foi reescrito** e ainda descreve o estado antigo.
+- **Nenhum estado vazio foi desenhado** — as 8 telas hi-fi pressupõem a Vila Madalena cheia. Com
+  República tendo 2 lugares e poucos rolês, é exatamente o estado que a demo do R10 vai mostrar,
+  e não há design pra seguir.
+- **O seed existe (`scripts/seed.py`, idempotente por nome) mas nunca foi a via principal** — os
+  lugares de República entraram pelo painel do curador, e `seed/republica.json` ficou para trás.
+  Promover alguém a curador segue manual, por `scripts/promote_role.py` (ADR-0007).
 - **Comentário aceita dois alvos e só um era lido.** `Comentario` guarda `lugar_id` ou
   `role_id`; a tela 2e grava com `role_id`, e as leituras filtravam só por `lugar_id` — o
   comentário existia no banco e nenhuma tela o mostrava. Corrigido com
@@ -271,13 +309,22 @@ contradisserem, o ADR ganha.
   `.value` e quebra em runtime, não em teste de schema.
 - **`jwt_secret` tem default fraco em `config.py`** (`"change-me-to-a-long-random-string"`) — ok
   em dev, mas precisa vir do ambiente antes de qualquer deploy.
+- **O vocabulário de `categoria` não é imposto por nada.** A coluna é `String(60)` livre, e o
+  banco já mostra a deriva: `"forró"` (Bar do China, que é gênero musical, não categoria) e
+  `"Bar"` com maiúscula no Tokyo, contra `"bar"` minúsculo nos fictícios. A UI colore e filtra
+  por categoria, então divergência de caixa vira card sem cor. Item 48 do `TODO.md`.
+- **`docs/plano-frontend.md` e `docs/arquitetura-backend-frontend.md` estão datados.** Os dois
+  descrevem o projeto antes das telas de auth, do painel do estabelecimento e das migrations
+  0004–0007. Continuam valendo como registro do raciocínio e do cruzamento tela-a-tela; **não**
+  como retrato do estado atual. Em conflito, mandam este arquivo e os ADRs.
 
 ## Mapa de arquivos-chave
 
 - Tese de produto: `docs/conceito.md` (perguntas em aberto no fim do arquivo)
 - Arquitetura acordada (schema, stack, sequenciamento): `docs/arquitetura-backend-frontend.md`
 - **Plano do frontend** (as 8 telas hi-fi cruzadas com a API real, lacunas e ordem de
-  construção): `docs/plano-frontend.md` — ler antes de escrever qualquer código de frontend
+  construção): `docs/plano-frontend.md` — ler antes de escrever qualquer código de frontend,
+  lembrando que ele descreve o projeto de antes das telas de auth (ver issues)
 - **Plano da aba de Conexões** (check-in social, salvos dos amigos, e a colisão com a promessa de
   anonimato): `docs/plano-conexoes.md`; design em `docs/front-end-ideias/conexoes/`
 - Design de desktop das telas do app: `docs/front-end-ideias/desktop/`
@@ -290,3 +337,8 @@ contradisserem, o ADR ganha.
 - Backend — como rodar: `backend/README.md`
 - Schema real: `backend/src/boraroles/db/models.py`
 - Motor de frescor: `backend/src/boraroles/services/frescor.py` (+ `services/descoberta.py`)
+- ADRs do backend, os 3 mais recentes e ainda **propostos**: `0008` (a casa publica, o app
+  atribui), `0009` (sinal verificado por proximidade), `0010` (vínculo é ato de curadoria —
+  este **aceito**) em `backend/docs/adr/`
+- Vocabulário de tags e categorias do frontend: `frontend/src/lib/tags.ts` e `lib/categorias.ts`
+- Horários estruturados (leitura de `Lugar.horarios`, "aberta agora"): `frontend/src/lib/horarios.ts`

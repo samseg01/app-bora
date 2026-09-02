@@ -1,30 +1,36 @@
 # TODO — bora-roles (visão geral)
 
+> `- [ ]` backlog · `- [~]` fazendo · `- [!]` bloqueado · `- [x]` feito
+> Lido pelo app Kanban; o marcador é o que aparece na coluna.
+
 Tasks de escopo do monorepo (produto, decisões cross-cutting). Para tasks internas de cada parte,
-ver `backend/TODO.md` (esqueleto completo) e a seção **Frontend** deste arquivo (rotas no ar, faltam
-onboarding, login e a confirmação de sinal).
+ver `backend/TODO.md` (esqueleto completo) e a seção **Frontend** deste arquivo — das telas do
+hi-fi só falta o `2b` (onboarding de gostos), e por decisão.
 
 **Um arquivo só.** As tarefas do frontend viviam em `frontend/TODO.md` e foram trazidas para cá em
 28/08. Os itens de tela levam o prefixo **F** (`F17`, `F21`) porque a numeração colidia — existia
 "item 15" nos dois arquivos, querendo dizer coisas diferentes. Itens sem prefixo são de produto,
 backend ou infra; `P`, `C`, `S` e `X` são partição, curador, sugestão e conexões.
 
-## Por onde começar (revisto em 28/08, fim do dia)
+## Por onde começar (revisto em 31/08)
 
-1. **R3 — curadoria a pé.** É seu, e é o gargalo. Dois lugares em República hoje (Bar do China e
-   Tokyo); a meta são 10 a 15. Nada que se construa substitui isso.
-2. **R7 — deploy.** É o que mais dói agora: o app só existe nesta máquina, e o dia inteiro dependeu
-   de túnel — três quedas e quatro URLs diferentes. Precisa de contas suas. O detalhe que decide o
-   provedor é o **PostGIS**, que nem todo Postgres gerenciado entrega.
-3. **Decidir o R9** — como um estabelecimento é cadastrado. Vira urgente no minuto em que uma
-   conversa der certo, e decidir sob pressão é pior.
-4. **Item 17 — expor `sinais_recentes`.** O hi-fi desenhou "6 sinalizaram nas últimas 2h" e a
-   contagem já é calculada; falta devolver. É o que torna o "Tô indo" do curador visível para quem
-   lê — e responde a "para que serve esse botão".
-5. **Item 31 — frescor do lugar no `/mapa`.** A ficha já mostra; o mapa não. Com República tendo
-   poucos rolês e vários lugares, é o que faz o mapa não parecer apagado.
+Os pontos 4 e 5 da revisão de 28/08 (itens 17 e 31) foram feitos em 29/08, e o R9 foi decidido
+em 29/08 pelo ADR-010. Sobrou o que não é código — e é justamente o que trava:
 
-Depois disso, o bloco de decisões 40–44, que só se resolvem juntas.
+1. **R3 — curadoria a pé.** É seu, e é o gargalo. **Dois lugares em República** hoje (Bar do
+   China e Tokyo); a meta são 10 a 15. Nada que se construa substitui isso, e o app já está
+   pronto o bastante para que construir mais seja fuga.
+2. **R7 — deploy.** O app só existe nesta máquina, e um dia inteiro já dependeu de túnel — três
+   quedas e quatro URLs. Precisa de contas suas. O detalhe que decide o provedor é o **PostGIS**,
+   que nem todo Postgres gerenciado entrega. Destrava também o item 45 (foto), parado à espera de
+   onde os arquivos vão morar.
+3. **R9 — escrever o script do vínculo.** A decisão está fechada (ADR-010: o curador vincula em
+   campo, num ato transacional); hoje o vínculo do Bar do China foi feito **direto no banco**.
+   Vira urgente no minuto em que a conversa do R10 der certo.
+4. **Item 48 — categoria dos dois lugares reais.** Dez minutos de painel, e é o que faz a demo do
+   R10 não abrir com card sem cor.
+
+Depois disso, o bloco de decisões 40–43, que só se resolvem juntas (o 44 saiu em 29/08).
 
 ## Roteiro até a primeira conversa com um estabelecimento
 
@@ -87,7 +93,8 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.
 - [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Resolve de uma vez a ressalva
       de altura das duas camadas na home, pendente desde o começo (item F19).
-- [~] R9. **Vincular uma casa já curada ao dono dela** (item 3). **Decidido em 29/08 — ADR-010.**
+- [ ] R9. **Vincular uma casa já curada ao dono dela** (item 3). **Decisão fechada em 29/08 (ADR-010);
+      falta escrever o script — ninguém está nele agora.**
       O enunciado mudou: não existe "cadastrar estabelecimento". `Estabelecimento` não é a casa (não
       tem geografia, bairro nem endereço) — é a **conta comercial do dono**, e a casa já entra no app
       como `Lugar`, no R3. O que falta é o vínculo.
@@ -224,9 +231,11 @@ na interface — justamente o degrau de baixo da escada do `conceito.md`.
       Conferido que `.env` real, `node_modules`, `.next` e os canvas gerados ficaram de fora.
 - [x] 1b. **Criar o remote e dar push.** Feito — ver R2.
 - [x] 2. **Bairro piloto: Anhangabaú.** Pergunta 1 de `docs/conceito.md`, respondida. Ver R1.
-- [~] 3. **Decidido em 29/08 — ADR-010: quem vincula é o curador, em campo.** O autocadastro do dono
+- [x] 3. **Decidido em 29/08 — ADR-010: quem vincula é o curador, em campo.** O autocadastro do dono
       foi rejeitado, e não por contrariar o ADR-0007: por não ter saída boa (órfão, ou lugar sem
-      visita). Falta só implementar o script. Detalhes no R9, que é o mesmo item. Enunciado original:
+      visita). Este item era a **decisão**, e ela saiu; a implementação do script é o **R9**, e o
+      card dela é o R9 — estavam os dois em "Fazendo" dizendo a mesma coisa duas vezes.
+      Enunciado original:
       Decisão de produto: curador cadastra em campo? Dono faz onboarding self-service (contraria
       ADR-0007 de promoção manual de papel, então provavelmente não)? Definir antes de implementar a
       rota.
@@ -332,7 +341,7 @@ Nenhuma bloqueia a fase 1 do frontend. Ordem por custo/benefício, detalhada em
        vem como 0 e a tela esconde o bloco: "0 sinalizaram" é pior que silêncio.
 - [x] 18. **`GET /auth/me`** — nome e data de cadastro pro perfil (`2h`). O papel não precisa dele:
        já viaja dentro do JWT e o front decodifica client-side pra decidir o gating de UI.
-- [~] 19. **`lugar_id`, `lat`, `lng` em `RoleDescoberta`** — `lugar_id` feito em 28/08: sem ele o
+- [ ] 19. **`lat`/`lng` em `RoleDescoberta`** (o `lugar_id` saiu) — `lugar_id` feito em 28/08: sem ele o
        botão Salvar da home ficava `disabled` por falta de dado (parecia regra de produto e era
        lacuna de schema). `lat`/`lng` continuam de fora — só entram junto com a distância "a pé",
        que precisa de geolocalização e ainda não tem tela.
@@ -377,7 +386,7 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        decidindo se saía, a noite inteira estava invisível. Agora `services/descoberta._dia_local`
        calcula o dia em `settings.fuso_local` e converte para UTC; o banco segue todo em UTC.
 
-- [~] 35. **Não há autocadastro de estabelecimento — e, desde o ADR-010, não vai haver.** Com o
+- [x] 35. **Não há autocadastro de estabelecimento — e, desde o ADR-010, não vai haver.** Com o
        painel do dono no ar, a lacuna do R9 deixou de ser abstrata: uma conta de dono sem casa
        vinculada cai num recado explicando que o vínculo é manual. Isso é honesto e sustentável
        enquanto forem poucas casas visitadas a pé — vira gargalo no dia em que não for.
@@ -426,7 +435,9 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        **O que reabre isto:** o curador reclamar de republicar o mesmo rolê toda semana (aí a
        saída é um toque de confirmação no painel, não automação), ou o ADR-008 ser aceito e o dono
        passar a preencher a programação — nesse caso quem afirma é a casa, e a pergunta muda.
-- [~] 45. **Foto do lugar, tirada pelo curador em campo.** A ficha já **exibe** a foto em primeiro
+- [!] 45. **Foto do lugar, tirada pelo curador em campo. Bloqueado: destrava com o R7** — o deploy
+       é que decide onde os arquivos moram, e falta conta e chave de armazenamento de objeto
+       (S3/R2). A ficha já **exibe** a foto em primeiro
        plano (`views/lugar-ficha.tsx`, lendo `fotos[0]`), e o formulário de correção aceita a URL.
        Sem foto, cai no bloco de cor do design — que não é provisório, é a escolha visual do
        hi-fi. Falta o **upload**, e é aí que o impedimento continua de pé. Enunciado original: Decidido em 28/08 que a origem é a foto
@@ -454,9 +465,15 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        **O que isso resolve, concretamente:** o Bar do China está no banco com `categoria = "forró"`,
        que nem existe no vocabulário fechado. Não era descuido — era falta de onde pôr "tem forró".
        Ver item 48.
-- [ ] 48. **Corrigir a categoria do Bar do China.** Está `"forró"`, fora do vocabulário fechado de
-       `lib/categorias.ts`. Com o item 47 no ar, o certo é `categoria = "Boteco"` (ou "Bar", decidir
-       no R3 vendo a casa) e `Forró` como **tag**. Um registro só, corrigível pelo próprio painel.
+- [ ] 48. **Acertar `categoria` nos dois lugares reais — são dois registros, não um.** Auditoria
+       do banco em 31/08: o **Bar do China** está `"forró"`, fora do vocabulário fechado de
+       `lib/categorias.ts` (é gênero musical, não categoria); com o item 47 no ar, o certo é
+       `categoria = "Boteco"` (ou "Bar", decidir no R3 vendo a casa) e `Forró` como **tag**. O
+       **Tokyo** está `"Bar"` com maiúscula, contra `"bar"` minúsculo nos fictícios — a UI colore
+       e filtra por categoria, então divergência de caixa vira card sem cor.
+       O fundo do problema: `Lugar.categoria` é `String(60)` livre no schema, e nada impõe o
+       vocabulário do lado do servidor. Corrigir os dois registros pelo painel é o gesto de agora;
+       decidir se a coluna vira enum é o item que fica.
 - [ ] 46. **Dropar `Lugar.horario_funcionamento`.** A migration 0006 adicionou `horarios`
        (estruturado) e **não** removeu o texto livre, de propósito: havia um registro real
        preenchido em campo ("segunda a sexta - 12:00 às 01:00", no Bar do China) e dropar junto
@@ -807,9 +824,10 @@ segue o hi-fi.
 
 - [x] F32. **Descrição do rolê no `2d`** — feito, nas duas visualizações. Era
       o "motivo pra ir", a peça que mais falta para o `2d` cumprir a tese do produto.
-- [~] F33. **Endereço do lugar: feito** (migration 0003; aparece no `2d` nas duas visualizações).
-      **Card do curador ("VALIDOU EM CAMPO"): não.** Falta decidir o que ele afirma — assinar
-      com nome do curador é promessa de responsabilidade que ninguém combinou ainda.
+- [ ] F33. **Card do curador no `2d` ("VALIDOU EM CAMPO")** — falta decidir o que ele afirma:
+      assinar com nome do curador é promessa de responsabilidade que ninguém combinou ainda.
+      A outra metade deste item, o **endereço do lugar, está feita** (migration 0003; aparece no
+      `2d` nas duas visualizações) — o card ficava em "Fazendo" por causa dela.
 - [x] F34. **"N sinalizaram nas últimas 2h" no `2d`** — feito junto com o item 17, nas duas
       visualizações. Só aparece quando há alguém: zero fica escondido.
 - [ ] F35. Distância "a pé" com geolocalização do browser, quando `RoleDescoberta` trouxer
@@ -838,6 +856,26 @@ segue o hi-fi.
 - [ ] 14. **Definir CI** (rodar `ruff check .`, `mypy src`, `pytest` do backend automaticamente) —
        hoje esses comandos só rodam manualmente, e dependem de um Postgres+PostGIS no ar. Depende da
        task 1 (sem commit não há o que rodar CI em cima).
+       Ganhou um motivo novo em 31/08: ver o item 49, em que a suíte passou verde contra código
+       que não era o do disco. CI que constrói do zero não tem como cair nisso.
+- [ ] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
+       31/08: só o Postgres tem volume; `api` não tem bind mount. Então
+       `docker compose exec api uv run pytest` roda **o código de quando a imagem foi construída**.
+       O container estava de pé havia 22 horas e a suíte passou verde contra a árvore velha, sem
+       nenhum sinal de que não era o código do disco. Hoje o contorno é
+       `docker compose up -d --build api` depois de qualquer edição em `backend/`, e está anotado
+       no `CLAUDE.md`. A correção é montar `./src` e `./tests` no serviço `api` em
+       desenvolvimento — o que também deixa o reload do uvicorn útil.
+       **Cuidado ao fazer:** a imagem instala o pacote (`uv run` resolve `boraroles` do venv do
+       container); montar por cima sem checar o modo de instalação pode dar import de metade
+       velha e metade nova, que é pior que o problema.
+- [ ] 50. **`seed/republica.json` e o banco divergiram.** O arquivo tem só o Bar do China, sem
+       bairro nem coordenada; o banco tem Bar do China **e** Tokyo, com geo, cadastrados pelo
+       painel do curador. O seed é a memória versionada da curadoria — enquanto o dado real só
+       viver no Postgres local, uma máquina nova (ou o deploy do R7) nasce sem o piloto.
+       Decidir qual é a fonte da verdade: ou o painel exporta para o JSON, ou o JSON deixa de
+       fingir que é o registro e vira só exemplo. Fica mais barato decidir antes do R3 despejar
+       10 lugares no banco.
 
 ## Fora de escopo por enquanto (decisão registrada, não esquecida)
 
