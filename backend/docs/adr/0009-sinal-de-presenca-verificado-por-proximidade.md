@@ -2,8 +2,14 @@
 
 ## Status
 
-**Proposto** (28/08/2026). Não implementado. Decide-se junto com os itens 40 e 41 do `TODO.md`, que
-são a mesma pergunta vista de outros lados.
+**Aceito** em 01/09/2026, com duas emendas em relação ao texto proposto em 28/08 — ver
+"Emendas na aceitação", abaixo. **Ainda não implementado**: a feature é fase 2 (ver
+`../../../docs/plano-presenca.md`), e o que a aceitação muda hoje é que ela deixa de ser hipótese
+e passa a ser a premissa em que `plano-presenca.md` e `plano-chat-role.md` podem se apoiar.
+
+O que a aceitação destrava, e por isso ela vinha primeiro: os itens 40 e 41 do `TODO.md` são a
+mesma pergunta vista de outros lados, e as duas specs de fase 2 já estavam escritas assumindo
+esta decisão.
 
 ## Contexto
 
@@ -40,12 +46,59 @@ decisão, não detalhes:
 1. **A verificação é no servidor.** No cliente, basta não chamar.
 2. **A coordenada não é guardada.** Confere e descarta — mesma regra de `GET /lugares/proximos`, e
    a promessa de privacidade continua literal. Precisa estar dito na tela.
-3. **O raio é configuração** (como as janelas de frescor), começando em ~150 m e calibrado em campo
-   no R8. O limiar de "você está aqui" da busca por bairro nasceu de um chute de escritório de
-   1500 m e foi corrigido para 700 m no primeiro teste em aparelho real, no mesmo dia — este vai
-   precisar do mesmo tratamento.
+3. ~~**O raio é configuração**~~ — **substituído pela emenda 1 na aceitação.** O texto proposto
+   dizia: "o raio é configuração (como as janelas de frescor), começando em ~150 m e calibrado em
+   campo no R8". Continua valendo o alerta que o motivou: o limiar de "você está aqui" da busca
+   por bairro nasceu de um chute de escritório de 1500 m e foi corrigido para 700 m no primeiro
+   teste em aparelho real, no mesmo dia.
 4. **Sem permissão de localização, sem sinal.** Nada de "não consegui te localizar, marca assim
    mesmo": qualquer fallback reabre o buraco inteiro e o motor volta a não valer nada.
+
+## Emendas na aceitação (01/09/2026)
+
+### Emenda 1 — o raio é do rolê, não uma constante global
+
+**O raio é definido na criação do rolê, por quem cria.** Substitui a regra 3 proposta, que fazia
+dele uma configuração única do sistema (`~150 m` para tudo).
+
+O motivo é que o perímetro que significa "você está aqui" **não é uma propriedade do sistema, é
+uma propriedade física do rolê**. Um bar de esquina, um rooftop, um subsolo e uma festa de rua
+que ocupa dois quarteirões não cabem no mesmo círculo, e nenhum número global acerta os quatro.
+Um raio único erra nas duas direções ao mesmo tempo: apertado demais para a festa de rua, largo
+demais para separar dois bares vizinhos do Largo do Arouche.
+
+Quem cria o rolê é o curador, **que esteve lá** — é a única pessoa no fluxo que sabe o tamanho do
+lugar. Pedir esse número a ele é o mesmo princípio que já governa o resto do produto: a afirmação
+vem de quem foi em campo.
+
+Consequências, e nenhuma é de graça:
+
+- **Coluna nova em `Role`** (`raio_metros`), com migration. É a primeira consequência de schema de
+  qualquer decisão de fase 2 — está registrada como item no `TODO.md`.
+- **Campo novo no painel do curador**, no formulário de publicar rolê.
+- **Precisa de um padrão.** Obrigar o curador a decidir um raio em todo rolê é atrito num
+  formulário que já é longo. A leitura adotada: a coluna é *nullable* e o valor global vira o
+  **default** em vez da regra — quem não preencher cai nele. Isso preserva a calibração do R8,
+  que passa a calibrar o padrão, não o único valor.
+- **A calibração de campo continua obrigatória.** Um raio por rolê não conserta GPS ruim; só deixa
+  de fingir que todo lugar tem o mesmo tamanho.
+
+Uma pergunta que fica aberta de propósito: se o raio deveria nascer do `Lugar` (permanente, o
+tamanho da casa não muda entre uma quinta e um sábado) e o `Role` só sobrescrever quando for
+exceção — o que evitaria redigitar o mesmo número toda semana. Fica para a implementação, junto
+com o item 44, que já decidiu que programação semanal não gera rolê automático.
+
+### Emenda 2 — as duas ações são parte da decisão, não consequência dela
+
+"Tô indo" e "Tô aqui" **passam a ser duas ações distintas no produto**, e isso está aceito junto
+com o resto — não é um desdobramento a decidir depois:
+
+- **"Tô indo"** — a pessoa **não** está no rolê. Sem GPS, não alimenta o frescor, serve para
+  avisar quem te acompanha. É o motor social, fase 2.
+- **"Tô aqui"** — a pessoa está dentro do raio daquele rolê, verificado no servidor. É o que
+  alimenta o frescor.
+
+A tabela abaixo, que no texto proposto era ilustração da consequência, passa a ser normativa.
 
 ### A consequência que muda o produto
 

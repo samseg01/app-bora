@@ -307,10 +307,20 @@ mergear, em vez de deixar subentendido.
 - **Duas camadas na tela** (descoberta empurra no topo, mapa puxa embaixo) em vez de abrir no mapa
   — mapa é cruel com vazio e pressupõe intenção que quem "decide se sair" ainda não tem. Ver
   `docs/conceito.md`.
-- **O sinal de presença deve custar estar lá** (ADR-009 do backend, **proposto**). Hoje o botão
-  diz intenção ("Tô indo") e o dado grava presença, e as duas só coincidem para quem sinaliza de
-  dentro do lugar — origem da restrição do ADR-006. Verificar proximidade no servidor separa as
-  duas ações e é o caminho para o frescor sair do "com cautela" do `conceito.md`.
+- **O sinal de presença deve custar estar lá** (ADR-009, **aceito em 01/09**). O botão dizia
+  intenção ("Tô indo") e o dado gravava presença, e as duas só coincidiam para quem sinaliza de
+  dentro do lugar — origem da restrição do ADR-006. Decidido: sinalizar exige estar no raio,
+  verificado no servidor, com a coordenada conferida e descartada. **Duas emendas na aceitação:**
+  o raio é definido **na criação do rolê**, por quem esteve lá, em vez de constante global (um
+  número só erra nas duas direções — apertado para festa de rua, largo demais para separar bares
+  vizinhos); e **"Tô indo" e "Tô aqui" viram duas ações**, só a segunda alimentando o frescor.
+  Destrava o item 40 e resolve o 41. Implementação é fase 2.
+- **O anonimato tem escopo: público anônimo, chat identificado** (ADR-011, **aceito em 01/09**).
+  O item 23 fechou "sinal é anônimo, comentário é assinado"; o chat do rolê é uma terceira
+  categoria, porque a porta de entrada é a presença e lá dentro aparece o perfil. Decidido: em
+  público seguem só números, nunca nomes; **dentro do chat** você é identificado para quem está
+  lá, e sua presença **continua contando** na contagem pública. Como o chat morre com o rolê, a
+  identificação é efêmera. Obriga a reescrever o copy — ver item 59.
 - **PWA agora, nativo depois** — descoberta espontânea não pode ter fricção de "baixar da loja",
   e sem base instalada o link compartilhado *é* o canal de distribuição. Mas **nativo é o destino
   declarado**, não uma possibilidade remota: a decisão é de ordem, não de permanência. Gatilhos
@@ -441,8 +451,9 @@ contradisserem, o ADR ganha.
 - Backend — como rodar: `backend/README.md`
 - Schema real: `backend/src/boraroles/db/models.py`
 - Motor de frescor: `backend/src/boraroles/services/frescor.py` (+ `services/descoberta.py`)
-- ADRs do backend, os 3 mais recentes e ainda **propostos**: `0008` (a casa publica, o app
-  atribui), `0009` (sinal verificado por proximidade), `0010` (vínculo é ato de curadoria —
-  este **aceito**) em `backend/docs/adr/`
+- ADRs do backend em `backend/docs/adr/`. Os quatro mais recentes: `0008` (a casa publica, o app
+  atribui) segue **proposto**; `0009` (sinal verificado por proximidade), `0010` (vínculo é ato de
+  curadoria) e `0011` (o anonimato tem escopo) estão **aceitos** — o 0009 e o 0011 em 01/09, e as
+  emendas do 0009 estão no próprio ADR
 - Vocabulário de tags e categorias do frontend: `frontend/src/lib/tags.ts` e `lib/categorias.ts`
 - Horários estruturados (leitura de `Lugar.horarios`, "aberta agora"): `frontend/src/lib/horarios.ts`

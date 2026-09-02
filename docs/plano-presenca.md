@@ -14,7 +14,7 @@ O usuário sinaliza, com um toque, que está num lugar ou rolê. Esse gesto alim
 
 ## Regra — só sinaliza quem está no lugar
 
-Só é possível sinalizar presença se a pessoa estiver **fisicamente no local**, verificado por localização (geofence no perímetro do lugar). Autodeclaração por toque, sem checagem, fica descartada — deixaria qualquer um marcar presença de casa e envenenaria o dado de "quantos estão aqui agora", a prova social e a porta de entrada do chat.
+**Decidido em 01/09/2026 — ADR-009, aceito** (`backend/docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md`). Só é possível sinalizar presença se a pessoa estiver **fisicamente no local**, verificado por localização (geofence no perímetro do lugar). O **raio é definido na criação do rolê**, por quem cria — não é constante global. E "Tô indo" (de fora, sem GPS) e "Tô aqui" (no raio, verificado) são **duas ações distintas**, só a segunda alimentando o frescor. Autodeclaração por toque, sem checagem, fica descartada — deixaria qualquer um marcar presença de casa e envenenaria o dado de "quantos estão aqui agora", a prova social e a porta de entrada do chat.
 
 Consequências:
 - **Integridade do dado.** O "40 pessoas aqui agora" só vale se as 40 estiverem mesmo lá — a verificação é o que separa o número de um chute.

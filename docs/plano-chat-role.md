@@ -21,7 +21,7 @@ O chat pertence ao **rolê** (efêmero), não ao **lugar** (permanente). Cada ro
 - **Janela de vida.** O chat abre no horário de início do rolê e fecha no horário de fim. Fora dessa janela, não há conversa ativa.
 - **Porta de entrada.** Entra quem **confirmou presença** naquele rolê. Confirmar presença é a chave — é o "pedágio invisível" do princípio de incentivo da presença: a pessoa confirma presença pra entrar no chat, e o dado de presença cai de lado. *(A mecânica e os motores da presença estão em `plano-presenca.md`.)*
 - **Duração do acesso.** Confirmada a presença, o acesso vale até o fim do rolê, sem precisar reconfirmar.
-- **Identidade.** Participantes aparecem com o próprio perfil (não anônimo) — reduz abuso e dá contexto social.
+- **Identidade.** Participantes aparecem com o próprio perfil (não anônimo) — reduz abuso e dá contexto social. **Decidido em 01/09 — ADR-011:** isso vale **dentro** do chat e não vaza para fora dele. Em público o sinal segue anônimo (só números, nunca nomes), e a presença de quem entrou no chat **continua contando** na contagem pública. Como o chat morre com o rolê, a identificação é efêmera. Obriga reescrever o copy do anonimato — item 59 do `TODO.md`.
 - **Moderação.** Mesmo efêmero, precisa de denúncia e bloqueio. A trava de presença já filtra boa parte do spam: só entra quem está no rolê.
 
 ---
