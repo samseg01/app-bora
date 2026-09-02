@@ -1,7 +1,7 @@
 from httpx import AsyncClient
 
 from boraroles.db.models import PapelUsuario, Sinalizacao, TipoSinalizacao
-from tests.conftest import LugarFactory, RoleFactory, UsuarioFactory, auth_headers
+from tests.conftest import LugarFactory, RoleFactory, UsuarioFactory
 
 
 async def test_role_expoe_quantas_pessoas_sinalizaram(
