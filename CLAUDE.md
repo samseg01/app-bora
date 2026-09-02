@@ -29,7 +29,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── plano-chat-role.md           # chat por rolê, efêmero, com entrada travada por presença
 │   ├── features/                    # um .md por feature construída — obrigatório desde 01/09,
 │   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
-│   │   └── regressivo.md            # o portão em um comando
+│   │   ├── regressivo.md            # o portão em um comando
+│   │   └── presenca-verificada.md   # "Tô aqui"/"Tô indo", o raio por lugar
 │   ├── front-end-ideias/desktop/    # 5 artboards da partição de tela grande
 │   ├── front-end-ideias/conexoes/   # design da aba de Conexões (sem backend ainda)
 │   └── front-end-ideias/seguir-ideia-da-documenta-o/
@@ -150,15 +151,15 @@ Mais `GET /health` fora do prefixo versionado.
 
 | Área | Status | Nota |
 |---|---|---|
-| Backend: modelo de dados + 7 migrations | ✅ | todas escritas à mão, `0001_initial_schema` a `0007_lugar_tags` |
+| Backend: modelo de dados + 8 migrations | ✅ | todas escritas à mão, `0001_initial_schema` a `0008_raio_de_presenca` |
 | Backend: auth (signup/login/me JWT) | ✅ | ADR-0003; `GET /auth/me` adicionado junto com o login do frontend |
 | Backend: API de leitura (`/descoberta`, `/mapa`) | ✅ | curatorial, sem ranking algorítmico (decisão registrada) |
-| Backend: API de contribuição (salvar, sinalizar, comentar, cancelar sinal) | ✅ | sinalização restrita (ADR-0006); `DELETE /sinalizacoes/{id}` adicionado |
+| Backend: API de contribuição (salvar, sinalizar, comentar, cancelar sinal) | ✅ | **sinalização aberta a qualquer autenticado desde 02/09** — a restrição do ADR-0006 caiu com a verificação por proximidade (ADR-009) |
 | Backend: painel do curador (CRUD lugar/role) | ✅ | API e UI prontas, ligadas ao backend com token |
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | inclui `GET /estabelecimento/meus`, que diz ao cliente qual casa é dele |
 | Frontend: painel do estabelecimento (`/estabelecimento`) | ✅ | terceira superfície do produto; sem design prévio — não havia no hi-fi |
 | Backend: serviço de frescor | ✅ | ADR-0001; conta **pessoas distintas**, não linhas (ver issues) |
-| Backend: testes (49, contra Postgres/PostGIS real) + ruff/mypy | ✅ | **verificado em 31/08: 49 passam, ruff e mypy limpos**; exige Docker — ver "Como rodar" |
+| Backend: testes (**56**, contra Postgres/PostGIS real) + ruff/mypy | ✅ | rodam pelo `regressivo`, em banco separado; verde em 02/09 |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: vínculo de `Estabelecimento` | ⚠️ | decidido (ADR-010: curador vincula, sem endpoint isolado); falta o script — hoje só direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + seção Frontend do `TODO.md` |
@@ -187,7 +188,8 @@ Mais `GET /health` fora do prefixo versionado.
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
-| Presença verificada + chat do rolê | ❌ | specs novas em `docs/plano-presenca.md` e `docs/plano-chat-role.md`; **fase 2 por decisão delas próprias**, itens 51–55 |
+| Presença verificada ("Tô aqui"/"Tô indo") | ⚠️ | **construída em 02/09** (ADR-009): migration 0008, verificação no servidor, duas ações na tela, 7 testes. **Nunca exercitada com GPS real** — depende do R8 |
+| Chat do rolê + card de Story | ❌ | specs em `docs/plano-chat-role.md` e `docs/plano-presenca.md`; itens 53–54, dependem de densidade e do item 45 |
 | Fila/worker/Redis | ❌ | fora de escopo por decisão (ADR-0004) — só entra se leitura em tempo real virar problema medido |
 
 ## Como rodar

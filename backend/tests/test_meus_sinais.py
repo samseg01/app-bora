@@ -4,7 +4,13 @@ from httpx import AsyncClient
 
 from boraroles.config import get_settings
 from boraroles.db.models import PapelUsuario, Sinalizacao, TipoSinalizacao
-from tests.conftest import LugarFactory, RoleFactory, UsuarioFactory, auth_headers
+from tests.conftest import (
+    NO_LUGAR,
+    LugarFactory,
+    RoleFactory,
+    UsuarioFactory,
+    auth_headers,
+)
 
 
 async def test_meus_sinais_devolve_o_que_acabei_de_criar(
@@ -22,7 +28,7 @@ async def test_meus_sinais_devolve_o_que_acabei_de_criar(
 
     criado = await client.post(
         "/api/v1/sinalizacoes",
-        json={"role_id": str(role.id), "tipo": "presenca"},
+        json={"role_id": str(role.id), "tipo": "presenca", **NO_LUGAR},
         headers=auth_headers(curador),
     )
     assert criado.status_code == 201
@@ -105,7 +111,7 @@ async def test_sinalizar_duas_vezes_renova_em_vez_de_empilhar(
     )
     lugar = await criar_lugar(curador)
     role = await criar_role(lugar, curador)
-    corpo = {"role_id": str(role.id), "tipo": "presenca"}
+    corpo = {"role_id": str(role.id), "tipo": "presenca", **NO_LUGAR}
 
     um = await client.post("/api/v1/sinalizacoes", json=corpo, headers=auth_headers(curador))
     dois = await client.post("/api/v1/sinalizacoes", json=corpo, headers=auth_headers(curador))
@@ -129,7 +135,7 @@ async def test_tres_toques_de_uma_pessoa_nao_acendem_o_live(
     )
     lugar = await criar_lugar(curador, bairro="Bairro do Live")
     role = await criar_role(lugar, curador)
-    corpo = {"role_id": str(role.id), "tipo": "presenca"}
+    corpo = {"role_id": str(role.id), "tipo": "presenca", **NO_LUGAR}
 
     for _ in range(3):
         await client.post("/api/v1/sinalizacoes", json=corpo, headers=auth_headers(curador))

@@ -41,6 +41,9 @@ class LugarCreate(BaseModel):
     fotos: list[str] | None = None
     #: Vocabulário fechado no cliente; a coluna é livre para a lista crescer sem migration.
     tags: list[str] | None = Field(default=None, max_length=8)
+    # Perímetro de "Tô aqui" em metros (ADR-009). Medido em campo pelo curador: é o
+    # tamanho da casa, não uma constante do sistema. Nulo cai no padrão do config.
+    raio_metros: int | None = Field(default=None, ge=10, le=5000)
 
 
 class LugarUpdate(BaseModel):
@@ -60,6 +63,9 @@ class LugarUpdate(BaseModel):
     fotos: list[str] | None = None
     #: Vocabulário fechado no cliente; a coluna é livre para a lista crescer sem migration.
     tags: list[str] | None = Field(default=None, max_length=8)
+    # Perímetro de "Tô aqui" em metros (ADR-009). Medido em campo pelo curador: é o
+    # tamanho da casa, não uma constante do sistema. Nulo cai no padrão do config.
+    raio_metros: int | None = Field(default=None, ge=10, le=5000)
 
 
 class LugarPublic(BaseModel):
@@ -81,6 +87,7 @@ class LugarPublic(BaseModel):
     estabelecimento_id: uuid.UUID | None
     fotos: list[str] | None
     tags: list[str] | None
+    raio_metros: int | None
     created_at: datetime
 
 

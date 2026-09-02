@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from httpx import AsyncClient
 
-from tests.conftest import UsuarioFactory, auth_headers
+from tests.conftest import LONGE_DO_LUGAR, NO_LUGAR, UsuarioFactory, auth_headers
 
 
 async def test_fluxo_completo_emitir_descobrir_sinalizar_salvar_comentar(
@@ -71,7 +71,7 @@ async def test_fluxo_completo_emitir_descobrir_sinalizar_salvar_comentar(
     for quem in sinalizadores:
         resp = await client.post(
             "/api/v1/sinalizacoes",
-            json={"role_id": role_id, "tipo": "presenca"},
+            json={"role_id": role_id, "tipo": "presenca", **NO_LUGAR},
             headers=auth_headers(quem),
         )
         assert resp.status_code == 201
@@ -80,13 +80,33 @@ async def test_fluxo_completo_emitir_descobrir_sinalizar_salvar_comentar(
     assert resp.status_code == 200
     assert resp.json()["frescor"] == "live"
 
-    # 6. usuário comum NÃO pode sinalizar (ainda restrito a curador/dono_estabelecimento)
+    # 6. usuário comum PODE sinalizar — desde que esteja no lugar (ADR-009, item 40).
+    # A restrição a curador/dono caiu junto com o motivo dela: o sinal era autodeclarado
+    # e por isso forjável. Agora a âncora é a coordenada, não o papel de quem toca.
     resp = await client.post(
         "/api/v1/sinalizacoes",
-        json={"role_id": role_id, "tipo": "presenca"},
+        json={"role_id": role_id, "tipo": "presenca", **NO_LUGAR},
+        headers=auth_headers(comum),
+    )
+    assert resp.status_code == 201
+
+    # 6b. ...e é recusado de longe, que é a metade que faz a de cima valer alguma coisa.
+    resp = await client.post(
+        "/api/v1/sinalizacoes",
+        json={"role_id": role_id, "tipo": "presenca", **LONGE_DO_LUGAR},
         headers=auth_headers(comum),
     )
     assert resp.status_code == 403
+    # A recusa diz a distância e o limite: vai acontecer com gente honesta cujo GPS errou.
+    assert "m" in resp.json()["detail"]
+
+    # 6c. "Tô indo" não precisa de GPS — e não acende nada, porque não é presença.
+    resp = await client.post(
+        "/api/v1/sinalizacoes",
+        json={"role_id": role_id, "tipo": "intencao"},
+        headers=auth_headers(comum),
+    )
+    assert resp.status_code == 201
 
     # 7. usuário comum salva o lugar e comenta
     resp = await client.post(

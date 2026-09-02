@@ -118,6 +118,7 @@ function lugar(
     programacao: null,
     preco_longneck: null,
     preco_visto_em: null,
+    raio_metros: null,
   };
 }
 
@@ -223,6 +224,7 @@ export function roleExemplo(id: string): RolePublic | null {
     created_at: emHoras(-6),
     descricao: encontrado.descricao,
     sinais_recentes: encontrado.frescor === "live" ? 6 : encontrado.frescor === "warm" ? 2 : 0,
+    raio_metros: null,
   };
 }
 

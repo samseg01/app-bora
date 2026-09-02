@@ -12,6 +12,9 @@ class RoleCreate(BaseModel):
     categoria: str = Field(min_length=1, max_length=60)
     data_inicio: datetime
     data_fim: datetime
+    # Sobrescreve o raio do lugar, só para a exceção: a festa que transborda para a
+    # rua. Nulo = usa o do lugar (ADR-009, emenda 1).
+    raio_metros: int | None = Field(default=None, ge=10, le=5000)
 
     @model_validator(mode="after")
     def _valida_janela(self) -> "RoleCreate":
@@ -26,6 +29,7 @@ class RoleUpdate(BaseModel):
     categoria: str | None = Field(default=None, min_length=1, max_length=60)
     data_inicio: datetime | None = None
     data_fim: datetime | None = None
+    raio_metros: int | None = Field(default=None, ge=10, le=5000)
 
 
 class RolePublic(BaseModel):
@@ -36,6 +40,9 @@ class RolePublic(BaseModel):
     categoria: str
     data_inicio: datetime
     data_fim: datetime
+    #: O perímetro efetivo deste rolê, já resolvido (rolê → lugar → padrão). O cliente
+    #: precisa dele para explicar a recusa antes de tentar, não depois.
+    raio_metros: int | None
     frescor: str | None
     #: Pessoas distintas que sinalizaram nas últimas 2h — a janela warm. É o
     #: "6 sinalizaram nas últimas 2h" do hi-fi. Zero é resposta válida; quem decide se

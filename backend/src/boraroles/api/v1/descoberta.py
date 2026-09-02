@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, Query, status
 
 from boraroles.api.deps import DbSession
-from boraroles.db.models import Role
+from boraroles.db.models import Lugar, Role
 from boraroles.schemas.role import RoleDescoberta, RolePublic
 from boraroles.services.descoberta import contar_sinais_de_role, frescor_de_role, listar_descoberta
 from boraroles.services.roles import role_to_public
@@ -37,4 +37,7 @@ async def obter_role(role_id: uuid.UUID, db: DbSession) -> RolePublic:
     if role is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Rolê não encontrado")
     frescor = await frescor_de_role(db, role)
-    return role_to_public(role, frescor, await contar_sinais_de_role(db, role))
+    # O lugar entra para o `raio_metros` sair já resolvido (rolê → lugar → padrão): é
+    # esta rota que a tela de detalhe usa para saber a que distância aceita "Tô aqui".
+    lugar = await db.get(Lugar, role.lugar_id)
+    return role_to_public(role, frescor, await contar_sinais_de_role(db, role), lugar)

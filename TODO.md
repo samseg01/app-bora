@@ -501,7 +501,12 @@ depende do R9 e da conversa com o dono.
 "Tô indo" e "Tô aqui" (item 51). Então o 40 está destravado e o 41 resolvido de graça, os dois
 esperando só a implementação de fase 2. Sobra o 42, que segue dependendo do R9 e da conversa.
 
-- [ ] 40. **[decisão] O que uma conta comum ganha ao entrar?** Hoje: salvar lugar e comentar. Não
+- [x] 40. **[decisão] Resolvido em 02/09: a conta comum ganha "Tô aqui".** A restrição do ADR-006
+       caiu junto com o motivo dela — o sinal era autodeclarado e por isso forjável, e agora a
+       âncora é a coordenada conferida no servidor, não o papel de quem toca. Entrar no app passou
+       a mudar alguma coisa. Nenhuma das três saídas listadas abaixo foi a escolhida: a resposta
+       veio do 43. Enunciado original:
+       **O que uma conta comum ganha ao entrar?** Hoje: salvar lugar e comentar. Não
        sinalizar (ADR-0006). Testado em 28/08 com conta comum de verdade — salvar 201, comentar
        201, sinalizar 403. Comentar acabou de ser destravado na interface, mas a pergunta de
        produto continua: **"Tô indo" é a ação-título do app e a conta comum não a tem**, o que faz
@@ -514,7 +519,10 @@ esperando só a implementação de fase 2. Sobra o 42, que segue dependendo do R
        frescor público. A (c) resolve a sensação de app morto sem entregar o motor de confiança,
        mas depende do backend de Conexões (itens 27–30), que não existe.
 
-- [ ] 41. **Frescor não devia ser calculável antes de o rolê começar.** Descoberto em 28/08,
+- [x] 41. **Resolvido de graça pelo 43, em 02/09.** Não dá para estar fisicamente no lugar às 10h
+       da manhã de um rolê das 21h — a verificação de proximidade fecha esta porta sem regra
+       extra, que é exatamente o que o ADR-009 previa. Enunciado original:
+       **Frescor não devia ser calculável antes de o rolê começar.** Descoberto em 28/08,
        preparando a conversa com o dono: às 11h30 o card de um rolê marcado para as 21h dizia
        "Começando a encher", por causa de um sinal das 09h58. O frescor afirma "tem gente lá
        agora"; antes de `data_inicio` isso não pode ser verdade, e sinalizar às 10h para um rolê
@@ -533,7 +541,13 @@ esperando só a implementação de fase 2. Sobra o 42, que segue dependendo do R
        banco e nunca foi exposta — sem coluna nova; (c) mostrar a atribuição no card. Depende do
        R9, porque sem `estabelecimento_id` preenchido não há posse a verificar.
 
-- [ ] 43. **"Tô aqui" — sinal de presença verificado por proximidade. DECIDIDO em 01/09.** ADR-009
+- [x] 43. **"Tô aqui" — implementado em 02/09.** `POST /sinalizacoes` recebe `lat`/`lng`, o
+       servidor confere contra o raio e recusa com 403 dizendo a distância e o limite; a coordenada
+       é conferida e descartada. Duas ações na tela, e o ciclo intenção→presença na mesma linha.
+       7 testes novos em `test_presenca_verificada.py`. Doc: `docs/features/presenca-verificada.md`.
+       **Falta o R8:** nada disso foi exercitado com GPS real, e o modo de falha mais provável —
+       recusar quem está mesmo lá — é o que a suíte não reproduz. Enunciado original:
+       **"Tô aqui" — sinal de presença verificado por proximidade. DECIDIDO em 01/09.** ADR-009
        do backend, status **aceito** (ver item 51 para as duas emendas: raio por rolê e a separação
        em duas ações). Deixou de ser hipótese; o que resta aqui é a implementação, que é fase 2. `POST /sinalizacoes` passa a receber `lat`/`lng` e o servidor
        recusa fora do raio; a coordenada é conferida e descartada, nunca guardada. Resolve a
@@ -611,14 +625,22 @@ tinha como hipótese — autodeclaração por toque, sem checagem, fica descarta
        Isso **destrava o item 40** (sinal verificado deixa de ser forjável, então pode ser liberado
        para conta comum) e **resolve o 41 de graça** (não dá para estar no bar às 10h da manhã de
        um rolê das 21h).
-- [ ] 57. **`Role.raio_metros` — primeira consequência de schema do ADR-009.** Coluna nullable com
+- [x] 57. **Raio de presença no schema — feito em 02/09, e no `Lugar`, não só no `Role`.**
+       Migration `0008_raio_de_presenca`: `lugar.raio_metros` (o padrão da casa, medido em campo),
+       `role.raio_metros` (a exceção, sobrescreve) e o valor `intencao` no enum. A cascata vive em
+       `services/presenca.raio_efetivo()`. Enunciado original:
+       **`Role.raio_metros` — primeira consequência de schema do ADR-009.** Coluna nullable com
        migration, e o valor global do `config.py` vira o **default** em vez da regra: obrigar o
        curador a decidir um raio em todo rolê é atrito num formulário que já é longo, e quem não
        preencher precisa cair em algum lugar. A calibração do R8 passa a calibrar o padrão.
        **Pergunta deixada em aberto de propósito:** o raio talvez devesse nascer no `Lugar` (o
        tamanho da casa não muda entre uma quinta e um sábado) e o `Role` só sobrescrever quando
        for exceção — senão é redigitar o mesmo número toda semana. Decidir na implementação.
-- [ ] 58. **Campo de raio no painel do curador.** Formulário de publicar rolê. Sem isto a coluna
+- [x] 58. **Campo de raio no painel do curador — feito em 02/09**, em `corrigir-lugar.tsx`,
+       colado nas coordenadas porque é a mesma pergunta. O texto de ajuda fala em passos ("um
+       boteco de esquina são uns 50; uma festa que toma a rua, uns 400") em vez de metros
+       abstratos, porque quem preenche está na calçada. Enunciado original:
+       **Campo de raio no painel do curador.** Formulário de publicar rolê. Sem isto a coluna
        do item 57 existe e ninguém consegue preencher — e o valor só é bom se vier de quem esteve
        no lugar.
 - [ ] 52. **[decisão] Método da verificação: geofence por GPS ou QR lido no local.** É a pergunta
