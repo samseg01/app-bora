@@ -1099,11 +1099,20 @@ segue o hi-fi.
        container absolute resolvia para altura 0", "o pin que sumia do mapa" e "a ficha do lugar
        descartava o frescor que a API já calculava" são três bugs reais e recentes, e nenhum dos
        três quebraria o build.
+       **A evidência ficou muito mais forte em 02/09.** O sistema visual inteiro e a lógica do
+       botão principal foram reescritos com zero teste de frontend, e **os quatro bugs que
+       apareceram foram todos encontrados por um humano olhando um screenshot** — não pela suíte.
+       O pior era um ✓ branco dentro de um círculo branco: um disco liso, sem símbolo, que passou
+       por `lint`, `build` e pelos 56 testes sem levantar nada. Os outros três eram cor fixa em hex
+       no JSX e o acento vazando para link, aba e seleção.
+       Nenhum é bug de tipo ou de compilação — que é exatamente a classe que as ferramentas atuais
+       cobrem, e **não** é a classe que este frontend produz. O que ele produz é o mapa que não
+       desenha, o pin que some, o check invisível.
        **Degrau barato primeiro:** Vitest sobre `lib/` — `frescor.ts`, `horarios.ts` e `tempo.ts`
        são funções puras, sem DOM e sem rede, e concentram a regra de negócio que o `CLAUDE.md`
        diz que não pode escorregar para dentro de `views/`. Playwright para os fluxos fica para
        depois do R7, quando houver ambiente de verdade para apontar.
-- [~] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
+- [x] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
        31/08: só o Postgres tem volume; `api` não tem bind mount. Então
        `docker compose exec api uv run pytest` roda **o código de quando a imagem foi construída**.
        O container estava de pé havia 22 horas e a suíte passou verde contra a árvore velha, sem
@@ -1121,7 +1130,12 @@ segue o hi-fi.
        `./tests` e o alembic, funciona: `boraroles.__file__` imprime
        `/app/src/boraroles/__init__.py` e não `site-packages`, um arquivo criado em `./src`
        apareceu no container sem rebuild e sumiu ao ser apagado do disco. O "metade velha, metade
-       nova" que este item temia não acontece. Aguardando só sua validação para virar [x].
+       nova" que este item temia não acontece.
+       **Validado em 02/09, e no uso real:** construindo a presença verificada eu editei o código
+       e testei o container, caindo exatamente na armadilha deste item — dois dias depois de
+       documentá-la. O mount resolveu na hora, e o `ruff --fix` rodado de dentro do container
+       chegou a editar o arquivo no host. É a prova de que serve para o dia a dia, não só para o
+       teste que o criou.
 - [ ] 50. **`seed/republica.json` e o banco divergiram.** O arquivo tem só o Bar do China, sem
        bairro nem coordenada; o banco tem Bar do China **e** Tokyo, com geo, cadastrados pelo
        painel do curador. O seed é a memória versionada da curadoria — enquanto o dado real só
