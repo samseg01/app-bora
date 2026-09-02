@@ -135,12 +135,23 @@ async def _exige_estar_no_lugar(db: DbSession, body: SinalizacaoCreate) -> None:
 
     dentro, distancia, raio = await esta_no_lugar(db, lugar, body.lat, body.lng, role)
     if not dentro:
+        # `detail` é objeto, não string, e isso é contrato: o cliente precisa dos
+        # NÚMEROS, não da frase. Antes ele os extraía com regex sobre a mensagem em
+        # português — bastava alguém reescrever o texto para a distância sumir da
+        # tela em silêncio, sem teste nenhum notando dos dois lados.
+        #
+        # A frase continua aqui porque cliente que não conhece este formato (curl,
+        # um app futuro) ainda recebe algo legível em `mensagem`.
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=(
-                f"Você precisa estar no lugar para sinalizar presença. "
-                f"Você está a {distancia:.0f} m e o limite aqui é {raio} m."
-            ),
+            detail={
+                "mensagem": (
+                    f"Você precisa estar no lugar para sinalizar presença. "
+                    f"Você está a {distancia:.0f} m e o limite aqui é {raio} m."
+                ),
+                "distancia_m": round(distancia),
+                "raio_m": raio,
+            },
         )
 
 

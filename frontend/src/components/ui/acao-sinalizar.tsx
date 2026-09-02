@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { guardarDestino, useSessao } from "@/lib/auth";
 import { invalidarMeus, meusSinais } from "@/lib/meus";
-import { ErroLocalizacao, pedirPosicao } from "@/lib/localizacao";
+import { distanciaLegivel, pedirPosicao } from "@/lib/localizacao";
 import { hora } from "@/lib/tempo";
 import type { TipoSinalizacao } from "@/lib/types";
 
@@ -15,16 +15,19 @@ import type { TipoSinalizacao } from "@/lib/types";
  * estado do detalhe e não como rota nova: a pessoa não saiu do rolê, ela marcou
  * presença nele.
  *
- * **Duas ações, não uma** (ADR-009, emenda 2), e a diferença é onde a pessoa está:
- * - **"Tô aqui"** — pede a localização, o servidor confere se está dentro do raio e
- *   recusa com 403 se não estiver. É o único que alimenta o frescor.
- * - **"Tô indo"** — não pede nada, porque afirma justamente que a pessoa não está lá.
- *   Não acende nada hoje: quem vai ler isso é a aba de Conexões, que não tem backend.
- *   A tela diz isso em vez de fingir que serve para alguma coisa agora.
+ * **Duas ações, um botão só.** O ADR-009 (emenda 2) separou "Tô aqui" de "Tô indo",
+ * e elas continuam separadas *no dado* — só a primeira alimenta o frescor. O que
+ * mudou em 02/09 é quem escolhe entre as duas: **o app, não a pessoa**.
  *
- * As duas não são paralelas: **quem disse que ia e chegou toca "Tô aqui" e vira
- * presença**, na mesma linha. Por isso, com intenção marcada, o "Tô aqui" continua na
- * tela — é o próximo passo, não uma alternativa.
+ * A razão é que a diferença entre elas não é preferência, é **fato verificável**: ou
+ * você está dentro do raio ou não está, e o telefone sabe. Oferecer as duas era
+ * pedir que a pessoa declarasse algo que o aparelho podia medir — com o risco de ela
+ * declarar errado, por engano ou de propósito, e envenenar o frescor.
+ *
+ * O botão pergunta a localização e decide: dentro do raio vira `presenca`; longe ou
+ * sem permissão vira `intencao`, **e a tela diz por quê**. Com intenção marcada o
+ * mesmo botão continua ali, porque chegar é o próximo passo — a transição
+ * intenção→presença acontece na mesma linha (ver `POST /sinalizacoes`).
  *
  * A restrição a curador/dono CAIU com o ADR-009 (item 40): ela existia porque o sinal
  * era autodeclarado e forjável, e a âncora agora é a coordenada, não o papel.
@@ -62,6 +65,10 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
       retrato, não um relógio: reabrir a tela recalcula. */
   const [restante, setRestante] = useState<number | null>(null);
   const [erro, setErro] = useState<string | null>(null);
+  /** A distância que o servidor recusou, quando recusou. Guardada para a tela de
+      intenção poder dizer POR QUE virou "vou" em vez de "estou" — sem isso a
+      pessoa toca esperando acender o rolê e recebe outra coisa, sem explicação. */
+  const [distancia, setDistancia] = useState<number | null>(null);
   const [ocupado, setOcupado] = useState(false);
 
   const token = sessao?.token;
@@ -89,31 +96,57 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     };
   }, [token, roleId]);
 
-  async function toAqui() {
+  /**
+   * Um botão só. O app pergunta onde a pessoa está e **decide qual das duas ações
+   * é a verdadeira** — porque a diferença entre "Tô aqui" e "Tô indo" não é
+   * preferência, é fato: ou você está dentro do raio ou não está, e o telefone
+   * sabe. Fazer a pessoa escolher era pedir que ela declarasse algo que o
+   * aparelho podia medir, com o risco de ela escolher errado (por engano ou de
+   * propósito) e envenenar o frescor.
+   *
+   * A cascata, em ordem de tentativa:
+   *
+   * 1. **Está no raio** → `presenca`. Acende o rolê. É o caso que o produto quer.
+   * 2. **Está longe** (403) → `intencao`, e a tela explica que anotou a intenção
+   *    em vez de mostrar um erro. Ficar longe não é falha da pessoa: ela clicou a
+   *    coisa certa, só ainda não chegou.
+   * 3. **Negou a localização, ou o GPS falhou** → `intencao` também. O ADR-009 diz
+   *    "sem permissão, sem sinal", e isso continua valendo — para **presença**.
+   *    Intenção não afirma estar em lugar nenhum, então não precisa de GPS, e
+   *    recusá-la por falta de permissão seria punir quem só quis avisar que vem.
+   *
+   * O que NÃO muda: intenção continua sem alimentar o frescor, e continua virando
+   * presença na mesma linha quando a pessoa chega e toca de novo.
+   */
+  async function bora() {
     if (!sessao) return;
     setOcupado(true);
     setErro(null);
     try {
-      // O único momento do app em que a coordenada é pedida para escrever algo. Ela vai
-      // no corpo, o servidor confere contra o raio do lugar e descarta — nada é gravado.
-      const pos = await pedirPosicao();
-      const s = await api.sinalizar(sessao.token, roleId, "presenca", pos);
-      setSinal({ id: s.id, tipo: s.tipo });
-      setRestante(minutosRestantes(s.timestamp));
-      invalidarMeus();
-      router.refresh();
-    } catch (e) {
-      setErro(mensagemDeFalha(e));
-    } finally {
-      setOcupado(false);
-    }
-  }
+      let pos: { lat: number; lng: number } | null = null;
+      try {
+        pos = await pedirPosicao();
+      } catch {
+        // Sem localização não dá para afirmar presença — mas dá para registrar
+        // que a pessoa pretende ir, e é isso que fazemos abaixo.
+      }
 
-  async function toIndo() {
-    if (!sessao) return;
-    setOcupado(true);
-    setErro(null);
-    try {
+      if (pos) {
+        try {
+          const s = await api.sinalizar(sessao.token, roleId, "presenca", pos);
+          setSinal({ id: s.id, tipo: s.tipo });
+          setRestante(minutosRestantes(s.timestamp));
+          invalidarMeus();
+          router.refresh();
+          return;
+        } catch (e) {
+          // 403 é o servidor dizendo "você não está aqui" — resposta esperada, não
+          // erro. Qualquer outra coisa é falha de verdade e sobe.
+          if (!(e instanceof ApiError && e.status === 403)) throw e;
+          setDistancia(distanciaDoErro(e));
+        }
+      }
+
       const s = await api.sinalizar(sessao.token, roleId, "intencao");
       setSinal({ id: s.id, tipo: s.tipo });
       setRestante(minutosRestantes(s.timestamp));
@@ -152,23 +185,30 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     );
   }
 
-  // Disse que vem, ainda não chegou. Não é um fim de fluxo: o "Tô aqui" continua na
+  // Disse que vem, ainda não chegou. Não é fim de fluxo: o mesmo botão continua na
   // tela porque chegar é o próximo passo, e é ele que acende o rolê para os outros.
+  //
+  // A tela DIZ A CAUSA. Como agora há um botão só, a pessoa tocou esperando acender
+  // o rolê e recebeu outra coisa — sem explicar por quê, isso lê como o app ter
+  // feito algo pelas costas dela.
   if (sinal?.tipo === "intencao" && sessao) {
     return (
       <div className="elevado rounded-[16px]  border border-linha bg-card-alt px-4.5 py-4">
         <div className="rotulo text-muted-2">tá anotado</div>
         <p className="mt-2 text-[13px] leading-relaxed text-muted text-pretty">
-          Você marcou que vem. Isso <strong className="text-text-faint">não acende o rolê</strong>{" "}
-          para os outros — quem faz isso é chegar lá. Quando estiver no lugar, toca em “Tô aqui”.
+          {distancia
+            ? `Você está a ${distanciaLegivel(distancia)} daqui, então ficou anotado que você vem. `
+            : "Ficou anotado que você vem. "}
+          Isso <strong className="text-text-faint">não acende o rolê</strong> para os outros —
+          quem faz isso é chegar lá. Toca de novo quando estiver no lugar.
         </p>
         <button
           type="button"
-          onClick={toAqui}
+          onClick={bora}
           disabled={ocupado}
           className="rounded-[12px] mt-3.5 w-full bg-text py-3.5 text-[15px] font-bold text-bg disabled:opacity-60"
         >
-          {ocupado ? "Conferindo onde você está…" : "Cheguei — Tô aqui"}
+          {ocupado ? "Conferindo onde você está…" : "Cheguei"}
         </button>
         <p className="mt-2.5 text-center text-[11.5px] leading-snug text-muted-3">
           {erro ?? "Confere sua localização e esquece. Ninguém vê seu nome."}
@@ -193,7 +233,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
           onClick={() => guardarDestino(caminho)}
           className="rounded-[12px] block bg-text py-4 text-center text-[15px] font-bold text-bg"
         >
-          Tô aqui — acende o rolê
+          Bora
         </Link>
         <p className="mt-2.5 text-center text-[11.5px] text-muted-3">
           Entrar leva dez segundos. Ninguém vê seu nome no mapa.
@@ -202,53 +242,40 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     );
   }
 
-  // Duas ações, e a hierarquia visual diz qual é a do produto: "Tô aqui" é o CTA
-  // primário porque é o que alimenta o frescor. "Tô indo" é secundário porque hoje não
-  // acende nada — e o texto embaixo diz isso, em vez de deixar a pessoa achar que
-  // marcou o rolê para todo mundo.
+  // Um botão. O texto secundário conta a regra ANTES do toque — que vai conferir a
+  // localização e que sem estar lá o sinal vira "vou". Descobrir isso depois de
+  // tocar seria a pessoa achar que acendeu o rolê quando não acendeu.
   return (
     <div>
       <button
         type="button"
-        onClick={toAqui}
+        onClick={bora}
         disabled={ocupado}
         className="rounded-[12px] w-full bg-text py-4 text-[15px] font-bold text-bg disabled:opacity-60"
       >
-        {ocupado ? "Conferindo onde você está…" : "Tô aqui — acende o rolê"}
-      </button>
-      <button
-        type="button"
-        onClick={toIndo}
-        disabled={ocupado}
-        className="rounded-[12px] mt-2.5 w-full border border-linha bg-card-alt py-3.5 text-[14px] font-semibold text-text-soft disabled:opacity-60"
-      >
-        Ainda tô indo
+        {ocupado ? "Conferindo onde você está…" : "Bora"}
       </button>
       <p className="mt-2.5 text-center text-[11.5px] leading-snug text-muted-3 text-pretty">
-        {erro ?? "“Tô aqui” confere se você está no lugar e some sozinho em 2h. Ninguém vê seu nome."}
+        {erro ??
+          "Se você já estiver no lugar, acende o rolê pra quem está decidindo. Se ainda não, fica anotado que você vem. Ninguém vê seu nome."}
       </p>
     </div>
   );
 }
 
-/** Traduz a falha para o que a pessoa precisa fazer a respeito.
+/** A distância que o servidor recusou, em metros, lida do `detail` estruturado.
 
-    O 403 vem com a distância e o limite calculados pelo servidor, e é ele que aparece:
-    o ADR-009 registra que o GPS erra mais justamente dentro do bar, então esta recusa
-    vai acontecer com gente honesta que está mesmo lá. "Não foi possível" faria ela achar
-    que o app quebrou. */
-function mensagemDeFalha(e: unknown): string {
-  if (e instanceof ErroLocalizacao) {
-    if (e.tipo === "negado")
-      return "Sem a localização não dá pra confirmar que você está aqui. Você pode marcar “Ainda tô indo”.";
-    if (e.tipo === "sem-suporte")
-      return "Este navegador não informa localização por aqui. Tenta pelo app instalado.";
-    return "Não consegui te localizar agora. Tenta de novo em alguns segundos.";
-  }
-  if (e instanceof ApiError && e.status === 403) {
-    return e.detalhe ?? "Você precisa estar no lugar para marcar presença.";
-  }
-  return "Não deu pra marcar agora. Tenta de novo.";
+    A conta é do backend, feita com PostGIS contra o raio daquele lugar. Refazê-la
+    no cliente exigiria a coordenada do lugar e daria um número ligeiramente
+    diferente — dois números para a mesma pergunta é pior que um.
+
+    Até 02/09 isto era um `match()` sobre a frase em português da mensagem de erro.
+    Duas coisas erradas de uma vez: quebraria calado no primeiro dia em que alguém
+    reescrevesse o texto do backend, e a própria regex tinha um byte de backspace
+    no lugar da borda de palavra — escrito por engano e invisível em qualquer revisão. */
+function distanciaDoErro(e: ApiError): number | null {
+  const m = e.dados?.distancia_m;
+  return typeof m === "number" ? m : null;
 }
 
 /** A 2e: “Tá marcado”, com o contador e o desfazer. Comentar saiu daqui para

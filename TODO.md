@@ -1063,6 +1063,21 @@ segue o hi-fi.
        eram cor fixa em hex dentro do JSX (inclusive um ✓ branco sobre círculo branco) e o quarto
        era o acento vazando para link, aba e seleção. Os 17 hex viraram `currentColor` e nasceu
        `--color-selecao`. Detalhe no doc da feature.
+- [x] 63. **Um botão só: "Bora" decide entre presença e intenção.** Feito e **validado em campo
+       em 02/09**, num telefone: os dois caminhos conferidos lado a lado — o aceite virou "Tá
+       marcado" com frescor `warm` (uma pessoa não faz `live`), e a recusa a 10 km virou "tá
+       anotado" com a distância vinda do campo estruturado. ADR-009 ganhou a **emenda 3**: quem escolhe entre "Tô aqui" e "Tô
+       indo" passou a ser o app, não a pessoa — a diferença entre as duas não é preferência, é
+       fato verificável, e o telefone sabe. Oferecer as duas era pedir que ela declarasse algo que
+       o aparelho podia medir, com risco de declarar errado e envenenar o frescor.
+       **O contrato do 403 mudou junto:** `detail` virou objeto com `distancia_m` e `raio_m`. Antes
+       o frontend garimpava a distância com regex sobre a frase em português — quebraria calado no
+       dia em que alguém reescrevesse o texto, e a regex ainda tinha um byte de backspace escrito
+       por engano no lugar da borda de palavra. Testes dos dois lados agora afirmam os campos.
+       O teste em campo confirmou de quebra três correções do mesmo dia: o ✓ preto sobre o círculo
+       branco (era `stroke="#fff"` fixo, branco sobre branco), a distância real vinda do campo
+       estruturado, e o anel vazado do `new` contra o ponto cheio do `warm` — a distinção por
+       forma em vez de cor, legível na tela.
 - [ ] 61. **Camada 2 de estilo: composição e densidade.** A camada 1 mudou o vocabulário visual
        (cor, tipo, superfície) e **não tocou em layout**. Falta o desenho de fato: espaçamento,
        hierarquia dentro do card, a lista, a navegação, os estados vazios — que aliás nunca foram

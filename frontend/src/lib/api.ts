@@ -45,6 +45,15 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     readonly detalhe: string,
+    /**
+     * O `detail` estruturado, quando o servidor manda objeto em vez de string.
+     *
+     * Existe para a tela poder ler **números**, não frases. A recusa de presença
+     * do ADR-009 devolve `{mensagem, distancia_m, raio_m}`, e antes o cliente
+     * garimpava a distância com regex sobre o texto em português — acoplamento
+     * que quebraria em silêncio no dia em que alguém reescrevesse a mensagem.
+     */
+    readonly dados?: Record<string, unknown>,
   ) {
     super(`API ${status}: ${detalhe}`);
     this.name = "ApiError";
@@ -91,11 +100,19 @@ async function req<T>(caminho: string, opcoes: Opcoes = {}): Promise<T> {
   if (resposta.status === 204) return undefined as T;
 
   if (!resposta.ok) {
-    const detalhe = await resposta
-      .json()
-      .then((c) => (typeof c?.detail === "string" ? c.detail : resposta.statusText))
-      .catch(() => resposta.statusText);
-    throw new ApiError(resposta.status, detalhe);
+    // `detail` do FastAPI pode ser string (o caso comum) ou objeto (quando a rota
+    // precisa devolver dado, não só recado). Os dois viram a mesma exceção: a
+    // mensagem legível em `detalhe`, os campos em `dados`.
+    const corpo: unknown = await resposta.json().catch(() => null);
+    const d = (corpo as { detail?: unknown } | null)?.detail;
+    const objeto = d !== null && typeof d === "object" ? (d as Record<string, unknown>) : undefined;
+    const detalhe =
+      typeof d === "string"
+        ? d
+        : typeof objeto?.mensagem === "string"
+          ? objeto.mensagem
+          : resposta.statusText;
+    throw new ApiError(resposta.status, detalhe, objeto);
   }
 
   return resposta.json() as Promise<T>;

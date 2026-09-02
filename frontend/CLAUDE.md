@@ -418,6 +418,13 @@ ainda não existe.
 
 ## Armadilhas conhecidas
 
+- **Nunca extrair dado de mensagem de erro.** Até 02/09 o `acao-sinalizar.tsx` pegava a distância
+  da recusa de presença com `detalhe.match(...)` sobre a frase em português do backend. Funcionava,
+  e quebraria **calado** no primeiro dia em que alguém reescrevesse o texto — a distância sumiria
+  da tela sem erro nenhum, dos dois lados. Agora o 403 devolve `detail` como objeto
+  (`{mensagem, distancia_m, raio_m}`) e `ApiError.dados` carrega os campos. **Quando uma tela
+  precisar de um número que o servidor calculou, o servidor manda o número.**
+
 - **`RoleDescoberta` traz `lugar_id` desde 28/08**, mas ainda não `lat`/`lng` — calcular distância
   "a pé" continua dependendo da mudança 19 do `../TODO.md`.
 - **Um pin só quebrava o mapa.** `fitBounds` com bounds de área zero (um lugar, ou vários no

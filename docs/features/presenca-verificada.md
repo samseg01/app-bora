@@ -7,16 +7,23 @@ servidor confere contra o raio daquela casa e recusa quem está longe. Em troca,
 ser privilégio de curador — **qualquer pessoa logada** pode acender um rolê, porque a âncora agora
 é onde ela está, não o papel dela.
 
-E o botão virou dois:
+E há **um botão só, chamado "Bora"** — quem escolhe entre as duas ações é o app (ADR-009,
+emenda 3). A diferença entre elas não é preferência, é fato verificável: ou você está dentro do
+raio ou não está, e o telefone sabe.
 
-| Ação | Onde a pessoa está | GPS | Efeito |
-|---|---|---|---|
-| **"Tô aqui — acende o rolê"** | no lugar | sim, conferido | alimenta o frescor |
-| **"Ainda tô indo"** | fora | não | nada, hoje — é para as Conexões, que não existem |
+| Situação | Vira | O que a tela diz |
+|---|---|---|
+| dentro do raio | `presenca` | "Tá marcado" — acendeu o rolê |
+| longe (403) | `intencao` | *"Você está a 3,2 km daqui, então ficou anotado que você vem"* |
+| sem permissão de GPS | `intencao` | "Ficou anotado que você vem" |
 
-As duas **não são alternativas: são estados de um ciclo.** Quem marcou "Tô indo" e chega toca "Tô
-aqui", e a *mesma linha* vira presença, com o relógio recomeçando na chegada. Por isso a tela de
-"tá anotado" continua oferecendo o "Cheguei".
+As duas **não são alternativas: são estados de um ciclo.** Quem ficou em intenção e chega toca o
+mesmo botão, e a *mesma linha* vira presença, com o relógio recomeçando na chegada. Por isso a tela
+de "tá anotado" continua oferecendo o "Cheguei".
+
+**A tela precisa dizer POR QUÊ.** Com um botão só, a pessoa toca esperando acender o rolê e às
+vezes recebe outra coisa — sem explicação, isso lê como o app ter feito algo pelas costas dela. É
+por isso que a recusa devolve `distancia_m` e `raio_m` em campo estruturado, e não só a frase.
 
 Implementa o **ADR-009** (aceito em 01/09) e destrava o **item 40**.
 
@@ -38,7 +45,7 @@ Implementa o **ADR-009** (aceito em 01/09) e destrava o **item 40**.
 
 | Arquivo | O quê |
 |---|---|
-| `components/ui/acao-sinalizar.tsx` | os dois botões, os três estados, a tradução das falhas |
+| `components/ui/acao-sinalizar.tsx` | o botão único e a cascata que decide entre presença e intenção |
 | `components/ui/corrigir-lugar.tsx` | campo "raio de presença" no painel do curador |
 | `lib/api.ts`, `lib/types.ts` | `pos` no `sinalizar()`, `raio_metros` nos tipos |
 
@@ -72,15 +79,24 @@ A cascata é `Role.raio_metros` → `Lugar.raio_metros` → padrão do config:
 6. **O raio importando:** pôr `raio_metros = 30` num lugar pelo painel e tentar sinalizar da
    calçada de frente. Deve recusar.
 
-Os passos 1 e 5 estão cobertos por teste automatizado; **2, 3, 4 e 6 nunca foram executados** — ver
-abaixo.
+Os passos 1 e 5 estão cobertos por teste automatizado. **2, 3 e 4 foram executados em campo em
+02/09**, num telefone pelo túnel: a recusa por distância veio com a mensagem certa, o aceite acendeu
+o rolê como `warm` (uma pessoa não faz `live`), e o ciclo intenção→presença fechou na mesma linha.
+Em 02/09, com o botão único, **os dois caminhos foram conferidos lado a lado** num telefone — dois
+rolês no mesmo bairro, um com raio grande e outro com o padrão. O aceite virou "Tá marcado" com
+frescor `warm`; a recusa a 10 km trouxe a distância certa. O **6 nunca foi executado** como teste
+próprio, mas o par acima o cobre na prática: foi o raio de cada lugar que decidiu quem entrou.
 
 ## O que deliberadamente não faz
 
-- **"Tô indo" não avisa ninguém.** É registrado e não tem leitor: quem leria é a aba de Conexões,
+- **A intenção não avisa ninguém.** É registrada e não tem leitor: quem leria é a aba de Conexões,
   que não tem backend (itens 27–30). A tela **diz isso** — "isso não acende o rolê para os outros"
   — em vez de fingir que a ação serviu para alguma coisa. Preferimos a meia-feature honesta à
-  feature completa mentirosa.
+  feature completa mentirosa. Foi também um dos motivos de o botão virar um só: dar peso visual de
+  CTA secundário a uma ação sem efeito era prometer o que não existe.
+- **A recusa não é erro.** 403 e permissão negada deixaram de ser tratados como falha e viraram
+  caminhos — os dois terminam em intenção, com explicação. A função que traduzia falha em mensagem
+  morreu junto; sobrou só a falha genuína, que tem uma mensagem só.
 - **Não detecta chegada automaticamente.** Seria preciso acompanhar a localização em segundo
   plano, o oposto exato da regra do ADR-009 de conferir e descartar. Um app que promete não guardar
   onde você esteve não pode ficar checando onde você está. A chegada é um toque.
