@@ -10,7 +10,8 @@ Aceito.
 pessoalmente, não auto-selecionados. Deixar qualquer usuário se promover a curador pelo próprio
 cadastro seria tanto uma falha de produto (quebra o modelo de curadoria de campo) quanto uma falha
 de segurança (escalação de privilégio trivial).
-atua## Decisão
+
+## Decisão
 
 `POST /auth/signup` sempre cria o usuário com `papel=comum`, sem exceção. A única forma de
 promover alguém a `curador` ou `dono_estabelecimento` é `scripts/promote_role.py <email> <papel>`,
