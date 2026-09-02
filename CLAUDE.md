@@ -25,6 +25,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── arquitetura-backend-frontend.md  # arquitetura acordada (schema, stack, sequenciamento)
 │   ├── plano-frontend.md            # as 8 telas hi-fi cruzadas com a API real
 │   ├── plano-conexoes.md            # check-in social e a colisão com a promessa de anonimato
+│   ├── plano-presenca.md            # presença verificada por localização, escada de incentivos, Story
+│   ├── plano-chat-role.md           # chat por rolê, efêmero, com entrada travada por presença
 │   ├── features/                    # um .md por feature construída — obrigatório desde 01/09,
 │   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
 │   │   └── regressivo.md            # o portão em um comando
@@ -185,6 +187,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
+| Presença verificada + chat do rolê | ❌ | specs novas em `docs/plano-presenca.md` e `docs/plano-chat-role.md`; **fase 2 por decisão delas próprias**, itens 51–55 |
 | Fila/worker/Redis | ❌ | fora de escopo por decisão (ADR-0004) — só entra se leitura em tempo real virar problema medido |
 
 ## Como rodar
@@ -424,6 +427,10 @@ contradisserem, o ADR ganha.
   lembrando que ele descreve o projeto de antes das telas de auth (ver issues)
 - **Plano da aba de Conexões** (check-in social, salvos dos amigos, e a colisão com a promessa de
   anonimato): `docs/plano-conexoes.md`; design em `docs/front-end-ideias/conexoes/`
+- **Plano da presença verificada** (só sinaliza quem está no lugar, escada de incentivos, card de
+  Story): `docs/plano-presenca.md` — declara fase 2, não MVP
+- **Plano do chat do rolê** (um chat por rolê, nasce e morre com ele, entrada travada por
+  presença): `docs/plano-chat-role.md` — é o gancho inicial da escada acima
 - Design de desktop das telas do app: `docs/front-end-ideias/desktop/`
 - Frontend — convenções, tokens e contratos da API: `frontend/CLAUDE.md`
 - **Por que ainda não é nativo, e o que dispara a migração:**

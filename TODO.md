@@ -576,6 +576,83 @@ depende do R9 e da conversa com o dono.
        (default **false**), `PATCH /usuarios/me/privacidade` e `GET /conexoes/salvos`. Opt-in
        explícito e desligado por padrão, como o `conceito.md` pede para o motor social.
 
+## Presença verificada e chat do rolê (features novas — specs em `docs/`)
+
+Duas specs escritas em 01/09 e movidas da raiz para `docs/plano-presenca.md` e
+`docs/plano-chat-role.md`. Não foram para `docs/features/` porque aquele diretório é do que **foi
+construído**; estas descrevem o que ainda não existe, então ficam ao lado do `plano-conexoes.md`,
+que é do mesmo tipo. As referências cruzadas internas foram corrigidas (as duas apontavam para
+`conceito-app-role.md`, que é a cópia dentro do bundle de design, não `docs/conceito.md`).
+
+**As duas specs se declaram fase 2, não MVP** — e a razão é a mesma do `conceito.md`: presença
+precisa de densidade que não existe no dia 1, e "0 pessoas aqui" em tudo é pior que não mostrar
+nada. Nada aqui compete com o R3.
+
+**O que elas mudam no que já estava no quadro:** a spec de presença **decide** o que o item 43
+tinha como hipótese — autodeclaração por toque, sem checagem, fica descartada. Ver o item 51.
+
+- [ ] 51. **[decisão] O ADR-009 deixou de ser hipótese nas specs, mas continua "proposto" no
+       backend.** `docs/plano-presenca.md` afirma como regra fechada que só sinaliza quem está
+       fisicamente no lugar, e o `plano-chat-role.md` constrói a trava do chat em cima disso. Mas
+       `backend/docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md` está **proposto**, e
+       o item 43 daqui ainda está escrito como "[hipótese]". **Ou o ADR-009 é aceito e o 43 deixa
+       de ser hipótese, ou as specs estão construindo em cima de decisão que não foi tomada.**
+       Resolver isto é de graça — é escolher entre dois textos — e destrava a leitura de tudo
+       abaixo.
+- [ ] 52. **[decisão] Método da verificação: geofence por GPS ou QR lido no local.** É a pergunta
+       que ficou em aberto nas **duas** specs, e o ADR-009 só previa GPS. O QR é mais à prova de
+       fraude mas depende do estabelecimento e acrescenta um passo — ou seja, empurra a decisão
+       para depois do R10, porque exige parceiro. Junto vem a tolerância do perímetro: o ADR-009
+       chuta ~150 m e manda calibrar no R8, e o precedente do item 39 é forte — o limiar da busca
+       por bairro nasceu de 1500 m de escritório e caiu para 700 m no primeiro teste real.
+       O caso difícil que as duas specs nomeiam: GPS erra pior justamente **dentro** do bar, em
+       subsolo e em prédio alto — e o perímetro precisa aceitar quem está na fila sem aceitar quem
+       está na esquina.
+- [ ] 53. **Chat do rolê** (`docs/plano-chat-role.md`). Um chat por `Role`, que abre em
+       `data_inicio` e fecha em `data_fim`, com entrada liberada só a quem confirmou presença e
+       acesso valendo até o fim sem reconfirmar. Precisa de denúncia e bloqueio desde o primeiro
+       dia. **Nada disso existe no backend**: não há entidade de mensagem, não há transporte em
+       tempo real, e o ADR-004 descartou fila/worker/Redis — que é exatamente o tipo de coisa que
+       um chat costuma pedir. Antes de estimar, decidir se o ADR-004 precisa ser reaberto.
+       Duas pontas soltas da própria spec: o que acontece com o chat depois do fim do rolê (some
+       ou vira arquivo read-only), e qual a janela para rolê **sem `data_fim`** — que o schema
+       permite.
+- [ ] 54. **Card de Story compartilhável** (seção do `docs/plano-presenca.md`). Depende de o rolê
+       ter identidade visual boa, e isso é o **item 45**, que está bloqueado no R7 esperando onde
+       os arquivos vão morar. Cadastro cru gera Story feio, e Story feio ninguém posta — então
+       este item nasce atrás do 45, não em paralelo. A spec cita uma prévia `previa-story.html`
+       que **não existe no repositório**; se ela existir em algum lugar, trazer junto.
+- [ ] 55. **[decisão] A presença deixa de ser anônima dentro do chat — e isso colide com o item
+       23.** O item 23 fechou o copy do anonimato em 28/08 numa regra limpa: **sinal é anônimo,
+       comentário é assinado**. O chat é uma terceira categoria que a regra não previu — a spec diz
+       que participantes aparecem "com o próprio perfil (não anônimo)", e a porta de entrada é a
+       presença. Ou seja: quem confirma presença para entrar no chat **deixa de ser anônimo para
+       todo mundo que está no chat**. Não é necessariamente errado, mas hoje o app promete outra
+       coisa em texto, e o item 23 está marcado como resolvido e verificado. Decidir e reescrever
+       o copy junto, não depois.
+       O mesmo vale, com menos força, para o card de Story, que a própria spec reconhece expor
+       localização em tempo real — lá a proteção é ser opt-in por toque.
+
+### O que já estava no quadro e converge com estas duas specs
+
+Nenhum destes é trabalho novo — é reconhecer que já estavam apontando para cá.
+
+| Item | Como converge |
+|---|---|
+| **43** — "Tô aqui" verificado por proximidade | É a **mesma feature** que o núcleo da spec de presença. Separa "Tô aqui" (no lugar, com GPS, alimenta frescor) de "Tô indo" (de casa, avisa amigos) — exatamente a distinção que a spec faz |
+| **40** — o que uma conta comum ganha ao entrar | A spec responde por um caminho que o item 40 não listava: entrar no **chat**. O 40 tinha três saídas (a, b, c) e esta é uma quarta |
+| **41** — frescor calculável antes de o rolê começar | Resolvido de graça pela regra da spec: não dá para estar fisicamente no lugar às 10h de um rolê das 21h |
+| **10** — validar "favoritar lugar" × "sinalizar rolê" em campo | A spec abre a mesma pergunta com outras palavras ("como a interface distingue, sem ruído"). É pergunta 4 do `conceito.md`, e a interface já implementa a hipótese `1e` |
+| **24** — check-in de conta comum alimenta o frescor público? | Mesma pergunta que a spec faz ao separar o dado de presença verificada do aviso social |
+| **29** — check-in como `Sinalizacao` de `tipo=presenca` | Já concluiu que check-in **não precisa de tabela nova**. Vale para a presença da spec: a `Sinalizacao` já é o motor |
+| **27–30** — backend de Conexões | É o "motor social pleno" da escada de incentivos, que a spec coloca na fase 2. O `plano-conexoes.md` já detalha |
+| **13** — cron de expiração/decaimento | A spec pede presença com "janela de expiração, esfria sozinha". Hoje é 100% on-read (ADR-0001), o que provavelmente já basta — mas é a mesma pergunta |
+| **45** — foto do lugar (bloqueado no R7) | Pré-requisito do item 54: sem identidade visual não há card de Story que alguém poste |
+| **17** — `sinais_recentes` exposto | Já entrega o "X pessoas aqui agora" que a spec pede, contando **pessoas distintas** |
+| **34** — frescor contava linhas, não pessoas | É o precedente que sustenta a regra central da spec: sem verificação o dado é forjável, e isso não é hipotético |
+| **X4** — "Tô indo" para conta comum como check-in visível às conexões | É o "motor social pleno" pela ponta do frontend |
+| **ADR-008 / item 42** — casa publica o próprio rolê | Alimenta o degrau "benefício do estabelecimento", o último da escada |
+
 ## Frontend — as fases de construção das telas
 
 Veio de `frontend/TODO.md`, centralizado aqui em 28/08. Os itens numerados ganharam o prefixo **F**
