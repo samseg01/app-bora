@@ -182,10 +182,25 @@ Conta manual de teste: usar domínio `@local.dev`. Os fixtures da suíte usam e-
 `@exemplo.com` e uma conta manual com esses e-mails faz o teste falhar por unicidade.
 
 ```
-npm run dev     # http://localhost:3000
-npm run build   # valida tipos e prerender
+npm run dev        # http://localhost:3000
+npm test           # 46 testes de lib/ — Vitest, ~1,4 s
+npm run test:watch # os mesmos, em watch
+npm run build      # valida tipos e prerender
 npm run lint
 ```
+
+**Os testes cobrem `lib/`, e só.** É onde a regra de negócio mora por decisão de arquitetura, e são
+funções puras — sem DOM, sem rede, sem React —, então não há setup de ambiente: `environment: node`
+no `vitest.config.mts`, nada de jsdom. Custa 1,4 s no portão.
+
+**O que eles NÃO cobrem, e é preciso saber:** componente e fluxo. O ✓ branco dentro de um círculo
+branco, o mapa que não desenha por altura 0, o pin que some — nenhum desses seria pego aqui, porque
+todos exigem renderizar. É o resto do item 50.
+
+Duas regras ao escrever: **nunca depender do relógio real** (as funções recebem `agora` por
+parâmetro justamente para isso, e um teste que lê `Date.now()` passa de manhã e falha de
+madrugada), e **preencher o tipo inteiro nos fixtures** em vez de usar `as` — foi o `build` que
+pegou um `LugarProximo` sem `role_ativo`, e um cast teria escondido a divergência.
 
 ## Stack
 

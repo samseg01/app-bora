@@ -1090,7 +1090,7 @@ segue o hi-fi.
        cinza-azulado, que ainda por cima puxa para o frio contra um app neutro.
        Deixado em aberto por decisão, para ser visto junto com a camada 2. Saídas: trocar por um
        estilo neutro, ou `filter: grayscale()` no container. O alerta está no próprio arquivo.
-- [ ] 50. **O frontend não tem um único teste — e é ali que o projeto quebra.** Levantado em
+- [~] 50. **O frontend quase não tem teste — e é ali que o projeto quebra.** Primeiro degrau feito em 02/09. Levantado em
        01/09 ao montar o regressivo: zero arquivos `.test`/`.spec` em `frontend/src`, zero
        ferramenta instalada (nem Vitest, nem Playwright, nem Testing Library). `npm run lint` e
        `npm run build` pegam erro de tipo e de compilação — **não pegam comportamento**. Então
@@ -1108,10 +1108,16 @@ segue o hi-fi.
        Nenhum é bug de tipo ou de compilação — que é exatamente a classe que as ferramentas atuais
        cobrem, e **não** é a classe que este frontend produz. O que ele produz é o mapa que não
        desenha, o pin que some, o check invisível.
-       **Degrau barato primeiro:** Vitest sobre `lib/` — `frescor.ts`, `horarios.ts` e `tempo.ts`
-       são funções puras, sem DOM e sem rede, e concentram a regra de negócio que o `CLAUDE.md`
-       diz que não pode escorregar para dentro de `views/`. Playwright para os fluxos fica para
-       depois do R7, quando houver ambiente de verdade para apontar.
+       **Degrau 1 — FEITO em 02/09.** Vitest sobre `lib/`: **46 testes** em `horarios`, `frescor`,
+       `tempo` e `localizacao`, rodando em 1,4 s, com passo próprio no regressivo (que passou de
+       sete para nove etapas). São funções puras — `environment: node`, sem jsdom, sem mock de
+       rede —, e um deles já pegou um engano meu: eu tinha escrito a expectativa errada da faixa
+       que atravessa a meia-noite, e o código estava certo.
+       **Degrau 2 — falta, e é o que pegaria os bugs de verdade.** Componente e fluxo exigem
+       renderizar: jsdom + Testing Library para componente, Playwright para fluxo. É o que teria
+       pego o ✓ invisível, o mapa que não desenha e o pin que some — nenhum deles é alcançável por
+       teste de função pura. O Playwright fica para depois do R7, quando houver ambiente de
+       verdade para apontar.
 - [x] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
        31/08: só o Postgres tem volume; `api` não tem bind mount. Então
        `docker compose exec api uv run pytest` roda **o código de quando a imagem foi construída**.
