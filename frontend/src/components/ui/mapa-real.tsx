@@ -11,9 +11,16 @@ import type { MapaPin } from "@/lib/types";
 /**
  * Mapa de verdade: MapLibre GL com o basemap **dark-matter da CARTO**.
  *
- * Por que este basemap: é escuro e dessaturado, então convive com o `#08060f` do app
- * em vez de brigar com ele, e faz os pins magenta/âmbar/ciano saltarem. E **não exige
- * chave de API** — uma credencial a menos no deploy.
+ * Por que este basemap: é escuro, dessaturado e **não exige chave de API** — uma
+ * credencial a menos no deploy.
+ *
+ * ⚠️ **A justificativa original expirou em 02/09.** Ele foi escolhido para conviver com
+ * o `#08060f` arroxeado do sistema antigo e para fazer os pins magenta/âmbar/ciano
+ * saltarem. O sistema agora é monocromático sobre preto puro, e o dark-matter tem um
+ * viés azulado que pode ficar visível contra `#000000` — além de os pins terem virado
+ * branco e cinza, que é um contraste bem menor sobre um mapa cinza-azulado do que
+ * magenta era. **Precisa ser olhado em tela de verdade**; se brigar, as saídas são
+ * trocar o estilo por um neutro ou aplicar `filter: grayscale()` no container.
  *
  * ## Os dois contextos WebGL
  *
@@ -386,7 +393,7 @@ export function MapaReal({
           isso custou três rodadas de depuração. Mapa saudável não mostra nada.
           Vai no topo porque a gaveta do lugar selecionado ocupa o rodapé. */}
       {(!pronto || erro || suspeito) && process.env.NODE_ENV !== "production" && (
-        <div className="pointer-events-none absolute inset-x-3 top-12 z-5 rounded-xl border border-amber/40 bg-surface/95 px-3 py-2 font-mono text-[11px] leading-snug text-amber">
+        <div className="rounded-[12px] pointer-events-none absolute inset-x-3 top-12 z-5 border border-text-dim/40 bg-surface/95 px-3 py-2 font-mono text-[11px] leading-snug text-text-faint">
           [mapa] {pronto ? "pronto" : "carregando"} · {diag}
           {erro ? ` · erro: ${erro}` : ""}
         </div>

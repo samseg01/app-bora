@@ -5,12 +5,12 @@
  */
 
 const GRADIENTES = [
-  "from-violet to-cyan",
-  "from-amber to-magenta",
-  "from-cyan to-violet",
-  "from-magenta to-amber",
-  "from-plum to-violet",
-  "from-violet to-plum",
+  "from-pedra to-pedra-funda",
+  "from-pedra via-pedra-funda to-pedra",
+  "from-pedra to-pedra-funda",
+  "from-pedra-funda to-pedra",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
 ];
 
 function indiceDe(nome: string) {

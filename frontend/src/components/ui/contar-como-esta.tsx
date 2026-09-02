@@ -51,7 +51,7 @@ export function ContarComoEsta({ roleId }: { roleId: string }) {
 
   if (enviado) {
     return (
-      <p className="rounded-2xl border border-white/8 bg-card-alt px-4 py-3.5 text-center text-[13px] text-text-faint">
+      <p className="elevado rounded-[16px]  border border-linha bg-card-alt px-4 py-3.5 text-center text-[13px] text-text-faint">
         Contado. Quem abrir esse lugar vê.
       </p>
     );
@@ -62,7 +62,7 @@ export function ContarComoEsta({ roleId }: { roleId: string }) {
       <Link
         href="/entrar"
         onClick={() => guardarDestino(caminho)}
-        className="block rounded-2xl border border-white/16 py-3.5 text-center text-[14px] font-semibold text-text-soft"
+        className="rounded-[16px] block border border-linha py-3.5 text-center text-[14px] font-semibold text-text-soft"
       >
         Entrar para contar como está
       </Link>
@@ -74,7 +74,7 @@ export function ContarComoEsta({ roleId }: { roleId: string }) {
       <button
         type="button"
         onClick={() => setAbrindo(true)}
-        className="w-full rounded-2xl border border-white/16 py-3.5 text-[14px] font-semibold text-text-soft hover:border-white/30"
+        className="rounded-[12px] w-full border border-linha py-3.5 text-[14px] font-semibold text-text-soft hover:border-linha"
       >
         Contar como está lá dentro
       </button>
@@ -90,13 +90,13 @@ export function ContarComoEsta({ roleId }: { roleId: string }) {
         onChange={(e) => setTexto(e.target.value)}
         placeholder="fila andando, som bom, cabe gente…"
         maxLength={2000}
-        className="w-full resize-none rounded-2xl border border-white/10 bg-sunken px-4 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-magenta"
+        className="rounded-[12px] w-full resize-none border border-linha bg-sunken px-4 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-selecao"
       />
       <button
         type="button"
         onClick={enviar}
         disabled={enviando || !texto.trim()}
-        className="rounded-2xl bg-magenta py-3 text-[14px] font-bold text-white disabled:opacity-50"
+        className="rounded-[12px]  bg-text py-3 text-[14px] font-bold text-bg disabled:opacity-50"
       >
         {enviando ? "Contando…" : "Contar"}
       </button>

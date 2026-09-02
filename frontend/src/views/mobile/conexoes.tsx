@@ -11,7 +11,7 @@ export function ConexoesMobile(d: DadosConexoes) {
   return (
     <MobileShell>
       <div className="px-5.5 pt-7.5">
-        <h1 className="font-display text-[31px] leading-none uppercase">Conexões</h1>
+        <h1 className="titulo text-[31px] leading-none">Conexões</h1>
         <p className="mt-1.5 text-[13px] text-muted-2">
           {d.foraAgora.length} de {d.conexoes.length} estão na rua agora
         </p>
@@ -40,12 +40,12 @@ export function ConexoesMobile(d: DadosConexoes) {
 
       <Link
         href="/conexoes/convite"
-        className="mx-5.5 mt-5 mb-5 flex items-center justify-between gap-3 rounded-[18px] border border-dashed border-white/18 px-4 py-3.5"
+        className="rounded-[16px] mx-5.5 mt-5 mb-5 flex items-center justify-between gap-3 border border-dashed border-linha px-4 py-3.5"
       >
         <span className="text-[12.5px] leading-snug text-text-faint">
           Quanto mais gente do seu grupo, melhor fica.
         </span>
-        <span className="shrink-0 text-[12.5px] font-semibold text-magenta-soft">Convidar</span>
+        <span className="shrink-0 text-[12.5px] font-semibold text-text-soft">Convidar</span>
       </Link>
     </MobileShell>
   );
@@ -56,8 +56,8 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
 
   return (
     <div
-      className={`flex items-center gap-3.5 rounded-[18px] border bg-card p-3 ${
-        checkin.frescor === "live" ? "border-magenta/30" : "border-white/7"
+      className={`flex items-center gap-3.5 border bg-card p-3 ${
+        checkin.frescor === "live" ? "border-linha-forte" : "border-linha"
       }`}
     >
       <Avatar nome={checkin.nome} tamanho={44} />
@@ -74,7 +74,7 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
       {checkin.role_id ? (
         <Link
           href={`/role/${checkin.role_id}`}
-          className="shrink-0 rounded-full bg-magenta px-4 py-3.5 text-[12.5px] font-bold text-white"
+          className="shrink-0 rounded-full bg-text px-4 py-3.5 text-[12.5px] font-bold text-bg"
         >
           Tô indo
         </Link>
@@ -82,7 +82,7 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
         <button
           type="button"
           disabled
-          className="shrink-0 cursor-not-allowed rounded-full border border-white/16 px-4 py-3.5 text-[12.5px] font-semibold text-text-soft opacity-50"
+          className="shrink-0 cursor-not-allowed rounded-full border border-linha px-4 py-3.5 text-[12.5px] font-semibold text-text-soft opacity-50"
         >
           Chamar
         </button>
@@ -92,16 +92,16 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
 }
 
 const GRADIENTES = [
-  "from-plum to-violet",
-  "from-cyan to-plum",
-  "from-amber to-plum",
-  "from-violet to-magenta",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
+  "from-pedra via-pedra-funda to-pedra",
 ];
 
 function CardSalvoCompacto({ lugar, por }: { lugar: LugarPublic; por?: string[] }) {
   const chave = lugar.nome.charCodeAt(0) % GRADIENTES.length;
   return (
-    <div className="overflow-hidden rounded-[18px] border border-white/7 bg-card">
+    <div className="elevado rounded-[16px] overflow-hidden border border-linha bg-card">
       <div className={`h-21 bg-gradient-to-br ${GRADIENTES[chave]}`} />
       <div className="px-3 pt-2.5 pb-3">
         <div className="truncate text-[13.5px] font-bold">{lugar.nome}</div>
@@ -124,19 +124,19 @@ function ConexoesVaziasMobile({ salvosDoCurador, curador, bairro }: DadosConexoe
   return (
     <MobileShell>
       <div className="px-5.5 pt-7.5">
-        <h1 className="font-display text-[31px] leading-none uppercase">Conexões</h1>
+        <h1 className="titulo text-[31px] leading-none">Conexões</h1>
       </div>
 
       <div className="flex flex-col items-center px-5.5 pt-8 text-center">
-        <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-white/20">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6f6690" strokeWidth={1.8}>
+        <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-linha">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
             <circle cx="9" cy="8" r="3.4" />
             <path d="M3 20c0-3.4 2.7-5.2 6-5.2s6 1.8 6 5.2" />
             <path d="M16.5 6.2a3.4 3.4 0 010 6.4" />
             <path d="M18.4 14.6c2 .7 3.6 2.3 3.6 5" />
           </svg>
         </div>
-        <h2 className="mt-5 font-display text-[26px] leading-tight uppercase">
+        <h2 className="mt-5 titulo text-[26px] leading-tight">
           Ainda é só
           <br />
           você por aqui
@@ -150,7 +150,7 @@ function ConexoesVaziasMobile({ salvosDoCurador, curador, bairro }: DadosConexoe
       <div className="px-5.5 pt-5.5">
         <Link
           href="/conexoes/convite"
-          className="block rounded-2xl bg-magenta py-4 text-center text-[15px] font-bold text-white"
+          className="rounded-[12px] block bg-text py-4 text-center text-[15px] font-bold text-bg"
         >
           Convidar quem você sai
         </Link>
@@ -160,12 +160,12 @@ function ConexoesVaziasMobile({ salvosDoCurador, curador, bairro }: DadosConexoe
       </div>
 
       <div className="flex items-center gap-3 px-5.5 pt-7.5">
-        <div className="h-px flex-1 bg-gradient-to-r from-magenta/40 to-amber/18" />
+        <div className="h-px flex-1 bg-gradient-to-r from-text-dim/40 to-text-dim/18" />
         <span className="rotulo text-muted-2">enquanto isso</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-amber/18 to-magenta/40" />
+        <div className="h-px flex-1 bg-gradient-to-r from-text-dim/18 to-text-dim/40" />
       </div>
 
-      <div className="mx-5.5 mt-4.5 flex items-center gap-3.5 rounded-[18px] border border-white/6 bg-card-alt p-3.5">
+      <div className="elevado rounded-[16px] mx-5.5 mt-4.5 flex items-center gap-3.5 border border-linha bg-card-alt p-3.5">
         <Avatar nome={curador} tamanho={40} />
         <p className="text-[12.5px] leading-relaxed text-text-faint">
           <span className="font-semibold text-text">Quem cura {bairro} vai a pé.</span>{" "}

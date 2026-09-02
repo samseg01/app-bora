@@ -64,9 +64,9 @@ export function BuscarPorLocalizacao({
         type="button"
         onClick={buscar}
         disabled={estado === "buscando"}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/16 py-3.5 text-[13.5px] font-semibold text-text-soft transition-colors hover:border-white/30 disabled:opacity-60"
+        className="rounded-[12px] flex w-full items-center justify-center gap-2 border border-linha py-3.5 text-[13.5px] font-semibold text-text-soft transition-colors hover:border-linha disabled:opacity-60"
       >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff6fa0" strokeWidth={2}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
           <circle cx="12" cy="12" r="3.2" />
           <path d="M12 2v3.2M12 18.8V22M22 12h-3.2M5.2 12H2" />
           <circle cx="12" cy="12" r="8" />
@@ -94,7 +94,7 @@ export function BuscarPorLocalizacao({
 function Resultado({ achado }: { achado: Achado }) {
   if (!achado.bairro || achado.distancia_m === null) {
     return (
-      <div className="mt-3 rounded-[18px] border border-white/8 bg-card-alt px-4 py-3.5">
+      <div className="elevado rounded-[16px] mt-3 border border-linha bg-card-alt px-4 py-3.5">
         <div className="text-[13.5px] font-bold">Ainda não andamos por aí</div>
         <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-2">
           Nenhum recorte que a gente curou fica perto de você. Escolha um da lista pra dar uma
@@ -125,25 +125,25 @@ function Resultado({ achado }: { achado: Achado }) {
 
   return (
     <div
-      className={`mt-3 rounded-[18px] border px-4 py-3.5 ${
+      className={`mt-3 border px-4 py-3.5 ${
         destaque
-          ? "border-magenta/30 bg-gradient-to-br from-magenta/12 to-violet/8"
-          : "border-white/10 bg-card-alt"
+          ? "border-linha-forte bg-gradient-to-br from-text-dim/12 to-pedra-funda"
+          : "border-linha bg-card-alt"
       }`}
     >
-      <div className={`rotulo ${destaque ? "text-magenta-soft" : "text-muted-3"}`}>{rotulo}</div>
+      <div className={`rotulo ${destaque ? "text-text-soft" : "text-muted-3"}`}>{rotulo}</div>
       <div className="mt-1.5 text-[15px] font-bold">
         {achado.bairro}
         <span className="ml-2 text-[12.5px] font-medium text-muted-2">{detalhe}</span>
       </div>
 
       {achado.lugares.length > 0 && (
-        <ul className="mt-2.5 flex flex-col gap-1.5 border-t border-white/8 pt-2.5">
+        <ul className="rounded-[16px] mt-2.5 flex flex-col gap-1.5 border-t border-linha pt-2.5">
           {achado.lugares.map(({ lugar, distancia_m, role_ativo }) => (
             <li key={lugar.id} className="flex items-baseline justify-between gap-3 text-[12.5px]">
               <span className="min-w-0 truncate text-text-faint">
                 {lugar.nome}
-                {role_ativo && <span className="text-magenta-soft"> · {role_ativo.titulo}</span>}
+                {role_ativo && <span className="text-text-soft"> · {role_ativo.titulo}</span>}
               </span>
               <span className="shrink-0 text-muted-3">{distanciaLegivel(distancia_m)}</span>
             </li>

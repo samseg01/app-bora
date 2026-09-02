@@ -40,10 +40,10 @@ export function EscolhaBairro({
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col bg-surface px-6 pt-11 pb-8 lg:max-w-lg">
+    <div className="rounded-[16px] mx-auto flex min-h-dvh w-full max-w-md flex-col bg-surface px-6 pt-11 pb-8 lg:max-w-lg">
       <div>
-        <h1 className="font-display text-[52px] leading-[0.9] tracking-[-0.5px] uppercase">
-          Bora<span className="text-amber">?</span>
+        <h1 className="titulo text-[52px] leading-[0.9] tracking-[-0.5px]">
+          Bora<span className="text-text-faint">?</span>
         </h1>
         <p className="mt-3 max-w-[16rem] text-[13.5px] leading-relaxed text-muted">
           O rolê que tá rolando agora, perto de você — não o que você já conhece.
@@ -51,7 +51,7 @@ export function EscolhaBairro({
       </div>
 
       <div className="mt-11">
-        <h2 className="font-display text-[31px] leading-[1.02] uppercase">
+        <h2 className="titulo text-[31px] leading-[1.02]">
           {atual ? (
             <>
               Trocar de
@@ -82,10 +82,10 @@ export function EscolhaBairro({
               type="button"
               onClick={() => setEscolhido(b.nome)}
               aria-pressed={ativo}
-              className={`flex items-center justify-between gap-4 rounded-[18px] border px-4 py-3.5 text-left transition-colors ${
+              className={`flex items-center justify-between gap-4 border px-4 py-3.5 text-left transition-colors ${
                 ativo
-                  ? "border-magenta bg-gradient-to-br from-magenta/16 to-violet/10"
-                  : "border-white/6 bg-card-alt hover:border-white/16"
+                  ? "border-selecao bg-gradient-to-br from-text-dim/16 to-pedra-funda"
+                  : "border-linha bg-card-alt hover:border-linha"
               }`}
             >
               <div className="min-w-0">
@@ -103,7 +103,7 @@ export function EscolhaBairro({
               </div>
               <span
                 className={`flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full text-[12px] font-bold ${
-                  ativo ? "bg-magenta text-white" : "border border-white/16 text-transparent"
+                  ativo ? "bg-text text-bg" : "border border-linha text-transparent"
                 }`}
               >
                 ✓
@@ -120,7 +120,7 @@ export function EscolhaBairro({
           type="button"
           onClick={continuar}
           disabled={indo}
-          className="w-full rounded-2xl bg-magenta py-4 text-[15px] font-bold text-white disabled:opacity-60"
+          className="rounded-[12px] w-full bg-text py-4 text-[15px] font-bold text-bg disabled:opacity-60"
         >
           {indo ? "Um instante…" : atual ? "Ver esse bairro" : "Ver a noite de hoje"}
         </button>

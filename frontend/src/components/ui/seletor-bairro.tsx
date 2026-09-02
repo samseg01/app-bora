@@ -58,11 +58,11 @@ export function SeletorBairro({
         onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
         aria-haspopup="listbox"
-        className={`flex items-center gap-1.5 font-bold text-text hover:text-magenta-soft ${
+        className={`flex items-center gap-1.5 font-bold text-text hover:text-text-soft ${
           tamanho === "desktop" ? "text-[17px]" : "text-[17px]"
         }`}
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="#ff3d81" className="shrink-0">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
           <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
         </svg>
         {atual}
@@ -83,7 +83,7 @@ export function SeletorBairro({
         <div
           role="listbox"
           aria-label="Escolher bairro"
-          className="absolute top-full left-0 z-20 mt-2 w-[17rem] overflow-hidden rounded-[18px] border border-white/10 bg-card-alt shadow-2xl shadow-black/60"
+          className="elevado rounded-[16px] absolute top-full left-0 z-20 mt-2 w-[17rem] overflow-hidden border border-linha bg-card-alt shadow-2xl shadow-black/60"
         >
           {BAIRROS.map((b, i) => {
             const ativo = b.nome === atual;
@@ -95,11 +95,11 @@ export function SeletorBairro({
                 aria-selected={ativo}
                 onClick={() => escolher(b.nome)}
                 className={`flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-white/4 ${
-                  i > 0 ? "border-t border-white/6" : ""
+                  i > 0 ? "border-t border-linha" : ""
                 }`}
               >
                 <div className="min-w-0 flex-1">
-                  <div className={`text-[14.5px] font-bold ${ativo ? "text-magenta" : ""}`}>
+                  <div className={`text-[14.5px] font-bold ${ativo ? "text-selecao" : ""}`}>
                     {b.nome}
                   </div>
                   <div className="mt-0.5 text-[11.5px] leading-snug text-muted-3">
@@ -112,7 +112,7 @@ export function SeletorBairro({
                     height="15"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#ff3d81"
+                    stroke="currentColor"
                     strokeWidth={3}
                     className="mt-1 shrink-0"
                   >

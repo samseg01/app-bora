@@ -66,14 +66,14 @@ function Cartao({
 }) {
   const borda =
     cor === "cyan"
-      ? "border-cyan/24 from-cyan/12 to-violet/9"
-      : "border-amber/24 from-amber/13 to-violet/9";
+      ? "border-muted/24 from-muted/12 to-pedra-funda"
+      : "border-text-dim/24 from-text-dim/13 to-pedra-funda";
   return (
     <Link
       href={href}
-      className={`block rounded-[20px] border bg-gradient-to-br px-4.5 py-4 ${borda}`}
+      className={`block border bg-gradient-to-br px-4.5 py-4 ${borda}`}
     >
-      <div className={`rotulo ${cor === "cyan" ? "text-cyan" : "text-amber"}`}>{rotulo}</div>
+      <div className={`rotulo ${cor === "cyan" ? "text-muted" : "text-text-faint"}`}>{rotulo}</div>
       <div className="mt-2 text-[15px] font-bold">{titulo}</div>
       <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">{texto}</p>
     </Link>

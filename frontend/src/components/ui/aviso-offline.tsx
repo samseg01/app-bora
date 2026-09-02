@@ -4,7 +4,7 @@
  */
 export function AvisoOffline() {
   return (
-    <div className="bg-amber/15 px-4 py-2 text-center text-[11px] font-semibold text-amber">
+    <div className="rounded-[12px] bg-text-dim/15 px-4 py-2 text-center text-[11px] font-semibold text-text-faint">
       API fora do ar — mostrando dado de exemplo. Suba o backend com{" "}
       <code className="font-mono">docker compose up -d</code>.
     </div>

@@ -93,8 +93,9 @@ musical, porque decidem mais — e uma lista que começa em "Forró" conta para 
 é sobre programação, que é o topo da escada do `conceito.md` e não a base que ele quer atender.
 
 `TagsLugar` **não renderiza nada** sem tag — nem rótulo, nem caixa vazia, mesma regra do frescor
-`null`. E usa ciano, nunca magenta ou âmbar: essas duas dizem "está acontecendo agora" em todo o
-app, e tag é permanente — tag magenta faria a ficha de uma casa vazia parecer acesa.
+`null`. E é **cinza, nunca branco**: no sistema monocromático branco quer dizer "está acontecendo
+agora", e tag é permanente — tag branca faria a ficha de uma casa vazia parecer acesa. É a mesma
+regra de antes, quando o proibido era magenta; o que mudou foi qual cor carrega o significado.
 
 **Painel do curador — três etapas, nesta ordem: região → lugar → rolê.**
 `components/ui/passos-curador.tsx` mostra a sequência nas duas visualizações. A ordem é dependência
@@ -255,57 +256,90 @@ larga (`components/ui/role-row.tsx`), com espaço para o motivo pra ir.
 
 ## O design
 
-Fonte única: `../docs/front-end-ideias/seguir-ideia-da-documenta-o/project/Rolês - Telas hi-fi.dc.html`
-— 8 telas, IDs `2a` a `2h`. **Seguir o hi-fi, não o wireframe**, apesar de o `README.md` do bundle
-mandar ler o wireframe primeiro: o hi-fi é posterior e já resolve as variantes que o wireframe
-deixou em aberto (home = `1a` empilhado, detalhe = `1e` dois gestos).
+**O sistema visual é o monocromático de 02/09/2026, não o hi-fi.** Os tokens vivem em
+`app/globals.css` (`@theme`) e o cabeçalho de lá é a fonte da verdade — leia antes de mexer, porque
+ele explica as três regras que sustentam o resto.
 
-Recriar o **resultado visual** pixel-perfect, sem copiar a estrutura interna do HTML do protótipo —
-é protótipo de design, não código de produção.
+O hi-fi (`../docs/front-end-ideias/.../Rolês - Telas hi-fi.dc.html`, 8 telas `2a`–`2h`) **continua
+valendo como registro do FLUXO** — quais telas existem, o que cada uma faz, quais variantes do
+wireframe foram resolvidas (home = `1a` empilhado, detalhe = `1e` dois gestos). Como referência de
+**estilo**, não vale mais: o quase-preto arroxeado, o Anton maiúsculo e as quatro cores saturadas
+foram substituídos. Não "voltar ao design" copiando cor de lá.
 
-**Não replicar** a moldura de telefone (`382px`, `border-radius:44px`), o notch preto, nem a barra
-de status ("22:58 ▪▪▪ ⌁ ▮"). É cenografia da artboard, não interface.
+### As três regras do sistema
 
-### Tokens (para `app/globals.css`, em `@theme inline`)
+1. **Os nomes dos tokens são de PAPEL, não de matiz.** `--color-agora`, nunca `--color-magenta`.
+   O hue no nome foi o que travou a mudança anterior: 143 arquivos diziam "magenta" quando queriam
+   dizer "agora", e não dava para trocar a cor sem reescrever o significado junto.
+2. **O branco é o acento, e por isso é escasso.** O texto corrente é **cinza**
+   (`--color-text-dim`, e é o que o `body` herda). Branco puro fica para título e para "agora" —
+   27 e ~6 lugares. Branco em tudo é o mesmo erro que magenta em tudo, sem a cor.
+3. **Não há card.** Conteúdo solto entre réguas de 1px, não em caixas com fundo e raio. É a
+   diferença estrutural entre este sistema e os anteriores, e é ela que produz o "ar".
+
+### Tokens (`app/globals.css`, em `@theme`)
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--color-bg` | `#08060f` | fundo da página |
-| `--color-surface` | `#0d0a18` | fundo da tela |
-| `--color-card` | `#181227` | cards do rail, itens de lista |
-| `--color-card-alt` | `#171223` | blocos de conteúdo, chips inativos |
-| `--color-sunken` | `#141024` | stats, fundo do mapa |
-| `--color-nav` | `#0f0b1c` | barra de navegação inferior |
-| `--color-magenta` | `#ff3d81` | estado "agora", CTA primário, aba ativa |
-| `--color-magenta-soft` | `#ff6fa0` | links, ícones secundários |
-| `--color-amber` | `#ffb443` | categoria, avisos "em breve" |
-| `--color-cyan` | `#1fd0ff` | estado "novo" |
-| `--color-violet` | `#7a1fff` | gradientes de bloco de foto |
-| `--color-text` | `#f3eefc` | texto principal |
-| `--color-text-soft` | `#e8dfff` / `#cfc6e2` / `#b4a9cc` | texto em superfície |
-| `--color-muted` | `#9083ad` | secundário |
-| `--color-muted-2` | `#8478a0` | terciário |
-| `--color-muted-3` | `#6f6690` | rótulos, desabilitado |
+| `--color-bg` / `--color-surface` / `--color-nav` | `#000000` | preto de verdade: em OLED apaga o pixel |
+| `--color-sunken` | `#0a0a0a` | fundo de mapa, áreas rebaixadas |
+| `--color-card` / `--color-card-alt` | `#0d0d0d` / `#0a0a0a` | **caso raro** — campo de formulário, chip ativo. Não usar para agrupar: agrupar é trabalho da régua |
+| `--color-linha` / `--color-linha-forte` | `#1f1f1f` / `#333333` | **a régua** — o elemento estrutural, no lugar do card |
+| `--color-text` | `#ffffff` | título e ênfase. Escasso |
+| `--color-text-soft` / `--color-text-dim` | `#d4d4d4` / `#a3a3a3` | **`text-dim` é o texto corrente** |
+| `--color-text-faint` / `--color-muted` | `#8a8a8a` / `#737373` | secundário e terciário |
+| `--color-muted-2` / `--color-muted-3` | `#525252` / `#404040` | rótulos, desabilitado |
+| `--color-agora` | `#ffffff` | **só o estado "agora"**, sempre com o pulso |
+| `--color-pin-off` | `#737373` | pin de lugar curado sem frescor |
+| `--color-pedra` / `--color-pedra-funda` | `#1a1a1a` / `#0a0a0a` | bloco no lugar de foto |
 
-Bordas: `1px solid rgba(255,255,255,.06–.09)` em cards; `1.5px solid #ff3d81` no item selecionado.
-Raios: 44px moldura (não usar), 34px tela (não usar), 22px painéis, 18–20px cards, 16px botões,
-20–24px pills.
+**Raios: nenhum.** Só `rounded-full` sobrevive, em ponto e pill. Se aparecer um `rounded-[10px]`
+novo, é regressão ao sistema anterior.
 
-Tipografia: **Anton** nos títulos (`font-display`, uppercase, `letter-spacing:-.3px` nos grandes),
-**Inter** 400/500/600/700 no corpo (`font-sans`). Ambas via `next/font/google`.
+**Tipografia: Inter, uma família só.** `--font-display` e `--font-sans` apontam para ela. Título usa
+a utility `titulo` (peso 700, `letter-spacing: -0.03em`) — o tracking negativo é metade do efeito,
+sem ele a Inter pesada fica larga e datada. **Nunca caixa alta em título:** o `uppercase` do Anton
+era o grito do sistema antigo, e foi removido de 42 lugares.
 
-Rótulos de seção: `600 10px`, `letter-spacing:1.6px`, `text-transform:uppercase`, cor `--color-muted-3`.
+Passaram pela escolha em 02/09 e saíram: Instrument Serif (serifa briga com a régua), Space Grotesk
+e Archivo (personalidade a mais), Anton (o grito). A decisão foi tomada comparando as cinco no
+telefone, não no nome.
+
+Rótulo de seção (`rotulo`): `500 10px`, `letter-spacing: 2px`, caixa alta. O tracking largo voltou,
+mas por outro motivo que no hi-fi — aqui é elemento suíço, e funciona porque quase tudo à volta é
+cinza e sem ornamento.
+
+### A armadilha que a varredura de classes não pega
+
+**Cor fixa em hex dentro de JSX.** `stroke="#fff"`, `fill="#ff6fa0"` — não são classes Tailwind,
+então nenhuma busca por `bg-magenta` os encontra. Em 02/09 sobreviveram **17 deles** à troca de
+sistema, e o pior produziu um ✓ branco dentro de um círculo branco: um disco liso, que passou por
+`lint`, `build` e pelos 56 testes e só apareceu num screenshot de telefone.
+
+Todos viraram `currentColor`, que herda do elemento. **Se aparecer um `stroke="#..."` ou
+`fill="#..."` novo, é regressão** — dê a cor pela classe do SVG (`className="text-bg"`), nunca pelo
+atributo.
+
+E a segunda metade da mesma armadilha: **trocar token mecanicamente propaga o significado errado.**
+`text-magenta-soft` virou `text-agora-soft` em 34 lugares, e de repente link, aba ativa e coração
+de salvar diziam "agora" — o erro do magenta com nome novo, no mesmo dia em que a regra contra ele
+foi escrita. Daí `--color-selecao` existir separado, com a mesma cor: seleção e frescor são coisas
+diferentes.
+
+Conferência rápida de regressão: `grep -rn "\-agora" frontend/src --include=*.tsx --include=*.ts
+| grep -v pulse-agora` deve devolver **6 linhas** — três em `lib/frescor.ts`, a legenda do mapa e a
+barra de expiração do sinal.
 
 ### Detalhes que fazem a tela (fáceis de perder)
 
-- **`@keyframes pulse`** — `box-shadow` magenta expandindo de 0 a 9px em 1.8s, infinito. Só no
-  estado `live`. Está no `<style>` do topo do hi-fi.
-- **`@media (prefers-reduced-motion:reduce){*{animation:none!important}}`** — já vem no design.
-  Manter.
-- **O seam da home** entre as duas camadas: duas linhas de 1px com gradiente magenta→âmbar saindo
-  dos lados e o rótulo "ou explore a região" no meio.
-- **Blocos de cor no lugar de fotos** — gradientes de 135°, propositais. Fotos reais de campo
-  entram muito depois.
+- **`@keyframes pulse-agora`** — `box-shadow` **branco** expandindo de 0 a 7px em 1.8s, infinito.
+  Só no estado `live`. Sem cor no sistema, o pulso é o que sobrou de movimento, e é ele que faz o
+  "agora" ser visto de longe.
+- **`@media (prefers-reduced-motion:reduce){*{animation:none!important}}`** — manter. E note a
+  consequência: para quem tem isso ligado, o "agora" perde o pulso e sobra só o branco. É o limite
+  conhecido de um sistema que gasta movimento no lugar de cor.
+- **Blocos de cinza no lugar de fotos** — propositais, não provisórios. O item 45 é que traz foto
+  de verdade.
 
 ## Convenções
 
@@ -327,17 +361,25 @@ da tela.
 **Fuso:** o backend é UTC timezone-aware. Todo horário exibido ("termina 04h", "23h30", "12 min
 atrás") formata em `America/Sao_Paulo` no cliente.
 
-**Frescor → UI** (mapeamento único, em `lib/frescor.ts`):
+**Frescor → UI** (mapeamento único, em `lib/frescor.ts`). Reescrito em 02/09, e a mudança é de
+sistema, não de cor: antes eram três cores saturadas competindo, e o resultado é que **nenhuma
+significava nada** — a tela ficava colorida inteira e o olho não tinha para onde ir primeiro.
 
-| `frescor` da API | Rótulo | Cor | Pulsa |
-|---|---|---|---|
-| `"live"` | "Bombando agora" | magenta | sim |
-| `"warm"` | "Começando a encher" | âmbar | não |
-| `"new"` | "Novo por aqui" | ciano | não |
-| `null` | sem badge | — | — |
+Agora **só `live` tem cor** (branco, o acento). Os outros dois se distinguem por **peso e forma**,
+que é como hierarquia funciona quando não se pode gastar cor:
 
-O design só desenhou `live` e `warm`; os outros dois seguem o sistema de cor já definido. `null` é
-**ausência de badge**, não um badge cinza — não há sinal a exibir.
+| `frescor` | Rótulo | Cor | Forma | Pulsa |
+|---|---|---|---|---|
+| `"live"` | "Bombando agora" | branco (`text-agora`) | ponto cheio | **sim** |
+| `"warm"` | "Começando a encher" | `text-dim` | ponto cheio | não |
+| `"new"` | "Novo por aqui" | `muted` | **anel vazado** | não |
+| `null` | sem badge | — | — | — |
+
+O anel vazado do `new` não é enfeite: ele diz "ainda não tem ninguém" **pela própria forma** — um
+contorno sem preenchimento —, o que a cor sozinha nunca conseguiu dizer quando ciano parecia tão
+vivo quanto magenta.
+
+`null` é **ausência de badge**, não um badge cinza — não há sinal a exibir.
 
 **Bairro:** em `localStorage`. Não existe endpoint de bairros nem campo de bairro no `Usuario`, e
 não vale migration para um bairro só. O piloto ainda nem foi escolhido (`../TODO.md` item 1).
@@ -383,7 +425,7 @@ ainda não existe.
   pronto e desenha nada. `MapaReal` detecta o caso e usa `setCenter` + zoom fixo. Importa
   porque **é o estado normal de um bairro piloto** — República começou com um lugar; a Vila
   Madalena fictícia, com seis, nunca expôs a falha.
-- **A caixa âmbar de diagnóstico do mapa** aparece em dev enquanto ele não está pronto, quando
+- **A caixa de diagnóstico do mapa** (era âmbar; no sistema monocromático é cinza clara) aparece em dev enquanto ele não está pronto, quando
   houve erro, e — o caso que importa — quando a sonda vê o canvas fora de sincronia com o
   container. Um mapa "pronto" desenhando num canvas de 400x300 fora da vista é invisível na
   tela e custou três rodadas de depuração; agora ele se denuncia. Mapa saudável não mostra nada.
@@ -416,7 +458,7 @@ ainda não existe.
 - **Não há seed no backend.** Popular dados exige criar usuário, promover a curador com
   `../backend/scripts/promote_role.py` e cadastrar lugares/rolês na mão pelo painel do curador.
   Enquanto isso, `lib/fixtures.ts` alimenta a tela **só** quando a API não responde e **só** fora de
-  produção, com uma faixa âmbar avisando. Quando o seed existir, apagar o arquivo — dois lugares
+  produção, com uma faixa cinza avisando. Quando o seed existir, apagar o arquivo — dois lugares
   inventando dado é um a mais.
 - **Nunca engolir exceção de `fetch` em Server Component.** O Next sinaliza controle de fluxo por
   `throw` (rota dinâmica, `redirect()`, `notFound()`) e esses erros carregam `digest`. O

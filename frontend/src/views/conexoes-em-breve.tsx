@@ -12,8 +12,8 @@ function Conteudo() {
   return (
     <div className="flex flex-1 flex-col justify-center px-7 py-14">
       <div className="max-w-[26rem]">
-        <div className="rotulo text-amber">em construção</div>
-        <h1 className="mt-3 font-display text-[30px] leading-tight uppercase">
+        <div className="rotulo text-text-faint">em construção</div>
+        <h1 className="mt-3 titulo text-[30px] leading-tight">
           Conexões ainda não funcionam
         </h1>
         <p className="mt-3.5 text-[13.5px] leading-relaxed text-muted text-pretty">
@@ -25,7 +25,7 @@ function Conteudo() {
         </p>
         <Link
           href="/"
-          className="mt-6 inline-block rounded-2xl border border-white/16 px-5 py-3 text-[13.5px] font-semibold text-text-soft hover:border-white/30"
+          className="rounded-[16px] mt-6 inline-block border border-linha px-5 py-3 text-[13.5px] font-semibold text-text-soft hover:border-linha"
         >
           Ver a noite de hoje
         </Link>

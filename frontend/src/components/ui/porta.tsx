@@ -63,7 +63,7 @@ export function Porta({
           <Link
             href="/entrar"
             onClick={() => guardarDestino(caminho)}
-            className="rounded-2xl bg-magenta px-6 py-3.5 text-[14.5px] font-bold text-white"
+            className="rounded-[12px]  bg-text px-6 py-3.5 text-[14.5px] font-bold text-bg"
           >
             Entrar
           </Link>
@@ -84,13 +84,13 @@ function Conteudo({
 }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-8 py-16 text-center">
-      <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-white/20">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6f6690" strokeWidth={1.8}>
+      <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-linha">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
           <rect x="4" y="10" width="16" height="10" rx="2.5" />
           <path d="M8 10V7a4 4 0 018 0v3" />
         </svg>
       </div>
-      <h1 className="mt-5 font-display text-[28px] leading-tight uppercase">{titulo}</h1>
+      <h1 className="mt-5 titulo text-[28px] leading-tight">{titulo}</h1>
       <p className="mt-3 max-w-80 text-[13.5px] leading-relaxed text-muted text-pretty">
         {descricao}
       </p>

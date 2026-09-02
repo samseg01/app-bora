@@ -10,10 +10,10 @@ import type { RoleDescoberta } from "@/lib/types";
  */
 
 const GRADIENTES = [
-  "from-magenta to-violet",
-  "from-amber to-magenta",
-  "from-cyan to-violet",
-  "from-violet to-plum",
+  "from-pedra-funda to-pedra",
+  "from-pedra via-pedra-funda to-pedra",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
 ];
 
 export function RoleCard({
@@ -28,7 +28,7 @@ export function RoleCard({
   return (
     <Link
       href={`/role/${role.id}`}
-      className="block overflow-hidden rounded-[20px] border border-white/7 bg-card transition-colors hover:border-white/15"
+      className="elevado rounded-[16px] block overflow-hidden border border-linha bg-card transition-colors hover:border-linha"
     >
       <div
         className={`relative ${alturaFoto} bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`}
@@ -38,7 +38,7 @@ export function RoleCard({
         </div>
       </div>
       <div className="px-3.5 pt-3 pb-4">
-        <div className="rotulo text-amber">{role.categoria}</div>
+        <div className="rotulo text-text-faint">{role.categoria}</div>
         <div className="mt-1.5 text-[15.5px] leading-[1.22] font-bold">
           {role.titulo}
         </div>

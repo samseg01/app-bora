@@ -58,12 +58,12 @@ export function SidebarCurador() {
   }, [token]);
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-60 shrink-0 flex-col gap-8 border-r border-white/7 bg-nav px-5 py-7">
+    <aside className="rounded-[20px] sticky top-0 flex h-dvh w-60 shrink-0 flex-col gap-8 border-r border-linha bg-nav px-5 py-7">
       <div className="px-3.5">
-        <Link href="/curador" className="font-display text-3xl leading-none uppercase">
-          Bora<span className="text-amber">?</span>
+        <Link href="/curador" className="titulo text-3xl leading-none">
+          Bora<span className="text-text-faint">?</span>
         </Link>
-        <div className="rotulo mt-2 text-amber">painel do curador</div>
+        <div className="rotulo mt-2 text-text-faint">painel do curador</div>
       </div>
 
       <nav className="flex flex-col gap-1">
@@ -76,9 +76,9 @@ export function SidebarCurador() {
             key={href}
             href={href}
             aria-current={ativo ? "page" : undefined}
-            className={`flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm transition-colors ${
+            className={`flex items-center gap-3 px-3.5 py-3 text-sm transition-colors ${
               ativo
-                ? "bg-magenta/15 font-semibold text-magenta"
+                ? "bg-card font-semibold text-selecao"
                 : "font-medium text-muted-2 hover:bg-white/4 hover:text-text"
             }`}
           >
@@ -91,8 +91,8 @@ export function SidebarCurador() {
 
       <div className="mt-auto flex flex-col gap-3">
         {nome && (
-          <div className="flex items-center gap-2.5 rounded-[18px] border border-white/6 bg-card-alt p-4">
-            <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+          <div className="elevado rounded-[16px] flex items-center gap-2.5 border border-linha bg-card-alt p-4">
+            <div className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-pedra to-pedra-funda" />
             <div className="min-w-0">
               <div className="truncate text-[13px] font-semibold">{nome}</div>
               <div className="mt-0.5 text-[11px] text-muted-3">curador</div>

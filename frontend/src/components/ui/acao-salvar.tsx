@@ -77,7 +77,7 @@ export function AcaoSalvar({
   const base =
     variante === "pill"
       ? "flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold"
-      : "flex w-full items-center justify-center gap-2 rounded-2xl border py-3 text-[13.5px] font-semibold";
+      : "flex w-full items-center justify-center gap-2 border py-3 text-[13.5px] font-semibold";
 
   return (
     <button
@@ -87,16 +87,16 @@ export function AcaoSalvar({
       aria-pressed={salvo === true}
       className={`${base} transition-colors disabled:opacity-50 ${
         salvo
-          ? "border-magenta/45 bg-magenta/12 text-magenta-soft"
-          : "border-white/18 text-text-soft hover:border-white/32"
+          ? "border-linha-forte bg-card text-text-soft"
+          : "border-linha text-text-soft hover:border-linha"
       }`}
     >
       <svg
         width="14"
         height="14"
         viewBox="0 0 24 24"
-        fill={salvo ? "#ff6fa0" : "none"}
-        stroke="#ff6fa0"
+        fill={salvo ? "currentColor" : "none"}
+        stroke="currentColor"
         strokeWidth={2.2}
       >
         <path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z" />

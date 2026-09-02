@@ -101,17 +101,19 @@ de assumir que funciona como desenhado.
   detalhe do rolê → `2e` confirmação de sinalização → `2f` mapa em tela cheia → `2g` salvos →
   `2h` perfil. **Não há painel do curador nem painel do estabelecimento no design ainda** — só o
   app público.
-- **Sistema visual do hi-fi** (útil pra reimplementar fiel): fundo quase-preto roxo (`#08060f`/
-  `#0d0a18`), títulos em Anton condensado maiúsculo, corpo em Inter; **magenta `#ff3d81`** =
-  estado "agora"/frescor, **âmbar `#ffb443`** = categoria, **ciano `#1fd0ff`** = "novo"; blocos de
-  cor no lugar de fotos reais (fotos de campo entram depois, de propósito).
+- **Sistema visual do hi-fi** — fundo quase-preto roxo (`#08060f`), Anton condensado maiúsculo,
+  magenta/âmbar/ciano. **SUBSTITUÍDO em 02/09/2026** pelo monocromático: preto, cinza e branco,
+  Inter, sem card e sem raio. Ver `frontend/CLAUDE.md` (seção "O design") e o cabeçalho de
+  `frontend/src/app/globals.css`, que é a fonte da verdade. O hi-fi segue valendo como registro do
+  **fluxo** das telas; como referência de **estilo**, não mais — não "voltar ao design" copiando
+  cor de lá.
 
 ## Stack
 
 | Camada | Tecnologia | Status |
 |---|---|---|
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, **49 testes** |
-| Frontend | Next 16.3.3 + React 19.2.8 + Tailwind v4 + MapLibre GL 5 (CARTO dark-matter, sem chave) + PWA instalável (manifest, ícones, service worker) | ✅ 14 rotas |
+| Frontend | Next 16.3.3 + React 19.2.8 + Tailwind v4 + MapLibre GL 5 (CARTO dark-matter, sem chave) + PWA instalável (manifest, ícones, service worker) | ✅ 14 rotas; sistema visual **monocromático** desde 02/09 |
 | Infra | Docker Compose local (api + postgres/postgis); produção planejada: Railway/Fly.io/Render (backend) + Vercel (Next.js) | ⚠️ só local, nada de produção configurado |
 
 ## Modelo de dados (resumo — schema completo em `backend/src/boraroles/db/models.py`)
@@ -176,6 +178,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — indicar um lugar | ✅ | link para WhatsApp/email do curador, sem backend por decisão |
 | Frontend — onboarding de gostos (`2b`) | ❌ | segue sem uso funcional por decisão; o `2e` foi feito |
 | Frontend — design de desktop | ✅ | 5 artboards em `docs/front-end-ideias/desktop/` |
+| Frontend — sistema visual monocromático (camada 1) | ⚠️ | fundação feita em 02/09 (tokens, tipografia, cor, superfície); **aguardando validação**. Composição e densidade são a camada 2, item 61 |
 | Frontend — ficha do lugar (`/lugar/[id]`) | ✅ | foto, descrição, programação, preço datado, Instagram, tags |
 | Frontend — tags do lugar | ✅ | migration 0007; vocabulário em `lib/tags.ts`, editor no painel do curador |
 | Backend — funcionamento estruturado (`Lugar.horarios`) | ✅ | faixas dia+hora; destrava "aberta agora" |

@@ -25,8 +25,8 @@ export function CuradorMobile({
     <MobileShell nav={false}>
       <div className="flex items-center justify-between px-5.5 pt-9">
         <div>
-          <div className="rotulo text-amber">painel do curador</div>
-          <h1 className="mt-2 font-display text-[31px] leading-none uppercase">
+          <div className="rotulo text-text-faint">painel do curador</div>
+          <h1 className="mt-2 titulo text-[31px] leading-none">
             A noite de hoje
           </h1>
         </div>
@@ -51,13 +51,13 @@ export function CuradorMobile({
             return (
               <div
                 key={role.id}
-                className={`flex items-center gap-3 rounded-[18px] border bg-card p-3 ${
-                  role.frescor === "live" ? "border-magenta/30" : "border-white/7"
+                className={`flex items-center gap-3 border bg-card p-3 ${
+                  role.frescor === "live" ? "border-linha-forte" : "border-linha"
                 }`}
               >
                 <div
-                  className={`h-11 w-11 shrink-0 rounded-xl bg-gradient-to-br ${
-                    ["from-magenta to-violet", "from-amber to-magenta", "from-cyan to-violet"][i % 3]
+                  className={`h-11 w-11 shrink-0 bg-gradient-to-br ${
+                    ["from-pedra-funda to-pedra", "from-pedra via-pedra-funda to-pedra", "from-pedra to-pedra-funda"][i % 3]
                   }`}
                 />
                 <div className="min-w-0 flex-1">

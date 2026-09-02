@@ -78,20 +78,20 @@ function Passo({
       <div className="flex items-center gap-1.5">
         <span
           className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9.5px] font-bold ${
-            ativo ? "bg-amber text-bg" : "bg-white/12 text-muted-2"
+            ativo ? "bg-text-dim text-bg" : "bg-white/12 text-muted-2"
           }`}
         >
           {numero}
         </span>
-        <span className={`rotulo ${ativo ? "text-amber" : "text-muted-3"}`}>{rotulo}</span>
+        <span className={`rotulo ${ativo ? "text-text-faint" : "text-muted-3"}`}>{rotulo}</span>
       </div>
       <div className="mt-1.5">{children}</div>
     </>
   );
 
-  const classe = `flex min-w-[8.5rem] shrink-0 flex-col rounded-[16px] border px-3 py-2.5 transition-colors ${
-    ativo ? "border-amber/45 bg-amber/8" : "border-white/8 bg-card-alt"
-  } ${href ? "hover:border-white/22" : ""}`;
+  const classe = `flex min-w-[8.5rem] shrink-0 flex-col border px-3 py-2.5 transition-colors ${
+    ativo ? "border-text-dim/45 bg-text-dim/8" : "border-linha bg-card-alt"
+  } ${href ? "hover:border-linha" : ""}`;
 
   return (
     <li className="flex">

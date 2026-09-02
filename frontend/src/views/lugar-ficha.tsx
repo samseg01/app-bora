@@ -44,7 +44,7 @@ export function LugarFicha({
           `<img>` e não `next/image` de propósito: a URL é arbitrária (hoje colada pelo
           curador, amanhã vinda do nosso armazenamento), e `remotePatterns` exigiria
           declarar cada host antes de saber quais serão. */}
-      <div className="relative h-56 w-full shrink-0 overflow-hidden lg:h-72">
+      <div className="rounded-[16px] relative h-56 w-full shrink-0 overflow-hidden lg:h-72">
         {foto ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -53,7 +53,7 @@ export function LugarFicha({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-magenta via-violet to-plum" />
+          <div className="h-full w-full bg-gradient-to-br from-pedra via-pedra-funda to-pedra" />
         )}
         {/* O degradê para baixo costura a imagem com o fundo da tela e mantém o título
             legível sobre qualquer foto. */}
@@ -62,8 +62,8 @@ export function LugarFicha({
 
       <div className="-mt-6 flex flex-col gap-5 px-5.5 pb-8 lg:px-8">
       <div>
-        <div className="rotulo text-amber">{lugar.categoria}</div>
-        <h1 className="mt-2 font-display text-[34px] leading-none uppercase lg:text-[42px]">
+        <div className="rotulo text-text-faint">{lugar.categoria}</div>
+        <h1 className="mt-2 titulo text-[34px] leading-none lg:text-[42px]">
           {lugar.nome}
         </h1>
         <div className="mt-2 flex items-center gap-2.5">
@@ -73,7 +73,7 @@ export function LugarFicha({
           {lugar.horarios?.length ? (
             <span
               className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                aberta ? "bg-magenta/16 text-magenta-soft" : "bg-white/6 text-muted-3"
+                aberta ? "bg-card text-text-soft" : "bg-white/6 text-muted-3"
               }`}
             >
               {aberta ? "aberto agora" : "fechado agora"}
@@ -95,10 +95,10 @@ export function LugarFicha({
       {roleHoje ? (
         <Link
           href={`/role/${roleHoje.id}`}
-          className="rounded-[20px] border border-magenta/30 bg-gradient-to-br from-magenta/12 to-violet/8 px-4.5 py-4"
+          className=" border border-linha-forte bg-gradient-to-br from-text-dim/12 to-pedra-funda px-4.5 py-4"
         >
           <div className="flex items-center gap-2.5">
-            <span className="rotulo text-magenta-soft">hoje aqui</span>
+            <span className="rotulo text-text-soft">hoje aqui</span>
             <FrescorPill frescor={roleHoje.frescor} />
           </div>
           <div className="mt-1.5 text-[15px] font-bold">{roleHoje.titulo}</div>
@@ -111,7 +111,7 @@ export function LugarFicha({
         // "boteco cheio numa terça" do conceito, o degrau de baixo da escada. A API já
         // calcula esse frescor (`frescor_de_lugar`); a primeira versão desta tela o
         // descartava e dizia só "nada marcado", que é menos do que a gente sabe.
-        <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
+        <div className="elevado rounded-[16px]  border border-linha bg-card-alt px-4.5 py-4">
           {lugar.frescor && (
             <div className="mb-2">
               <FrescorPill frescor={lugar.frescor} />
@@ -129,7 +129,7 @@ export function LugarFicha({
           COSTUMA ter, dito por ela; rolê é o que alguém foi ver HOJE. Misturar as duas
           faria a tela prometer um forró que ninguém confirmou. */}
       {lugar.programacao && (
-        <div className="rounded-[20px] border border-white/7 bg-card px-4.5 py-4">
+        <div className="elevado rounded-[16px]  border border-linha bg-card px-4.5 py-4">
           <div className="rotulo text-muted-3">toda semana</div>
           <p className="mt-2 text-[13.5px] leading-relaxed whitespace-pre-line text-text-dim">
             {lugar.programacao}
@@ -141,7 +141,7 @@ export function LugarFicha({
       )}
 
       {(lugar.horarios?.length || preco !== null || lugar.instagram) && (
-        <dl className="flex flex-col gap-2.5 rounded-[20px] border border-white/7 bg-card-alt px-4.5 py-4">
+        <dl className="elevado rounded-[16px] flex flex-col gap-2.5 border border-linha bg-card-alt px-4.5 py-4">
           {lugar.horarios?.map((faixa, i) => (
             <Linha key={i} rotulo={i === 0 ? "funcionamento" : ""}>
               {faixaLegivel(faixa)}
@@ -168,7 +168,7 @@ export function LugarFicha({
                 href={`https://instagram.com/${lugar.instagram}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-magenta-soft hover:underline"
+                className="text-text-soft hover:underline"
               >
                 @{lugar.instagram}
               </a>
@@ -183,7 +183,7 @@ export function LugarFicha({
           href={`https://www.google.com/maps/dir/?api=1&destination=${lugar.lat},${lugar.lng}`}
           target="_blank"
           rel="noreferrer"
-          className="shrink-0 rounded-2xl border border-white/18 px-5 py-3 text-[13.5px] font-semibold text-text-soft"
+          className="rounded-[16px] shrink-0 border border-linha px-5 py-3 text-[13.5px] font-semibold text-text-soft"
         >
           Rota
         </a>
@@ -194,7 +194,7 @@ export function LugarFicha({
           <div className="rotulo text-muted-3">o que dizem</div>
           <div className="mt-3 flex flex-col gap-2.5">
             {lugar.comentarios_recentes.map((c, i) => (
-              <div key={i} className="rounded-[18px] border border-white/7 bg-card px-4 py-3.5">
+              <div key={i} className="elevado rounded-[16px]  border border-linha bg-card px-4 py-3.5">
                 <p className="text-[13.5px] leading-relaxed text-text-dim">“{c.texto}”</p>
                 <div className="mt-1.5 text-[11.5px] text-muted-3">{c.autor_nome}</div>
               </div>

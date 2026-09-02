@@ -27,7 +27,7 @@ import type { LugarPublic } from "@/lib/types";
  * curadoria em si.
  */
 const CAMPO =
-  "w-full rounded-2xl border border-white/10 bg-sunken px-3.5 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
+  "w-full border border-linha bg-sunken px-3.5 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-linha";
 
 export default function CuradorLugaresPage() {
   return (
@@ -51,7 +51,7 @@ function Conteudo() {
       <Mobile>
         <MobileShell nav={false}>
           <div className="flex items-center justify-between px-6 pt-9">
-            <div className="rotulo text-amber">painel do curador</div>
+            <div className="rotulo text-text-faint">painel do curador</div>
             <Link href="/" className="text-xs font-semibold text-muted-2">
               ver o app
             </Link>
@@ -175,7 +175,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
 
   return (
     <section className="min-w-0 flex-1 px-6 pt-5 pb-8 lg:px-8 lg:pt-8">
-      <h1 className="font-display text-[38px] leading-none uppercase lg:text-[42px]">Lugares</h1>
+      <h1 className="titulo text-[38px] leading-none lg:text-[42px]">Lugares</h1>
       <p className="mt-2 text-[13px] text-muted-2">
         O que existe em {bairro}. Um rolê acontece em um lugar — o lugar vem primeiro.
       </p>
@@ -183,9 +183,9 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       <div className="mt-7 flex flex-col gap-7 lg:flex-row lg:gap-10">
         <form
           onSubmit={cadastrar}
-          className="flex w-full flex-col gap-3.5 rounded-[22px] border border-white/7 bg-card-alt p-5.5 lg:max-w-sm"
+          className="elevado rounded-[20px] flex w-full flex-col gap-3.5 border border-linha bg-card-alt p-5.5 lg:max-w-sm"
         >
-          <h2 className="font-display text-[24px] leading-none uppercase">Cadastrar lugar</h2>
+          <h2 className="titulo text-[24px] leading-none">Cadastrar lugar</h2>
 
           <label className="flex flex-col gap-1.5">
             <span className="rotulo text-muted-3">nome</span>
@@ -213,8 +213,8 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
                   aria-pressed={categoria === c}
                   className={`rounded-full px-3.5 py-2 text-[12.5px] transition-colors ${
                     categoria === c
-                      ? "border-[1.5px] border-magenta bg-magenta/16 font-semibold"
-                      : "border border-white/8 bg-sunken font-medium text-text-faint"
+                      ? "border-[1.5px] border-selecao bg-card font-semibold"
+                      : "border border-linha bg-sunken font-medium text-text-faint"
                   }`}
                 >
                   {c}
@@ -318,7 +318,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
           <button
             type="submit"
             disabled={enviando}
-            className="mt-1 rounded-2xl bg-magenta py-3.5 text-[14.5px] font-bold text-white disabled:opacity-60"
+            className="rounded-[12px] mt-1 bg-text py-3.5 text-[14.5px] font-bold text-bg disabled:opacity-60"
           >
             {enviando ? "Cadastrando…" : `Cadastrar em ${bairro}`}
           </button>
@@ -340,14 +340,14 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
             {lista?.map((l) => (
               <div
                 key={l.id}
-                className="flex flex-wrap items-center gap-3.5 rounded-[18px] border border-white/7 bg-card p-3.5"
+                className="elevado rounded-[16px] flex flex-wrap items-center gap-3.5 border border-linha bg-card p-3.5"
               >
-                <div className="h-11 w-11 shrink-0 rounded-xl bg-gradient-to-br from-violet to-plum" />
+                <div className="h-11 w-11 shrink-0 bg-gradient-to-br from-pedra to-pedra-funda" />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[14.5px] font-bold">{l.nome}</div>
                   <div className="mt-0.5 truncate text-xs text-muted-2">
                     {l.endereco ?? (
-                      <span className="text-amber">sem endereço · {l.categoria}</span>
+                      <span className="text-text-faint">sem endereço · {l.categoria}</span>
                     )}
                   </div>
                 </div>
