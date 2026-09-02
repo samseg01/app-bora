@@ -74,6 +74,14 @@ LugarFactory = Callable[..., Coroutine[Any, Any, Lugar]]
 RoleFactory = Callable[..., Coroutine[Any, Any, Role]]
 EstabelecimentoFactory = Callable[..., Coroutine[Any, Any, Estabelecimento]]
 
+# Coordenada padrão de `criar_lugar`. Desde o ADR-009, sinalizar presença exige dizer
+# onde você está e o servidor confere — então todo teste que sinaliza precisa mandar um
+# ponto dentro do raio. Espalhar os números pelos testes faria de cada um deles um teste
+# de geografia por acidente; aqui eles têm nome.
+NO_LUGAR = {"lat": -23.5475, "lng": -46.6906}
+# ~1,3 km ao norte: fora de qualquer raio plausível de um bar.
+LONGE_DO_LUGAR = {"lat": -23.5355, "lng": -46.6906}
+
 
 @pytest_asyncio.fixture
 async def criar_lugar(db_session: AsyncSession) -> LugarFactory:

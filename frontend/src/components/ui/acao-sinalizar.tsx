@@ -6,19 +6,28 @@ import { usePathname, useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { guardarDestino, useSessao } from "@/lib/auth";
 import { invalidarMeus, meusSinais } from "@/lib/meus";
+import { ErroLocalizacao, pedirPosicao } from "@/lib/localizacao";
 import { hora } from "@/lib/tempo";
+import type { TipoSinalizacao } from "@/lib/types";
 
 /**
  * O "Tô indo" e a confirmação que vem depois — a tela 2e do hi-fi, implementada como
  * estado do detalhe e não como rota nova: a pessoa não saiu do rolê, ela marcou
  * presença nele.
  *
- * Três públicos, três comportamentos, todos honestos:
- * - deslogado: leva para entrar, guardando o destino (auth preguiçosa);
- * - papel comum: **nenhum botão** — a regra é dita como regra. `POST /sinalizacoes`
- *   responde 403 por decisão registrada (ADR-0006), e um CTA primário cinza com a
- *   explicação em letra miúda lia como app quebrado em vez de escolha deliberada;
- * - curador ou dono: sinaliza de verdade.
+ * **Duas ações, não uma** (ADR-009, emenda 2), e a diferença é onde a pessoa está:
+ * - **"Tô aqui"** — pede a localização, o servidor confere se está dentro do raio e
+ *   recusa com 403 se não estiver. É o único que alimenta o frescor.
+ * - **"Tô indo"** — não pede nada, porque afirma justamente que a pessoa não está lá.
+ *   Não acende nada hoje: quem vai ler isso é a aba de Conexões, que não tem backend.
+ *   A tela diz isso em vez de fingir que serve para alguma coisa agora.
+ *
+ * As duas não são paralelas: **quem disse que ia e chegou toca "Tô aqui" e vira
+ * presença**, na mesma linha. Por isso, com intenção marcada, o "Tô aqui" continua na
+ * tela — é o próximo passo, não uma alternativa.
+ *
+ * A restrição a curador/dono CAIU com o ADR-009 (item 40): ela existia porque o sinal
+ * era autodeclarado e forjável, e a âncora agora é a coordenada, não o papel.
  *
  * O contador de expiração é **convenção de interface**, não promessa da API: o backend
  * não apaga sinal nenhum, ele deixa de contar depois da janela warm. "Some sozinho" é
@@ -46,7 +55,9 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
   const caminho = usePathname();
   const router = useRouter();
 
-  const [sinalId, setSinalId] = useState<string | null>(null);
+  /** O sinal ativo desta pessoa neste rolê. O `tipo` importa: "Tô indo" e "Tô aqui"
+      levam a telas diferentes, e a transição de um para o outro é a mesma linha. */
+  const [sinal, setSinal] = useState<{ id: string; tipo: TipoSinalizacao } | null>(null);
   /** Minutos restantes no instante em que se marcou (ou em que se rehidratou). É um
       retrato, não um relógio: reabrir a tela recalcula. */
   const [restante, setRestante] = useState<number | null>(null);
@@ -66,7 +77,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
         // Zero significa que a janela fechou entre o corte do servidor e agora: o
         // sinal não conta mais para ninguém, então não anunciamos que conta.
         if (faltam <= 0) return;
-        setSinalId(meu.id);
+        setSinal({ id: meu.id, tipo: meu.tipo });
         setRestante(faltam);
       })
       .catch(() => {
@@ -78,36 +89,48 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     };
   }, [token, roleId]);
 
-  const podeSinalizar =
-    sessao?.papel === "curador" || sessao?.papel === "dono_estabelecimento";
-
-  async function sinalizar() {
+  async function toAqui() {
     if (!sessao) return;
     setOcupado(true);
     setErro(null);
     try {
-      const s = await api.sinalizar(sessao.token, roleId);
-      setSinalId(s.id);
+      // O único momento do app em que a coordenada é pedida para escrever algo. Ela vai
+      // no corpo, o servidor confere contra o raio do lugar e descarta — nada é gravado.
+      const pos = await pedirPosicao();
+      const s = await api.sinalizar(sessao.token, roleId, "presenca", pos);
+      setSinal({ id: s.id, tipo: s.tipo });
       setRestante(minutosRestantes(s.timestamp));
       invalidarMeus();
       router.refresh();
     } catch (e) {
-      setErro(
-        e instanceof ApiError && e.status === 403
-          ? "Sinalizar ainda está com os curadores."
-          : "Não deu pra marcar agora. Tenta de novo.",
-      );
+      setErro(mensagemDeFalha(e));
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function toIndo() {
+    if (!sessao) return;
+    setOcupado(true);
+    setErro(null);
+    try {
+      const s = await api.sinalizar(sessao.token, roleId, "intencao");
+      setSinal({ id: s.id, tipo: s.tipo });
+      setRestante(minutosRestantes(s.timestamp));
+      invalidarMeus();
+    } catch {
+      setErro("Não deu pra marcar agora. Tenta de novo.");
     } finally {
       setOcupado(false);
     }
   }
 
   async function cancelar() {
-    if (!sessao || !sinalId) return;
+    if (!sessao || !sinal) return;
     setOcupado(true);
     try {
-      await api.cancelarSinal(sessao.token, sinalId);
-      setSinalId(null);
+      await api.cancelarSinal(sessao.token, sinal.id);
+      setSinal(null);
       setRestante(null);
       invalidarMeus();
       router.refresh();
@@ -118,7 +141,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     }
   }
 
-  if (sinalId && restante !== null && sessao) {
+  if (sinal?.tipo === "presenca" && restante !== null && sessao) {
     return (
       <Confirmado
         restante={restante}
@@ -126,6 +149,39 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
         aoCancelar={cancelar}
         ocupado={ocupado}
       />
+    );
+  }
+
+  // Disse que vem, ainda não chegou. Não é um fim de fluxo: o "Tô aqui" continua na
+  // tela porque chegar é o próximo passo, e é ele que acende o rolê para os outros.
+  if (sinal?.tipo === "intencao" && sessao) {
+    return (
+      <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
+        <div className="rotulo text-muted-2">tá anotado</div>
+        <p className="mt-2 text-[13px] leading-relaxed text-muted text-pretty">
+          Você marcou que vem. Isso <strong className="text-text-faint">não acende o rolê</strong>{" "}
+          para os outros — quem faz isso é chegar lá. Quando estiver no lugar, toca em “Tô aqui”.
+        </p>
+        <button
+          type="button"
+          onClick={toAqui}
+          disabled={ocupado}
+          className="mt-3.5 w-full rounded-2xl bg-magenta py-3.5 text-[15px] font-bold text-white disabled:opacity-60"
+        >
+          {ocupado ? "Conferindo onde você está…" : "Cheguei — Tô aqui"}
+        </button>
+        <p className="mt-2.5 text-center text-[11.5px] leading-snug text-muted-3">
+          {erro ?? "Confere sua localização e esquece. Ninguém vê seu nome."}
+        </p>
+        <button
+          type="button"
+          onClick={cancelar}
+          disabled={ocupado}
+          className="mt-2 w-full text-[12.5px] font-medium text-muted-3 hover:text-text-faint disabled:opacity-50"
+        >
+          Não vou mais
+        </button>
+      </div>
     );
   }
 
@@ -137,7 +193,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
           onClick={() => guardarDestino(caminho)}
           className="block rounded-2xl bg-magenta py-4 text-center text-[15px] font-bold text-white"
         >
-          Tô indo — vale por 2h
+          Tô aqui — acende o rolê
         </Link>
         <p className="mt-2.5 text-center text-[11.5px] text-muted-3">
           Entrar leva dez segundos. Ninguém vê seu nome no mapa.
@@ -146,42 +202,53 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
     );
   }
 
-  // Papel comum: nada de botão desabilitado. Um CTA primário cinza com a explicação em
-  // letra miúda embaixo lê como app quebrado, não como decisão — e ainda provoca uma
-  // ação que não existe.
-  //
-  // O texto fala de quem são os curadores e do que a pessoa PODE fazer. A versão
-  // anterior explicava a lógica interna ("o sinal é a coisa mais frágil do app"), que é
-  // conversa de bastidor: quem está decidindo aonde ir não precisa saber onde o produto
-  // é vulnerável. A ação que essa pessoa tem — contar como está — fica logo abaixo.
-  if (!podeSinalizar) {
-    return (
-      <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
-        <div className="rotulo text-muted-2">marcar presença</div>
-        <p className="mt-2 text-[13px] leading-relaxed text-muted text-pretty">
-          Quem sinaliza são os curadores do bairro — gente que passa nos lugares e confirma na
-          hora. Se você estiver por lá, conta como está: seu comentário aparece pra quem ainda
-          está decidindo aonde ir.
-        </p>
-      </div>
-    );
-  }
-
+  // Duas ações, e a hierarquia visual diz qual é a do produto: "Tô aqui" é o CTA
+  // primário porque é o que alimenta o frescor. "Tô indo" é secundário porque hoje não
+  // acende nada — e o texto embaixo diz isso, em vez de deixar a pessoa achar que
+  // marcou o rolê para todo mundo.
   return (
     <div>
       <button
         type="button"
-        onClick={sinalizar}
+        onClick={toAqui}
         disabled={ocupado}
         className="w-full rounded-2xl bg-magenta py-4 text-[15px] font-bold text-white disabled:opacity-60"
       >
-        {ocupado ? "Marcando…" : "Tô indo — vale por 2h"}
+        {ocupado ? "Conferindo onde você está…" : "Tô aqui — acende o rolê"}
       </button>
-      <p className="mt-2.5 text-center text-[11.5px] leading-snug text-muted-3">
-        {erro ?? "Expira sozinho. Ninguém vê seu nome."}
+      <button
+        type="button"
+        onClick={toIndo}
+        disabled={ocupado}
+        className="mt-2.5 w-full rounded-2xl border border-white/10 bg-card-alt py-3.5 text-[14px] font-semibold text-text-soft disabled:opacity-60"
+      >
+        Ainda tô indo
+      </button>
+      <p className="mt-2.5 text-center text-[11.5px] leading-snug text-muted-3 text-pretty">
+        {erro ?? "“Tô aqui” confere se você está no lugar e some sozinho em 2h. Ninguém vê seu nome."}
       </p>
     </div>
   );
+}
+
+/** Traduz a falha para o que a pessoa precisa fazer a respeito.
+
+    O 403 vem com a distância e o limite calculados pelo servidor, e é ele que aparece:
+    o ADR-009 registra que o GPS erra mais justamente dentro do bar, então esta recusa
+    vai acontecer com gente honesta que está mesmo lá. "Não foi possível" faria ela achar
+    que o app quebrou. */
+function mensagemDeFalha(e: unknown): string {
+  if (e instanceof ErroLocalizacao) {
+    if (e.tipo === "negado")
+      return "Sem a localização não dá pra confirmar que você está aqui. Você pode marcar “Ainda tô indo”.";
+    if (e.tipo === "sem-suporte")
+      return "Este navegador não informa localização por aqui. Tenta pelo app instalado.";
+    return "Não consegui te localizar agora. Tenta de novo em alguns segundos.";
+  }
+  if (e instanceof ApiError && e.status === 403) {
+    return e.detalhe ?? "Você precisa estar no lugar para marcar presença.";
+  }
+  return "Não deu pra marcar agora. Tenta de novo.";
 }
 
 /** A 2e: “Tá marcado”, com o contador e o desfazer. Comentar saiu daqui para

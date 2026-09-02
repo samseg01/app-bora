@@ -48,6 +48,7 @@ export function CorrigirLugar({
   const [tags, setTags] = useState<string[]>(lugar.tags ?? []);
   const [programacao, setProgramacao] = useState(lugar.programacao ?? "");
   const [preco, setPreco] = useState(lugar.preco_longneck ?? "");
+  const [raio, setRaio] = useState(lugar.raio_metros?.toString() ?? "");
   const [foto, setFoto] = useState(lugar.fotos?.[0] ?? "");
   const [coords, setCoords] = useState(`${lugar.lat}, ${lugar.lng}`);
   const [erro, setErro] = useState<string | null>(null);
@@ -78,6 +79,7 @@ export function CorrigirLugar({
         programacao: programacao.trim() || null,
         tags: tags.length ? tags : null,
         preco_longneck: valor ? Number(valor) : null,
+        raio_metros: raio.trim() ? Number(raio) : null,
         fotos: foto.trim() ? [foto.trim()] : null,
         lat,
         lng,
@@ -185,6 +187,24 @@ export function CorrigirLugar({
           onChange={(e) => setCoords(e.target.value)}
           placeholder="-23.5441, -46.6396"
         />
+      </Campo>
+
+      {/* Fica colado nas coordenadas porque é a mesma pergunta: onde a casa está e até
+          onde ela vai. É o único campo do formulário que só quem esteve lá consegue
+          responder — daí o texto de ajuda falar de passos, e não de metros abstratos. */}
+      <Campo rotulo="raio de presença">
+        <input
+          className={CAMPO}
+          value={raio}
+          onChange={(e) => setRaio(e.target.value)}
+          placeholder="150"
+          inputMode="numeric"
+        />
+        <span className="mt-1 text-[11px] leading-snug text-muted-3 text-pretty">
+          Até onde alguém ainda está “na casa”, em metros. Um boteco de esquina são uns 50;
+          uma festa que toma a rua, uns 400. Em branco usa 150. Quem sinalizar de fora
+          disso é recusado — então errar para menos barra gente que está mesmo lá.
+        </span>
       </Campo>
 
       <div className="mt-1 flex gap-2">

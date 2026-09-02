@@ -100,6 +100,39 @@ com o resto — não é um desdobramento a decidir depois:
 
 A tabela abaixo, que no texto proposto era ilustração da consequência, passa a ser normativa.
 
+#### As duas não são paralelas: são estados de um ciclo
+
+Refinamento de 01/09, e é o que evita "Tô indo" virar beco sem saída. **Quem disse que ia e chegou
+vira presença.** O mesmo sinal atravessa:
+
+```
+"Tô indo"  ──────────────►  "Tô aqui"
+ intencao      a pessoa       presenca
+               chega ao
+               lugar
+
+ conta só       ▲             alimenta o frescor
+ para as        │             + libera o chat do rolê
+ conexões       │
+                └── um toque, não detecção automática
+```
+
+Três consequências, e a terceira é uma restrição de privacidade, não de esforço:
+
+1. **É a mesma linha, não duas.** `POST /sinalizacoes` já **renova** o sinal da pessoa naquele
+   alvo em vez de empilhar outra linha, e já atualiza o `tipo` — a transição cai exatamente nesse
+   caminho, sem código novo de máquina de estados. O `timestamp` volta a valer a partir da
+   chegada, que é o comportamento certo: o frescor passa a contar dali, não de quando ela saiu
+   de casa.
+2. **O chat abre na chegada, não na intenção.** A porta do `plano-chat-role.md` é presença
+   confirmada. Quem só disse que ia não entra — o que é o ponto, porque uma conversa "de quem
+   está no rolê" com gente que ainda está no ônibus não é a mesma coisa.
+3. **A chegada é um toque, e isso é decisão, não limitação.** Detectar automaticamente que a
+   pessoa chegou exigiria acompanhar a localização dela em segundo plano — o oposto exato da
+   regra 2 deste ADR, que confere e descarta. Um app que promete não guardar onde você esteve não
+   pode ficar checando onde você está. Então quem chega toca "Tô aqui"; o que o app pode fazer é
+   **oferecer** esse toque a quem já disse que vinha, que é conveniência sem vigilância.
+
 ### A consequência que muda o produto
 
 Se a presença é verificada, o botão deixa de ser "Tô indo" e vira **"Tô aqui"**. E fica claro que

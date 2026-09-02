@@ -115,8 +115,24 @@ export const api = {
   salvos: (token: string) => req<SalvoDetalhe[]>("/salvos", { token }),
 
   /** ⚠️ 403 para papel comum (ADR-0006): só curador e dono de estabelecimento sinalizam. */
-  sinalizar: (token: string, role_id: string, tipo: TipoSinalizacao = "presenca") =>
-    req<SinalizacaoPublic>("/sinalizacoes", { token, metodo: "POST", corpo: { role_id, tipo } }),
+  /**
+   * "Tô aqui" — presença verificada. `pos` é obrigatório para tudo que não seja
+   * `intencao`: o servidor confere se o ponto está dentro do raio do lugar e recusa com
+   * 403 se não estiver (ADR-009).
+   *
+   * A coordenada é parâmetro e morre na requisição — não é guardada aqui nem lá.
+   */
+  sinalizar: (
+    token: string,
+    role_id: string,
+    tipo: TipoSinalizacao = "presenca",
+    pos?: { lat: number; lng: number },
+  ) =>
+    req<SinalizacaoPublic>("/sinalizacoes", {
+      token,
+      metodo: "POST",
+      corpo: { role_id, tipo, ...(pos ?? {}) },
+    }),
 
   /** Os sinais do próprio usuário ainda dentro da janela de 2h — o que permite ao
       "Tá marcado" sobreviver a sair da tela e voltar. */
@@ -189,6 +205,9 @@ export const api = {
       preco_longneck?: number | null;
       /** Vocabulário fechado em `lib/tags.ts`. Lista vazia nunca vai: vira null. */
       tags?: string[] | null;
+      /** Perímetro de "Tô aqui" desta casa, em metros (ADR-009). Só quem esteve
+          lá sabe responder; nulo cai no padrão do servidor. */
+      raio_metros?: number | null;
     },
   ) => req<LugarPublic>("/curador/lugares", { token, metodo: "POST", corpo }),
 
@@ -210,6 +229,9 @@ export const api = {
       /** Lista de URLs. A primeira é a que a ficha usa como imagem de topo. */
       fotos?: string[] | null;
       tags?: string[] | null;
+      /** Perímetro de "Tô aqui" desta casa, em metros (ADR-009). Só quem esteve
+          lá sabe responder; nulo cai no padrão do servidor. */
+      raio_metros?: number | null;
       lat?: number;
       lng?: number;
     },

@@ -4,17 +4,44 @@ from zoneinfo import ZoneInfo
 
 from sqlalchemy import distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.functions import FunctionFilter
 
 from boraroles.config import get_settings
-from boraroles.db.models import Lugar, Role, Sinalizacao
+from boraroles.db.models import Lugar, Role, Sinalizacao, TipoSinalizacao
 from boraroles.services.frescor import FrescorEstado, classificar_frescor
 
-# Conta PESSOAS, não linhas. `classificar_frescor` acende "live" a partir de 3 sinais, e
-# contando linhas uma pessoa sozinha tocando "Tô indo" três vezes acendia o "Bombando
-# agora" — a promessa central do app forjável com um dedo. Nada impede alguém de
-# sinalizar o mesmo rolê de novo mais tarde ("continuo aqui"), e isso é legítimo; o que
-# não pode é a segunda vez valer como segunda pessoa.
-_pessoas = func.count(distinct(Sinalizacao.usuario_id))
+# "Tô indo" NÃO é presença e não pode acender nada (ADR-009, emenda 2). O frescor afirma
+# "tem gente nesse lugar AGORA"; quem disse que vem ainda está no ônibus. Deixar
+# `intencao` entrar nesta conta seria reconstruir, com nome novo, exatamente a
+# incoerência que o ADR-009 foi escrito para desfazer — o botão dizendo intenção e o
+# dado sendo lido como presença.
+#
+# Quando a pessoa chega e toca "Tô aqui", a MESMA linha vira `presenca` (a renovação em
+# `POST /sinalizacoes`), e aí passa a contar. Não é sinal perdido, é sinal que ainda não
+# vale.
+_E_PRESENCA = Sinalizacao.tipo != TipoSinalizacao.INTENCAO
+
+
+def _pessoas(desde: datetime | None = None) -> FunctionFilter[int]:
+    """Quantas PESSOAS distintas sinalizaram presença, opcionalmente desde um instante.
+
+    Conta PESSOAS, não linhas. `classificar_frescor` acende "live" a partir de 3 sinais, e
+    contando linhas uma pessoa sozinha tocando três vezes acendia o "Bombando agora" — a
+    promessa central do app forjável com um dedo. Nada impede alguém de sinalizar o mesmo
+    rolê de novo mais tarde ("continuo aqui"), e isso é legítimo; o que não pode é a
+    segunda vez valer como segunda pessoa.
+
+    É **função**, e não uma expressão de módulo, de propósito. Uma expressão só seria
+    construída uma vez e compartilhada por todas as consultas; o SQLAlchemy indexa as
+    colunas do resultado pela identidade do objeto, e duas colunas derivadas do mesmo
+    objeto compartilhado colidem no lookup — `KeyError: <FunctionFilter object>` numa
+    consulta cujo SQL está perfeitamente correto. Cada chamada aqui devolve um objeto
+    novo, que é o que as duas colunas de `frescor_de_role` precisam ser.
+    """
+    condicoes = [_E_PRESENCA]
+    if desde is not None:
+        condicoes.append(Sinalizacao.timestamp >= desde)
+    return func.count(distinct(Sinalizacao.usuario_id)).filter(*condicoes)
 
 
 class RoleComFrescor:
@@ -63,8 +90,8 @@ async def listar_descoberta(
     live_since, warm_since = _janelas(agora)
     _, fim_hoje = _dia_local(agora)
 
-    sinais_recentes = _pessoas.filter(Sinalizacao.timestamp >= live_since)
-    sinais_medios = _pessoas.filter(Sinalizacao.timestamp >= warm_since)
+    sinais_recentes = _pessoas(live_since)
+    sinais_medios = _pessoas(warm_since)
 
     stmt = (
         select(Role, Lugar.nome, Lugar.bairro, sinais_recentes, sinais_medios)
@@ -94,8 +121,8 @@ async def frescor_de_role(
     live_since, warm_since = _janelas(agora)
 
     stmt = select(
-        _pessoas.filter(Sinalizacao.timestamp >= live_since),
-        _pessoas.filter(Sinalizacao.timestamp >= warm_since),
+        _pessoas(live_since),
+        _pessoas(warm_since),
     ).where(Sinalizacao.role_id == role.id, Sinalizacao.timestamp >= warm_since)
     recentes, medios = (await db.execute(stmt)).one()
     return classificar_frescor(recentes, medios, role.created_at, agora)
@@ -117,7 +144,7 @@ async def contar_sinais_de_role(
     agora = agora or datetime.now(UTC)
     _, warm_since = _janelas(agora)
     total = await db.scalar(
-        select(_pessoas).where(Sinalizacao.role_id == role.id, Sinalizacao.timestamp >= warm_since)
+        select(_pessoas()).where(Sinalizacao.role_id == role.id, Sinalizacao.timestamp >= warm_since)
     )
     return total or 0
 
@@ -132,8 +159,8 @@ async def frescor_de_lugar(
     live_since, warm_since = _janelas(agora)
 
     stmt = select(
-        _pessoas.filter(Sinalizacao.timestamp >= live_since),
-        _pessoas.filter(Sinalizacao.timestamp >= warm_since),
+        _pessoas(live_since),
+        _pessoas(warm_since),
     ).where(Sinalizacao.lugar_id == lugar.id, Sinalizacao.timestamp >= warm_since)
     recentes, medios = (await db.execute(stmt)).one()
     return classificar_frescor(recentes, medios, lugar.created_at, agora)

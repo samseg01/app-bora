@@ -13,6 +13,7 @@ from sqlalchemy import (
     Enum,
     ForeignKey,
     Index,
+    Integer,
     Numeric,
     String,
     Text,
@@ -37,9 +38,18 @@ class PlanoEstabelecimento(enum.StrEnum):
 
 
 class TipoSinalizacao(enum.StrEnum):
+    # "Tô aqui" — a pessoa está no lugar, verificada por proximidade. Alimenta o frescor.
     PRESENCA = "presenca"
     FILA = "fila"
     LOTADO = "lotado"
+    # "Tô indo" — a pessoa NÃO está no lugar. Não alimenta o frescor, por decisão:
+    # é intenção, e o motor de frescor afirma "tem gente lá agora" (ADR-009, emenda 2).
+    # Quem lê isso é a aba de Conexões, que ainda não tem backend (itens 27-30).
+    #
+    # NÃO é um estado terminal: quem disse que ia e chegou vira PRESENCA. A transição
+    # acontece na renovação de `POST /sinalizacoes` — mesma linha, `tipo` trocado e
+    # `timestamp` renovado a partir da chegada. Por isso não há máquina de estados aqui.
+    INTENCAO = "intencao"
 
 
 def _pg_enum(enum_cls: type[enum.Enum], name: str) -> Enum:
@@ -138,6 +148,11 @@ class Lugar(Base):
     # Vocabulário fechado no cliente (`frontend/src/lib/tags.ts`), como `categoria` —
     # a coluna é livre de propósito, para a lista crescer sem migration.
     tags: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
+    # O perímetro, em metros, dentro do qual "Tô aqui" é aceito (ADR-009, emenda 1).
+    # Mora aqui porque é medida da casa, não do evento: o tamanho de um bar não muda
+    # entre quinta e sábado, e quem mede é o curador de pé na calçada, no R3.
+    # Nullable: sem valor, cai no padrão do config (ver services/presenca.raio_efetivo).
+    raio_metros: Mapped[int | None] = mapped_column(Integer, nullable=True)
     criado_por: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("usuario.id"), nullable=False
     )
@@ -169,6 +184,9 @@ class Role(Base):
     categoria: Mapped[str] = mapped_column(String(60), index=True, nullable=False)
     data_inicio: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     data_fim: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # Sobrescreve o raio do lugar, e só para a exceção: a festa que transborda para a
+    # rua, o show que ocupa o quarteirão. Preenchido, ganha do `Lugar.raio_metros`.
+    raio_metros: Mapped[int | None] = mapped_column(Integer, nullable=True)
     criado_por: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("usuario.id"), nullable=False
     )

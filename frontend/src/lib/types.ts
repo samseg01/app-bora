@@ -8,7 +8,12 @@ export type Frescor = "live" | "warm" | "new";
 
 export type PapelUsuario = "comum" | "curador" | "dono_estabelecimento";
 
-export type TipoSinalizacao = "presenca" | "fila" | "lotado";
+/**
+ * `intencao` é o "Tô indo": a pessoa NÃO está no lugar (ADR-009, emenda 2).
+ * Não alimenta o frescor, e é o único tipo que dispensa localização. Quem disse que ia
+ * e chegou vira `presenca` — mesma linha, renovada.
+ */
+export type TipoSinalizacao = "presenca" | "fila" | "lotado" | "intencao";
 
 /** GET /descoberta — traz `lugar_id` desde 28/08; lat/lng continuam de fora (item 19). */
 export interface RoleDescoberta {
@@ -45,6 +50,12 @@ export interface RolePublic {
   /** Pessoas distintas que sinalizaram nas últimas 2h — a janela warm. Zero é resposta
       válida e vem como 0, não como null; quem decide mostrar ou esconder é a tela. */
   sinais_recentes: number;
+  /**
+   * O perímetro efetivo de "Tô aqui", em metros, já resolvido pelo servidor na cascata
+   * rolê → lugar → padrão (ADR-009). A tela usa para dizer a que distância o sinal é
+   * aceito **antes** de a pessoa tentar, em vez de deixá-la descobrir pelo 403.
+   */
+  raio_metros: number | null;
 }
 
 export interface FaixaHorario {
@@ -88,6 +99,9 @@ export interface LugarPublic {
   preco_longneck: string | null;
   /** Preço envelhece: a tela mostra "visto em", nunca o número sozinho. */
   preco_visto_em: string | null;
+  /** Perímetro de "Tô aqui" desta casa, medido em campo pelo curador. Nulo cai no
+      padrão do servidor. */
+  raio_metros: number | null;
 }
 
 export interface RolePin {

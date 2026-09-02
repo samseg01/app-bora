@@ -1,28 +1,41 @@
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
-from boraroles.api.deps import CurrentUser, DbSession, require_role
+from boraroles.api.deps import CurrentUser, DbSession
 from boraroles.config import get_settings
-from boraroles.db.models import Comentario, Lugar, PapelUsuario, Salvo, Sinalizacao, Usuario
+from boraroles.db.models import (
+    Comentario,
+    Lugar,
+    Role,
+    Salvo,
+    Sinalizacao,
+    TipoSinalizacao,
+)
 from boraroles.schemas.comentario import ComentarioCreate, ComentarioPublic
 from boraroles.schemas.lugar import RolePin
 from boraroles.schemas.salvo import SalvoCreate, SalvoDetalhe, SalvoPublic
 from boraroles.schemas.sinalizacao import SinalizacaoCreate, SinalizacaoPublic
 from boraroles.services.descoberta import frescor_de_role, role_ativo_de_lugar
 from boraroles.services.lugares import lugar_to_public
+from boraroles.services.presenca import esta_no_lugar
 
 router = APIRouter(tags=["contribuicao"])
 
-# ver ADR: sinalização começa restrita a curador/dono_estabelecimento
-# (arquitetura-backend-frontend.md, sequenciamento ponto 3)
-SinalizadorUser = Annotated[
-    Usuario, Depends(require_role(PapelUsuario.CURADOR, PapelUsuario.DONO_ESTABELECIMENTO))
-]
+# A restrição a curador/dono CAIU em 02/09, com o ADR-009 aceito (item 40 do TODO).
+#
+# Ela existia porque o sinal era autodeclarado e, portanto, forjável: qualquer um podia
+# acender "Bombando agora" do sofá, e o frescor é o ativo mais frágil do produto. Com a
+# verificação por proximidade no servidor, sinalizar presença passou a exigir estar lá —
+# e o motivo da restrição deixou de existir junto.
+#
+# O que sobra é `CurrentUser`: basta estar autenticado. Sinalizar continua sendo o único
+# gesto do app que afirma algo sobre o mundo físico, e a âncora agora é a coordenada, não
+# o papel de quem toca.
+SinalizadorUser = CurrentUser
 
 
 @router.post("/salvos", response_model=SalvoPublic, status_code=status.HTTP_201_CREATED)
@@ -88,6 +101,49 @@ async def listar_salvos(usuario: CurrentUser, db: DbSession) -> list[SalvoDetalh
     return itens
 
 
+async def _exige_estar_no_lugar(db: DbSession, body: SinalizacaoCreate) -> None:
+    """Recusa o sinal de presença de quem não está no lugar (ADR-009).
+
+    `intencao` passa direto: ela afirma justamente que a pessoa não está lá.
+
+    A recusa é 403 e não 422 de propósito. 422 diz "sua requisição está malformada", e
+    ela não está — está correta e foi negada por uma regra de produto. A distinção
+    importa para o cliente, que precisa mostrar coisas diferentes: um erro de formulário
+    versus "você precisa estar no lugar".
+
+    O `detail` diz a distância e o raio porque a recusa vai acontecer com gente honesta.
+    O próprio ADR-009 registra que o erro de GPS piora dentro do bar, entre prédios
+    altos — exatamente onde o sinal é pedido. "Você está a 340 m e o limite aqui é 150"
+    é acionável; "não foi possível sinalizar" faz a pessoa achar que o app quebrou.
+    """
+    if body.tipo is TipoSinalizacao.INTENCAO:
+        return
+    # O validador do schema já garantiu que não são None quando o tipo exige local.
+    assert body.lat is not None and body.lng is not None
+
+    role: Role | None = None
+    if body.role_id is not None:
+        role = await db.get(Role, body.role_id)
+        if role is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alvo inexistente")
+        lugar = await db.get(Lugar, role.lugar_id)
+    else:
+        lugar = await db.get(Lugar, body.lugar_id)
+
+    if lugar is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alvo inexistente")
+
+    dentro, distancia, raio = await esta_no_lugar(db, lugar, body.lat, body.lng, role)
+    if not dentro:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                f"Você precisa estar no lugar para sinalizar presença. "
+                f"Você está a {distancia:.0f} m e o limite aqui é {raio} m."
+            ),
+        )
+
+
 @router.post("/sinalizacoes", response_model=SinalizacaoPublic, status_code=status.HTTP_201_CREATED)
 async def sinalizar(
     body: SinalizacaoCreate, usuario: SinalizadorUser, db: DbSession
@@ -105,6 +161,8 @@ async def sinalizar(
     `timestamp`: o sinal volta a valer pela janela inteira, em vez de expirar no
     horário do primeiro toque.
     """
+    await _exige_estar_no_lugar(db, body)
+
     corte = datetime.now(UTC) - timedelta(minutes=get_settings().frescor_warm_window_minutes)
     alvo = (
         Sinalizacao.role_id == body.role_id
