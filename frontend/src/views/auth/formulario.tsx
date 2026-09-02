@@ -16,7 +16,7 @@ import { consumirDestino, salvarSessao } from "@/lib/auth";
  */
 
 const CAMPO =
-  "w-full rounded-2xl border border-white/10 bg-sunken px-4 py-3.5 text-[14.5px] text-text outline-none placeholder:text-muted-3 focus:border-magenta";
+  "w-full border border-linha bg-sunken px-4 py-3.5 text-[14.5px] text-text outline-none placeholder:text-muted-3 focus:border-selecao";
 
 export function FormularioAuth({ modo }: { modo: "entrar" | "criar" }) {
   const router = useRouter();
@@ -49,7 +49,7 @@ export function FormularioAuth({ modo }: { modo: "entrar" | "criar" }) {
 
   return (
     <form onSubmit={enviar} className="flex flex-col">
-      <h1 className="font-display text-[38px] leading-none uppercase lg:text-[42px]">
+      <h1 className="titulo text-[38px] leading-none lg:text-[42px]">
         {criando ? "Criar conta" : "Entrar"}
       </h1>
       {criando && (
@@ -119,7 +119,7 @@ export function FormularioAuth({ modo }: { modo: "entrar" | "criar" }) {
       {erro && (
         <p
           role="alert"
-          className="mt-4 rounded-2xl border border-magenta/30 bg-magenta/10 px-4 py-3 text-[13px] leading-snug text-magenta-soft"
+          className="rounded-[16px] mt-4 border border-linha-forte bg-card px-4 py-3 text-[13px] leading-snug text-text-soft"
         >
           {erro}
         </p>
@@ -128,7 +128,7 @@ export function FormularioAuth({ modo }: { modo: "entrar" | "criar" }) {
       <button
         type="submit"
         disabled={enviando}
-        className="mt-5 rounded-2xl bg-magenta py-4 text-[15px] font-bold text-white disabled:opacity-60"
+        className="rounded-[12px] mt-5 bg-text py-4 text-[15px] font-bold text-bg disabled:opacity-60"
       >
         {enviando ? "Um instante…" : criando ? "Criar conta e salvar" : "Entrar e salvar"}
       </button>
@@ -143,14 +143,14 @@ export function FormularioAuth({ modo }: { modo: "entrar" | "criar" }) {
 
       <Link
         href={criando ? "/entrar" : "/criar-conta"}
-        className="mt-4 rounded-2xl border border-white/16 py-3.5 text-center text-[14.5px] font-semibold text-text-soft hover:border-white/30"
+        className="rounded-[16px] mt-4 border border-linha py-3.5 text-center text-[14.5px] font-semibold text-text-soft hover:border-linha"
       >
         {criando ? "Entrar" : "Criar conta"}
       </Link>
 
       {criando ? (
-        <div className="mt-7 flex items-start gap-3.5 rounded-[18px] border border-white/6 bg-card-alt px-4 py-3.5">
-          <div className="h-8.5 w-8.5 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+        <div className="elevado rounded-[16px] mt-7 flex items-start gap-3.5 border border-linha bg-card-alt px-4 py-3.5">
+          <div className="h-8.5 w-8.5 shrink-0 rounded-full bg-gradient-to-br from-pedra to-pedra-funda" />
           <p className="text-[12.5px] leading-relaxed text-text-faint">
             Você entra como gente comum, e é assim mesmo.{" "}
             <span className="font-semibold text-text">Curador é convite</span> — a gente chama
@@ -158,13 +158,13 @@ export function FormularioAuth({ modo }: { modo: "entrar" | "criar" }) {
           </p>
         </div>
       ) : (
-        <div className="mt-8 flex items-start gap-3 rounded-2xl border border-cyan/16 bg-cyan/6 px-4 py-3.5">
+        <div className="mt-8 flex items-start gap-3 border border-muted/16 bg-muted/6 px-4 py-3.5">
           <svg
             width="16"
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#1fd0ff"
+            stroke="currentColor"
             strokeWidth={2}
             className="mt-0.5 shrink-0"
           >

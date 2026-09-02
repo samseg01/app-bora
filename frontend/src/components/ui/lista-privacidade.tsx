@@ -34,21 +34,21 @@ const ITENS = [
 
 export function ListaPrivacidade() {
   return (
-    <div className="overflow-hidden rounded-[18px] border border-white/6 bg-card-alt">
+    <div className="elevado rounded-[16px] overflow-hidden border border-linha bg-card-alt">
       {ITENS.map(({ incluso, titulo, detalhe }, i) => (
         <div
           key={titulo}
-          className={`flex items-start gap-3.5 px-4 py-3.5 ${i > 0 ? "border-t border-white/5" : ""}`}
+          className={`flex items-start gap-3.5 px-4 py-3.5 ${i > 0 ? "border-t border-linha" : ""}`}
         >
           {incluso ? (
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-magenta/18">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ff6fa0" strokeWidth={3}>
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-card">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
                 <path d="M5 13l4 4L19 7" />
               </svg>
             </span>
           ) : (
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/16">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6f6690" strokeWidth={3}>
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-linha">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
                 <path d="M6 18L18 6M6 6l12 12" />
               </svg>
             </span>

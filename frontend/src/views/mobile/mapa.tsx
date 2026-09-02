@@ -52,7 +52,7 @@ export function MapaMobile({
             type="button"
             onClick={() => setSoComRole(false)}
             className={`rounded-full px-3.5 py-2 text-xs font-semibold ${
-              soComRole ? "border border-white/10 bg-sunken/90 text-text-faint" : "bg-magenta text-white"
+              soComRole ? "border border-linha bg-sunken/90 text-text-faint" : "bg-text text-bg"
             }`}
           >
             Todos
@@ -61,7 +61,7 @@ export function MapaMobile({
             type="button"
             onClick={() => setSoComRole(true)}
             className={`rounded-full px-3.5 py-2 text-xs font-semibold ${
-              soComRole ? "bg-magenta text-white" : "border border-white/10 bg-sunken/90 text-text-faint"
+              soComRole ? "bg-text text-bg" : "border border-linha bg-sunken/90 text-text-faint"
             }`}
           >
             Com rolê
@@ -72,10 +72,10 @@ export function MapaMobile({
         </div>
 
         {selecionado && (
-          <div className="absolute inset-x-4 bottom-4 flex flex-col gap-3 rounded-[22px] border border-white/9 bg-sunken/95 p-4">
+          <div className="rounded-[16px] absolute inset-x-4 bottom-4 flex flex-col gap-3 border border-linha bg-sunken/95 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <Link href={`/lugar/${selecionado.lugar.id}`} className="block truncate text-[17px] font-bold hover:text-magenta-soft">
+                <Link href={`/lugar/${selecionado.lugar.id}`} className="block truncate text-[17px] font-bold hover:text-text-soft">
                   {selecionado.lugar.nome}
                 </Link>
                 <div className="mt-0.5 text-xs text-muted-2">
@@ -93,8 +93,8 @@ export function MapaMobile({
             </div>
 
             {comentarios?.[selecionado.lugar.id]?.[0] && (
-              <div className="flex items-start gap-2.5 border-t border-white/8 pt-3">
-                <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+              <div className="rounded-[16px] flex items-start gap-2.5 border-t border-linha pt-3">
+                <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-pedra to-pedra-funda" />
                 <p className="text-[12.5px] leading-snug text-text-dim">
                   “{comentarios[selecionado.lugar.id][0].texto}” —{" "}
                   <span className="font-semibold text-white">
@@ -109,14 +109,14 @@ export function MapaMobile({
               {selecionado.role_ativo ? (
                 <Link
                   href={`/role/${selecionado.role_ativo.id}`}
-                  className="flex-1 rounded-2xl bg-magenta py-3 text-center text-[13.5px] font-bold text-white"
+                  className="rounded-[12px] flex-1 bg-text py-3 text-center text-[13.5px] font-bold text-bg"
                 >
                   Ver o rolê · até {hora(selecionado.role_ativo.data_fim)}
                 </Link>
               ) : (
                 <Link
                   href={`/lugar/${selecionado.lugar.id}`}
-                  className="flex-1 rounded-2xl border border-white/16 py-3 text-center text-[13.5px] font-semibold text-text-soft"
+                  className="rounded-[12px] flex-1 border border-linha py-3 text-center text-[13.5px] font-semibold text-text-soft"
                 >
                   Ver o lugar
                 </Link>
@@ -125,7 +125,7 @@ export function MapaMobile({
                 href={`https://www.google.com/maps/dir/?api=1&destination=${selecionado.lugar.lat},${selecionado.lugar.lng}`}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-2xl border border-white/18 px-4 py-3 text-[13.5px] font-semibold text-text-soft"
+                className="rounded-[16px]  border border-linha px-4 py-3 text-[13.5px] font-semibold text-text-soft"
               >
                 Rota
               </a>

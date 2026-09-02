@@ -20,7 +20,7 @@ import type { FaixaHorario, LugarPublic } from "@/lib/types";
  * certo é tirar do ar e refazer — não emendar.
  */
 const CAMPO =
-  "w-full rounded-xl border border-white/10 bg-sunken px-3 py-2.5 text-[13px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
+  "w-full border border-linha bg-sunken px-3 py-2.5 text-[13px] text-text outline-none placeholder:text-muted-3 focus:border-linha";
 
 function soIdentificador(entrada: string): string {
   return entrada
@@ -98,7 +98,7 @@ export function CorrigirLugar({
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="shrink-0 text-[11.5px] font-semibold text-muted-2 hover:text-magenta-soft"
+        className="shrink-0 text-[11.5px] font-semibold text-muted-2 hover:text-text-soft"
       >
         corrigir
       </button>
@@ -110,7 +110,7 @@ export function CorrigirLugar({
     // mais nada — e placeholder some quando o campo tem valor, que é justamente o caso
     // aqui: este formulário abre com tudo preenchido. Resultado: sete caixas de texto
     // sem nome, e ninguém achava o horário de funcionamento.
-    <div className="mt-3 flex w-full flex-col gap-2.5 border-t border-white/8 pt-3">
+    <div className="rounded-[16px] mt-3 flex w-full flex-col gap-2.5 border-t border-linha pt-3">
       <Campo rotulo="o que é a casa">
         <textarea
           rows={3}
@@ -212,19 +212,19 @@ export function CorrigirLugar({
           type="button"
           onClick={salvar}
           disabled={salvando}
-          className="flex-1 rounded-xl bg-magenta py-2.5 text-[13px] font-bold text-white disabled:opacity-60"
+          className="rounded-[12px] flex-1 bg-text py-2.5 text-[13px] font-bold text-bg disabled:opacity-60"
         >
           {salvando ? "Salvando…" : "Salvar"}
         </button>
         <button
           type="button"
           onClick={() => setAberto(false)}
-          className="rounded-xl border border-white/14 px-4 py-2.5 text-[13px] font-semibold text-muted-2"
+          className="rounded-[12px]  border border-linha px-4 py-2.5 text-[13px] font-semibold text-muted-2"
         >
           Cancelar
         </button>
       </div>
-      {erro && <p className="text-[11.5px] text-amber">{erro}</p>}
+      {erro && <p className="text-[11.5px] text-text-faint">{erro}</p>}
     </div>
   );
 }

@@ -35,10 +35,10 @@ export function BotaoToIndo({ roleId }: { roleId: string }) {
   return (
     <Link
       href={`/role/${roleId}`}
-      className={`flex items-center justify-center gap-1.5 rounded-2xl py-2.5 text-center text-[13px] font-bold ${
+      className={`flex items-center justify-center gap-1.5 py-2.5 text-center text-[13px] font-bold ${
         marcado
-          ? "border border-magenta/45 bg-magenta/12 text-magenta-soft"
-          : "bg-magenta text-white"
+          ? "border border-linha-forte bg-card text-text-soft"
+          : "bg-text text-bg"
       }`}
     >
       {marcado && (

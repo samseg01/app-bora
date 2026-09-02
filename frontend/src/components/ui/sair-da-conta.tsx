@@ -24,7 +24,7 @@ export function SairDaConta() {
     <button
       type="button"
       onClick={sair}
-      className="w-full rounded-[18px] border border-white/10 px-4.5 py-3.5 text-left text-sm font-semibold text-muted-2 transition-colors hover:border-magenta/35 hover:text-magenta-soft"
+      className="rounded-[12px] w-full border border-linha px-4.5 py-3.5 text-left text-sm font-semibold text-muted-2 transition-colors hover:border-linha-forte hover:text-text-soft"
     >
       Sair da conta
     </button>

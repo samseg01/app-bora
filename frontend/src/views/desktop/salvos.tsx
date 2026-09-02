@@ -24,29 +24,29 @@ export function SalvosDesktop({ itens }: { itens: ItemSalvo[] }) {
       <section className="min-w-0 flex-1 px-10 py-8">
         <div className="flex items-end justify-between gap-6">
           <div>
-            <h1 className="font-display text-[46px] leading-none uppercase">Meu caderninho</h1>
+            <h1 className="titulo text-[46px] leading-none">Meu caderninho</h1>
             <p className="mt-2.5 text-[13px] text-muted-2">
               {itens.length} {itens.length === 1 ? "lugar salvo" : "lugares salvos"} · só seus,
               ninguém mais vê
             </p>
           </div>
           <div className="flex gap-2.5">
-            <span className="rounded-full bg-magenta px-4 py-2.5 text-[12.5px] font-semibold text-white">
+            <span className="rounded-full bg-text px-4 py-2.5 text-[12.5px] font-semibold text-bg">
               Todos
             </span>
-            <span className="rounded-full border border-white/12 px-4 py-2.5 text-[12.5px] font-semibold text-text-faint">
+            <span className="rounded-full border border-linha px-4 py-2.5 text-[12.5px] font-semibold text-text-faint">
               Com rolê hoje
             </span>
-            <span className="rounded-full border border-white/12 px-4 py-2.5 text-[12.5px] font-semibold text-text-faint">
+            <span className="rounded-full border border-linha px-4 py-2.5 text-[12.5px] font-semibold text-text-faint">
               Salvos recentes
             </span>
           </div>
         </div>
 
         {comRole.length > 0 && (
-          <div className="mt-6.5 flex items-center justify-between gap-5 rounded-[20px] border border-magenta/22 bg-gradient-to-br from-magenta/14 to-amber/7 px-5.5 py-4.5">
+          <div className="mt-6.5 flex items-center justify-between gap-5 border border-linha-forte bg-gradient-to-br from-text-dim/14 to-text-dim/7 px-5.5 py-4.5">
             <div className="flex items-center gap-3.5">
-              <span className="pulse-agora h-2.5 w-2.5 shrink-0 rounded-full bg-magenta" />
+              <span className="pulse-agora h-2.5 w-2.5 shrink-0 rounded-full bg-agora" />
               <p className="text-sm leading-snug text-text-soft">
                 <span className="font-semibold">
                   {comRole.length}{" "}
@@ -58,7 +58,7 @@ export function SalvosDesktop({ itens }: { itens: ItemSalvo[] }) {
             </div>
             <Link
               href={`/role/${comRole[0].role!.id}`}
-              className="shrink-0 text-[13px] font-semibold text-magenta-soft"
+              className="shrink-0 text-[13px] font-semibold text-text-soft"
             >
               ver o rolê →
             </Link>
@@ -66,8 +66,8 @@ export function SalvosDesktop({ itens }: { itens: ItemSalvo[] }) {
         )}
 
         {itens.length === 0 ? (
-          <div className="mt-7 max-w-[30rem] rounded-[20px] border border-white/7 bg-card px-6 py-7">
-            <h2 className="font-display text-[26px] leading-tight uppercase">
+          <div className="elevado rounded-[20px] mt-7 max-w-[30rem] border border-linha bg-card px-6 py-7">
+            <h2 className="titulo text-[26px] leading-tight">
               Caderninho vazio
             </h2>
             <p className="mt-3 text-[13.5px] leading-relaxed text-muted text-pretty">
@@ -88,12 +88,12 @@ export function SalvosDesktop({ itens }: { itens: ItemSalvo[] }) {
 }
 
 const GRADIENTES = [
-  "from-magenta to-violet",
-  "from-amber to-magenta",
-  "from-violet to-plum",
-  "from-cyan to-plum",
-  "from-cyan to-violet",
-  "from-plum to-violet",
+  "from-pedra-funda to-pedra",
+  "from-pedra via-pedra-funda to-pedra",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
 ];
 
 function CardSalvo({
@@ -112,7 +112,7 @@ function CardSalvo({
       <div className={`h-33 bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`} />
       <div className="flex items-start justify-between gap-2.5 px-4 pt-3.5 pb-4.5">
         <div className="min-w-0">
-          <Link href={`/lugar/${lugar.id}`} className="truncate text-[15.5px] font-bold hover:text-magenta-soft">
+          <Link href={`/lugar/${lugar.id}`} className="truncate text-[15.5px] font-bold hover:text-text-soft">
             {lugar.nome}
           </Link>
           <div className="mt-1 truncate text-xs text-muted-2">
@@ -123,10 +123,10 @@ function CardSalvo({
           <span
             className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold ${
               role.frescor === "live"
-                ? "bg-magenta/16 text-magenta-soft"
+                ? "bg-card text-text-soft"
                 : role.frescor === "warm"
-                  ? "bg-amber/14 text-amber-soft"
-                  : "bg-cyan/14 text-cyan"
+                  ? "bg-text-dim/14 text-text-dim"
+                  : "bg-muted/14 text-muted"
             }`}
           >
             <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-agora" : ""}`} />
@@ -141,12 +141,12 @@ function CardSalvo({
     </>
   );
 
-  const classe = `overflow-hidden rounded-[20px] border bg-card ${
-    role ? "border-magenta/35" : "border-white/7"
+  const classe = `overflow-hidden border bg-card ${
+    role ? "border-linha-forte" : "border-linha"
   }`;
 
   return role ? (
-    <Link href={`/role/${role.id}`} className={`${classe} block transition-colors hover:border-white/20`}>
+    <Link href={`/role/${role.id}`} className={`${classe} block transition-colors hover:border-linha`}>
       {corpo}
     </Link>
   ) : (

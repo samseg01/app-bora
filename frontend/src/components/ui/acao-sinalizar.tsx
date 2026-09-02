@@ -156,7 +156,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
   // tela porque chegar é o próximo passo, e é ele que acende o rolê para os outros.
   if (sinal?.tipo === "intencao" && sessao) {
     return (
-      <div className="rounded-[20px] border border-white/8 bg-card-alt px-4.5 py-4">
+      <div className="elevado rounded-[16px]  border border-linha bg-card-alt px-4.5 py-4">
         <div className="rotulo text-muted-2">tá anotado</div>
         <p className="mt-2 text-[13px] leading-relaxed text-muted text-pretty">
           Você marcou que vem. Isso <strong className="text-text-faint">não acende o rolê</strong>{" "}
@@ -166,7 +166,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
           type="button"
           onClick={toAqui}
           disabled={ocupado}
-          className="mt-3.5 w-full rounded-2xl bg-magenta py-3.5 text-[15px] font-bold text-white disabled:opacity-60"
+          className="rounded-[12px] mt-3.5 w-full bg-text py-3.5 text-[15px] font-bold text-bg disabled:opacity-60"
         >
           {ocupado ? "Conferindo onde você está…" : "Cheguei — Tô aqui"}
         </button>
@@ -191,7 +191,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
         <Link
           href="/entrar"
           onClick={() => guardarDestino(caminho)}
-          className="block rounded-2xl bg-magenta py-4 text-center text-[15px] font-bold text-white"
+          className="rounded-[12px] block bg-text py-4 text-center text-[15px] font-bold text-bg"
         >
           Tô aqui — acende o rolê
         </Link>
@@ -212,7 +212,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
         type="button"
         onClick={toAqui}
         disabled={ocupado}
-        className="w-full rounded-2xl bg-magenta py-4 text-[15px] font-bold text-white disabled:opacity-60"
+        className="rounded-[12px] w-full bg-text py-4 text-[15px] font-bold text-bg disabled:opacity-60"
       >
         {ocupado ? "Conferindo onde você está…" : "Tô aqui — acende o rolê"}
       </button>
@@ -220,7 +220,7 @@ export function AcaoSinalizar({ roleId, dataFim }: { roleId: string; dataFim: st
         type="button"
         onClick={toIndo}
         disabled={ocupado}
-        className="mt-2.5 w-full rounded-2xl border border-white/10 bg-card-alt py-3.5 text-[14px] font-semibold text-text-soft disabled:opacity-60"
+        className="rounded-[12px] mt-2.5 w-full border border-linha bg-card-alt py-3.5 text-[14px] font-semibold text-text-soft disabled:opacity-60"
       >
         Ainda tô indo
       </button>
@@ -271,26 +271,38 @@ function Confirmado({
 
   return (
     <div className="flex flex-col items-center text-center">
-      <span className="pulse-agora flex h-19 w-19 items-center justify-center rounded-full bg-magenta">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={3}>
+      <span className="pulse-agora flex h-19 w-19 items-center justify-center rounded-full bg-agora">
+        {/* `text-bg` porque o círculo é branco: o check era `stroke="#fff"` fixo, e
+            quando o acento virou branco ficou branco sobre branco — um disco liso,
+            sem símbolo nenhum. Hex fixo em SVG não é alcançado por varredura de
+            classe, e foi o único erro do redesign que só apareceu em tela. */}
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={3}
+          className="text-bg"
+        >
           <path d="M5 13l4 4L19 7" />
         </svg>
       </span>
-      <h2 className="mt-5.5 font-display text-[33px] leading-none uppercase">Tá marcado</h2>
+      <h2 className="mt-5.5 titulo text-[33px] leading-none">Tá marcado</h2>
       <p className="mt-2.5 max-w-[17rem] text-[13.5px] leading-relaxed text-muted">
         Seu sinal alimenta o mapa e some sozinho. O rolê vai até {hora(dataFim)}.
       </p>
 
-      <div className="mt-6 w-full rounded-[20px] border border-white/7 bg-card-alt px-4.5 py-4">
+      <div className="rounded-[12px] mt-6 w-full border border-linha bg-card-alt px-4.5 py-4">
         <div className="flex items-baseline justify-between">
           <span className="rotulo text-muted-2">some em</span>
-          <span className="font-display text-[22px]">
+          <span className="titulo text-[22px]">
             {h > 0 ? `${h}h ${m}min` : `${m}min`}
           </span>
         </div>
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/9">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-magenta to-amber"
+            className="h-full rounded-full bg-gradient-to-r from-agora to-pedra-funda"
             style={{ width: `${Math.min(100, (restante / JANELA_MIN) * 100)}%` }}
           />
         </div>

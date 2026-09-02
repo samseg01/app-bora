@@ -35,7 +35,7 @@ export function CuradorDesktop({
         <div className="mb-6">
           <PassosCurador bairro={bairro} lugares={lugares.length} />
         </div>
-        <h1 className="font-display text-[42px] leading-none uppercase">A noite de hoje</h1>
+        <h1 className="titulo text-[42px] leading-none">A noite de hoje</h1>
         <p className="mt-2 text-[13px] text-muted-2">
           o que está no ar agora em {bairro} — some sozinho no horário de término
         </p>
@@ -59,13 +59,13 @@ export function CuradorDesktop({
             return (
               <div
                 key={role.id}
-                className={`flex items-center gap-4 rounded-[18px] border bg-card px-4 py-3.5 ${
-                  role.frescor === "live" ? "border-magenta/30" : "border-white/7"
+                className={`flex items-center gap-4 border bg-card px-4 py-3.5 ${
+                  role.frescor === "live" ? "border-linha-forte" : "border-linha"
                 }`}
               >
                 <div
-                  className={`h-11.5 w-11.5 shrink-0 rounded-[13px] bg-gradient-to-br ${
-                    ["from-magenta to-violet", "from-amber to-magenta", "from-cyan to-violet"][i % 3]
+                  className={`h-11.5 w-11.5 shrink-0 bg-gradient-to-br ${
+                    ["from-pedra-funda to-pedra", "from-pedra via-pedra-funda to-pedra", "from-pedra to-pedra-funda"][i % 3]
                   }`}
                 />
                 <div className="min-w-0 flex-1">
@@ -78,10 +78,10 @@ export function CuradorDesktop({
                 <span
                   className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold ${
                     role.frescor === "live"
-                      ? "bg-magenta/16 text-magenta-soft"
+                      ? "bg-card text-text-soft"
                       : role.frescor === "warm"
-                        ? "bg-amber/14 text-amber-soft"
-                        : "bg-cyan/14 text-cyan"
+                        ? "bg-text-dim/14 text-text-dim"
+                        : "bg-muted/14 text-muted"
                   }`}
                 >
                   <span
@@ -116,11 +116,11 @@ function Stat({
 }) {
   return (
     <div
-      className={`flex-1 rounded-2xl border bg-sunken px-4 py-3.5 ${
-        alerta && valor > 0 ? "border-amber/28" : "border-white/6"
+      className={`flex-1 border bg-sunken px-4 py-3.5 ${
+        alerta && valor > 0 ? "border-text-dim/28" : "border-linha"
       }`}
     >
-      <div className={`font-display text-[26px] leading-none ${alerta && valor > 0 ? "text-amber" : ""}`}>
+      <div className={`titulo text-[26px] leading-none ${alerta && valor > 0 ? "text-text-faint" : ""}`}>
         {valor}
       </div>
       <div className="mt-1.5 text-[11.5px] text-muted-2">{rotulo}</div>

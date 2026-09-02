@@ -21,19 +21,19 @@ export function usarDadoDeExemplo(): boolean {
 function Conteudo({ titulo, descricao }: { titulo: string; descricao: string }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-8 py-16 text-center">
-      <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-white/20">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6f6690" strokeWidth={1.8}>
+      <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-linha">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
           <rect x="4" y="10" width="16" height="10" rx="2.5" />
           <path d="M8 10V7a4 4 0 018 0v3" />
         </svg>
       </div>
-      <h1 className="mt-5 font-display text-[28px] leading-tight uppercase">{titulo}</h1>
+      <h1 className="mt-5 titulo text-[28px] leading-tight">{titulo}</h1>
       <p className="mt-3 max-w-80 text-[13.5px] leading-relaxed text-muted text-pretty">
         {descricao}
       </p>
       <Link
         href="/"
-        className="mt-6 rounded-2xl border border-white/18 px-5 py-3 text-[13.5px] font-semibold text-text-soft"
+        className="rounded-[16px] mt-6 border border-linha px-5 py-3 text-[13.5px] font-semibold text-text-soft"
       >
         Ver a noite de hoje
       </Link>

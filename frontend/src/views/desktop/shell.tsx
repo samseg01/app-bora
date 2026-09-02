@@ -21,7 +21,7 @@ export function DesktopShell({
   semBarra?: boolean;
 }) {
   return (
-    <div className="flex min-h-dvh bg-surface">
+    <div className="rounded-[16px] flex min-h-dvh bg-surface">
       {!semBarra && (curador ? <SidebarCurador /> : <Sidebar />)}
       <main className="flex min-w-0 flex-1">{children}</main>
     </div>

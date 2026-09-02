@@ -21,7 +21,7 @@ import type { LugarPublic } from "@/lib/types";
  * nasceria terminado e a `/descoberta` não o veria — mesma regra do seed.
  */
 const CAMPO =
-  "w-full rounded-2xl border border-white/10 bg-sunken px-3.5 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-white/25";
+  "w-full border border-linha bg-sunken px-3.5 py-3 text-[13.5px] text-text outline-none placeholder:text-muted-3 focus:border-linha";
 
 function hojeAs(hhmm: string): Date {
   const [h, m] = hhmm.split(":").map(Number);
@@ -92,8 +92,8 @@ export function FormPublicar({
 
   if (semLugares) {
     return (
-      <div className="flex flex-col gap-3 rounded-[22px] border border-white/7 bg-card-alt p-5.5">
-        <h2 className="font-display text-[26px] leading-none uppercase">Publicar rolê</h2>
+      <div className="elevado rounded-[20px] flex flex-col gap-3 border border-linha bg-card-alt p-5.5">
+        <h2 className="titulo text-[26px] leading-none">Publicar rolê</h2>
         {/* Os asteriscos de markdown apareciam literalmente na tela: isto é JSX, não
             texto formatado. E a instrução era beco sem saída — "cadastre em Lugares"
             sem link, na única tela em que a pessoa precisa exatamente disso. */}
@@ -103,7 +103,7 @@ export function FormPublicar({
         </p>
         <Link
           href="/curador/lugares"
-          className="rounded-2xl bg-magenta py-3 text-center text-[13.5px] font-bold text-white"
+          className="rounded-[12px]  bg-text py-3 text-center text-[13.5px] font-bold text-bg"
         >
           Cadastrar o primeiro lugar
         </Link>
@@ -114,12 +114,12 @@ export function FormPublicar({
   return (
     <form
       onSubmit={publicar}
-      className={`flex flex-col gap-3.5 rounded-[22px] border border-white/7 bg-card-alt p-5.5 ${
+      className={`flex flex-col gap-3.5 border border-linha bg-card-alt p-5.5 ${
         compacto ? "" : "h-full"
       }`}
     >
       <div>
-        <h2 className="font-display text-[26px] leading-none uppercase">Publicar rolê</h2>
+        <h2 className="titulo text-[26px] leading-none">Publicar rolê</h2>
         <p className="mt-2 text-xs leading-relaxed text-muted-2">
           Você acabou de sair de lá. Escreva enquanto está fresco.
         </p>
@@ -150,14 +150,14 @@ export function FormPublicar({
 
       <label className="flex flex-col gap-1.5">
         <span className="flex items-baseline justify-between">
-          <span className="rotulo text-amber">motivo pra ir</span>
+          <span className="rotulo text-text-faint">motivo pra ir</span>
           <span className="text-[11px] text-muted-3">o que você viu lá</span>
         </span>
         <textarea
           rows={compacto ? 3 : 4}
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
-          className={`${CAMPO} resize-none border-amber/35 leading-relaxed`}
+          className={`${CAMPO} resize-none border-text-dim/35 leading-relaxed`}
           placeholder="Balcão antigo, cerveja gelada e sem couvert."
           maxLength={2000}
         />
@@ -178,7 +178,7 @@ export function FormPublicar({
         <button
           type="submit"
           disabled={estado === "enviando"}
-          className="rounded-2xl bg-magenta py-3.5 text-[14.5px] font-bold text-white disabled:opacity-60"
+          className="rounded-[12px]  bg-text py-3.5 text-[14.5px] font-bold text-bg disabled:opacity-60"
         >
           {estado === "enviando" ? "Publicando…" : `Publicar em ${bairro}`}
         </button>

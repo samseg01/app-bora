@@ -1,6 +1,6 @@
 # TODO — bora-roles (visão geral)
 
-> `- [ ]` backlog · `- [~]` fazendo · `- [!]` bloqueado · `- [x]` feito
+> `- [ ]` backlog · `- [~]` fazendo · `- [!]` bloqueado · `- [?]` em teste · `- [x]` feito
 > Lido pelo app Kanban; o marcador é o que aparece na coluna.
 
 Tasks de escopo do monorepo (produto, decisões cross-cutting). Para tasks internas de cada parte,
@@ -1048,6 +1048,33 @@ segue o hi-fi.
        no GitHub barrando merge no vermelho — não é mais "montar a CI", é "chamar o script".
        O que **falta de verdade** é serviço de Postgres+PostGIS no runner, já que a suíte não
        usa mock.
+- [x] 60. **Sistema visual monocromático — a camada 1 (fundação).** Feito e **validado em campo
+       em 02/09**, num telefone pelo túnel. Substitui o sistema do hi-fi (quase-preto arroxeado, Anton maiúsculo, quatro
+       cores saturadas) por preto/cinza/branco, Inter, superfície elevada com raio.
+       Números: 310 trocas de cor em 51 arquivos, 42 `uppercase` removidos, 26 CTAs invertidos
+       (o primário deixou de ser colorido — é o que liberou o acento), 120 raios, 141 bordas
+       viradas régua, 36 cards elevados. Doc: `docs/features/sistema-visual-monocromatico.md`.
+       **A regra que sustenta o resto:** token tem nome de PAPEL, não de matiz. `--color-agora`,
+       nunca `--color-magenta` — o hue no nome foi o que travou a mudança anterior.
+       **Passou por uma versão dura e voltou:** a primeira tentativa era `#000` puro, régua de 1px
+       e raio zero. Em tela ficou cartaz, não app de madrugada. Está registrado no doc para
+       ninguém "corrigir" a suavização de volta achando que é desvio do suíço.
+       **O teste no telefone pegou 4 bugs que lint, build e os 56 testes deixaram passar** — três
+       eram cor fixa em hex dentro do JSX (inclusive um ✓ branco sobre círculo branco) e o quarto
+       era o acento vazando para link, aba e seleção. Os 17 hex viraram `currentColor` e nasceu
+       `--color-selecao`. Detalhe no doc da feature.
+- [ ] 61. **Camada 2 de estilo: composição e densidade.** A camada 1 mudou o vocabulário visual
+       (cor, tipo, superfície) e **não tocou em layout**. Falta o desenho de fato: espaçamento,
+       hierarquia dentro do card, a lista, a navegação, os estados vazios — que aliás nunca foram
+       desenhados em sistema nenhum. Decidido em 02/09 fazer em passada separada: meio app
+       recomposto é pior que nenhum, e a fundação precisava estar de pé antes.
+- [ ] 62. **O basemap do mapa perdeu a justificativa.** O `mapa-real.tsx` diz, textualmente, que o
+       CARTO dark-matter foi escolhido "para conviver com o `#08060f` do app e fazer os pins
+       magenta/âmbar/ciano saltarem". **As duas metades expiraram em 02/09:** o fundo virou
+       quase-preto neutro e os pins viraram branco e cinza — contraste bem menor sobre um mapa
+       cinza-azulado, que ainda por cima puxa para o frio contra um app neutro.
+       Deixado em aberto por decisão, para ser visto junto com a camada 2. Saídas: trocar por um
+       estilo neutro, ou `filter: grayscale()` no container. O alerta está no próprio arquivo.
 - [ ] 50. **O frontend não tem um único teste — e é ali que o projeto quebra.** Levantado em
        01/09 ao montar o regressivo: zero arquivos `.test`/`.spec` em `frontend/src`, zero
        ferramenta instalada (nem Vitest, nem Playwright, nem Testing Library). `npm run lint` e

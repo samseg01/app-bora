@@ -39,7 +39,7 @@ export function HomeDesktop({
         </div>
 
         <div className="mt-6 flex items-baseline gap-3.5">
-          <h1 className="font-display text-[54px] leading-none tracking-[-.5px] uppercase">
+          <h1 className="titulo text-[54px] leading-none tracking-[-.5px]">
             Hoje à noite
           </h1>
           {/* Contador só quando há o que contar: "0 achados" anuncia o vazio em vez de tratá-lo. */}
@@ -72,12 +72,12 @@ export function HomeDesktop({
         <MapaReal
           pins={pins}
           etiqueta={`${bairro} · agora`}
-          className="sticky top-8 h-[calc(100dvh-4rem)] rounded-[22px] border border-white/7"
+          className="rounded-[16px] sticky top-8 h-[calc(100dvh-4rem)] border border-linha"
         >
-          <div className="absolute inset-x-4 bottom-4 flex flex-col gap-3 rounded-[18px] border border-white/9 bg-sunken/95 p-4">
+          <div className="rounded-[16px] absolute inset-x-4 bottom-4 flex flex-col gap-3 border border-linha bg-sunken/95 p-4">
             {comentario && (
               <div className="flex items-start gap-3">
-                <div className="h-[30px] w-[30px] shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+                <div className="h-[30px] w-[30px] shrink-0 rounded-full bg-gradient-to-br from-pedra to-pedra-funda" />
                 <p className="text-[12.5px] leading-snug text-text-dim">
                   “{comentario.texto}” —{" "}
                   <span className="font-semibold text-white">{comentario.autor_nome}</span>
@@ -98,8 +98,8 @@ export function HomeDesktop({
  */
 function VazioDescoberta({ bairro }: { bairro: string }) {
   return (
-    <div className="mt-8 max-w-[30rem] rounded-[20px] border border-white/7 bg-card px-6 py-7">
-      <h2 className="font-display text-[26px] leading-tight uppercase">
+    <div className="elevado rounded-[20px] mt-8 max-w-[30rem] border border-linha bg-card px-6 py-7">
+      <h2 className="titulo text-[26px] leading-tight">
         Ainda não tem nada aqui
       </h2>
       <p className="mt-3 text-[13.5px] leading-relaxed text-muted text-pretty">

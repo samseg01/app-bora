@@ -20,30 +20,30 @@ import type { RoleDescoberta } from "@/lib/types";
  */
 
 const GRADIENTES = [
-  "from-magenta to-violet",
-  "from-amber to-magenta",
-  "from-cyan to-violet",
-  "from-violet to-plum",
+  "from-pedra-funda to-pedra",
+  "from-pedra via-pedra-funda to-pedra",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
 ];
 
 export function RoleRow({ role, indice }: { role: RoleDescoberta; indice: number }) {
   return (
     <div
-      className={`flex gap-[18px] rounded-[20px] border bg-card p-4 ${
-        role.frescor === "live" ? "border-magenta/30" : "border-white/7"
+      className={`flex gap-[18px] border bg-card p-4 ${
+        role.frescor === "live" ? "border-linha-forte" : "border-linha"
       }`}
     >
       <div
-        className={`h-[124px] w-[124px] shrink-0 rounded-2xl bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`}
+        className={`h-[124px] w-[124px] shrink-0 bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`}
       />
 
       <div className="flex min-w-0 flex-1 flex-col gap-[7px]">
         <div className="flex items-center gap-2.5">
-          <span className="rotulo text-amber">{role.categoria}</span>
+          <span className="rotulo text-text-faint">{role.categoria}</span>
           <FrescorPill frescor={role.frescor} />
         </div>
 
-        <Link href={`/role/${role.id}`} className="text-[21px] leading-tight font-bold text-text hover:text-magenta-soft">
+        <Link href={`/role/${role.id}`} className="text-[21px] leading-tight font-bold text-text hover:text-text-soft">
           {role.titulo}
         </Link>
 
@@ -58,7 +58,7 @@ export function RoleRow({ role, indice }: { role: RoleDescoberta; indice: number
         </div>
       </div>
 
-      <div className="flex w-[132px] shrink-0 flex-col justify-center gap-2.5 border-l border-white/7 pl-[18px]">
+      <div className="rounded-[16px] flex w-[132px] shrink-0 flex-col justify-center gap-2.5 border-l border-linha pl-[18px]">
         <BotaoToIndo roleId={role.id} />
         <AcaoSalvar lugarId={role.lugar_id} variante="botao" />
       </div>

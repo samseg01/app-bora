@@ -111,8 +111,8 @@ export function PainelDono() {
               onClick={() => setEscolhida(c.id)}
               className={`rounded-full px-3.5 py-2 text-[12.5px] transition-colors ${
                 c.id === casaId
-                  ? "border-[1.5px] border-cyan bg-cyan/14 font-semibold text-cyan"
-                  : "border border-white/8 bg-sunken font-medium text-text-faint"
+                  ? "border-[1.5px] border-muted bg-muted/14 font-semibold text-muted"
+                  : "border border-linha bg-sunken font-medium text-text-faint"
               }`}
             >
               {c.nome}
@@ -122,7 +122,7 @@ export function PainelDono() {
       )}
 
       <div>
-        <h1 className="font-display text-[34px] leading-none uppercase lg:text-[42px]">
+        <h1 className="titulo text-[34px] leading-none lg:text-[42px]">
           {casa?.nome}
         </h1>
         <p className="mt-2.5 text-[13px] leading-relaxed text-muted-2">
@@ -159,9 +159,9 @@ export function PainelDono() {
                 return (
                   <div
                     key={l.lugar_id}
-                    className="flex items-center gap-3.5 rounded-[18px] border border-white/7 bg-card p-3.5"
+                    className="elevado rounded-[16px] flex items-center gap-3.5 border border-linha bg-card p-3.5"
                   >
-                    <div className="h-11 w-11 shrink-0 rounded-xl bg-gradient-to-br from-cyan to-violet" />
+                    <div className="h-11 w-11 shrink-0 bg-gradient-to-br from-pedra to-pedra-funda" />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-[14.5px] font-bold">{l.lugar_nome}</div>
                       <div className="mt-0.5 text-xs text-muted-2">
@@ -186,10 +186,10 @@ function Moldura({ children }: { children: React.ReactNode }) {
     <section className="mx-auto flex w-full max-w-3xl min-w-0 flex-1 flex-col gap-6 px-6 py-9 lg:px-8">
       <div className="flex items-center justify-between">
         <div>
-          <Link href="/" className="font-display text-2xl leading-none uppercase">
-            Bora<span className="text-cyan">?</span>
+          <Link href="/" className="titulo text-2xl leading-none">
+            Bora<span className="text-muted">?</span>
           </Link>
-          <div className="rotulo mt-1.5 text-cyan">painel do estabelecimento</div>
+          <div className="rotulo mt-1.5 text-muted">painel do estabelecimento</div>
         </div>
         <Link href="/" className="text-xs font-semibold text-muted-2 hover:text-text">
           ver o app
@@ -211,13 +211,13 @@ function Numero({
 }) {
   return (
     <div
-      className={`flex-1 rounded-2xl border bg-sunken px-4 py-4 ${
-        destaque && valor > 0 ? "border-cyan/28" : "border-white/6"
+      className={`flex-1 border bg-sunken px-4 py-4 ${
+        destaque && valor > 0 ? "border-muted/28" : "border-linha"
       }`}
     >
       <div
-        className={`font-display text-[30px] leading-none ${
-          destaque && valor > 0 ? "text-cyan" : ""
+        className={`titulo text-[30px] leading-none ${
+          destaque && valor > 0 ? "text-muted" : ""
         }`}
       >
         {valor}
@@ -229,8 +229,8 @@ function Numero({
 
 function Recado({ titulo, texto }: { titulo: string; texto: string }) {
   return (
-    <div className="rounded-[22px] border border-white/7 bg-card-alt px-5.5 py-6">
-      <h1 className="font-display text-[26px] leading-tight uppercase">{titulo}</h1>
+    <div className="elevado rounded-[20px]  border border-linha bg-card-alt px-5.5 py-6">
+      <h1 className="titulo text-[26px] leading-tight">{titulo}</h1>
       <p className="mt-3 text-[13.5px] leading-relaxed text-muted text-pretty">{texto}</p>
     </div>
   );

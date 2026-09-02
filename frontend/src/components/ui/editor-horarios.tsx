@@ -35,7 +35,7 @@ export function EditorHorarios({
   return (
     <div className="flex flex-col gap-2.5">
       {faixas.map((faixa, i) => (
-        <div key={i} className="flex flex-col gap-2 rounded-2xl border border-white/8 bg-sunken p-3">
+        <div key={i} className="rounded-[16px] flex flex-col gap-2 border border-linha bg-sunken p-3">
           <div className="flex flex-wrap gap-1.5">
             {DIAS.map((nome, dia) => {
               const ativo = faixa.dias.includes(dia);
@@ -45,10 +45,10 @@ export function EditorHorarios({
                   type="button"
                   onClick={() => alternarDia(i, dia)}
                   aria-pressed={ativo}
-                  className={`h-8 w-9 rounded-lg text-[11.5px] font-semibold capitalize transition-colors ${
+                  className={`h-8 w-9 text-[11.5px] font-semibold capitalize transition-colors ${
                     ativo
-                      ? "border-[1.5px] border-magenta bg-magenta/16 text-text"
-                      : "border border-white/10 bg-card-alt text-muted-3"
+                      ? "border-[1.5px] border-selecao bg-card text-text"
+                      : "border border-linha bg-card-alt text-muted-3"
                   }`}
                 >
                   {nome}
@@ -65,7 +65,7 @@ export function EditorHorarios({
               value={faixa.abre}
               onChange={(e) => alterar(i, { abre: e.target.value })}
               aria-label="abre às"
-              className="flex-1 rounded-xl border border-white/10 bg-card-alt px-3 py-2.5 text-[13px] text-text outline-none focus:border-white/25"
+              className="rounded-[12px] flex-1 border border-linha bg-card-alt px-3 py-2.5 text-[13px] text-text outline-none focus:border-linha"
             />
             <span className="text-[12px] text-muted-3">às</span>
             <input
@@ -73,14 +73,14 @@ export function EditorHorarios({
               value={faixa.fecha}
               onChange={(e) => alterar(i, { fecha: e.target.value })}
               aria-label="fecha às"
-              className="flex-1 rounded-xl border border-white/10 bg-card-alt px-3 py-2.5 text-[13px] text-text outline-none focus:border-white/25"
+              className="rounded-[12px] flex-1 border border-linha bg-card-alt px-3 py-2.5 text-[13px] text-text outline-none focus:border-linha"
             />
             {faixas.length > 1 && (
               <button
                 type="button"
                 onClick={() => aoMudar(faixas.filter((_, j) => j !== i))}
                 aria-label="remover esta faixa"
-                className="shrink-0 rounded-xl border border-white/12 px-2.5 py-2.5 text-[12px] text-muted-2 hover:text-text"
+                className="rounded-[12px] shrink-0 border border-linha px-2.5 py-2.5 text-[12px] text-muted-2 hover:text-text"
               >
                 ✕
               </button>
@@ -98,7 +98,7 @@ export function EditorHorarios({
       <button
         type="button"
         onClick={() => aoMudar([...faixas, faixaNova()])}
-        className="self-start text-[12px] font-semibold text-magenta-soft"
+        className="self-start text-[12px] font-semibold text-text-soft"
       >
         + outro horário
       </button>

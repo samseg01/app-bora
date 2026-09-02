@@ -27,12 +27,12 @@ export function SugerirLugar({
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center justify-between gap-3 rounded-[18px] border border-dashed border-white/16 px-4 py-3 hover:border-white/28"
+        className="rounded-[16px] flex items-center justify-between gap-3 border border-dashed border-linha px-4 py-3 hover:border-linha"
       >
         <span className="text-[12.5px] leading-snug text-text-faint">
           Conhece um lugar que devia estar aqui?
         </span>
-        <span className="shrink-0 text-[12.5px] font-semibold text-magenta-soft">Indicar</span>
+        <span className="shrink-0 text-[12.5px] font-semibold text-text-soft">Indicar</span>
       </a>
     );
   }
@@ -42,11 +42,11 @@ export function SugerirLugar({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="mt-4 block rounded-[20px] border border-magenta/24 bg-gradient-to-br from-magenta/12 to-violet/8 px-5 py-4.5 transition-colors hover:border-magenta/45"
+      className="mt-4 block border border-linha-forte bg-gradient-to-br from-text-dim/12 to-pedra-funda px-5 py-4.5 transition-colors hover:border-linha-forte"
     >
       <div className="flex items-start gap-3.5">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-magenta/16">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6fa0" strokeWidth={2}>
+        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-card">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <path d="M12 5v14M5 12h14" />
           </svg>
         </span>

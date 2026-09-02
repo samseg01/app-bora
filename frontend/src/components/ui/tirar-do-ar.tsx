@@ -40,14 +40,14 @@ export function TirarDoAr({ roleId }: { roleId: string }) {
           type="button"
           onClick={remover}
           disabled={ocupado}
-          className="rounded-xl bg-magenta px-3 py-2 text-xs font-bold text-white disabled:opacity-60"
+          className="rounded-[12px]  bg-text px-3 py-2 text-xs font-bold text-bg disabled:opacity-60"
         >
           {ocupado ? "…" : "Confirmar"}
         </button>
         <button
           type="button"
           onClick={() => setConfirmando(false)}
-          className="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-muted-2"
+          className="rounded-[12px]  border border-linha px-3 py-2 text-xs font-semibold text-muted-2"
         >
           Não
         </button>
@@ -59,7 +59,7 @@ export function TirarDoAr({ roleId }: { roleId: string }) {
     <button
       type="button"
       onClick={() => setConfirmando(true)}
-      className="shrink-0 rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-muted-2 transition-colors hover:border-magenta/35 hover:text-magenta-soft"
+      className="rounded-[12px] shrink-0 border border-linha px-3 py-2 text-xs font-semibold text-muted-2 transition-colors hover:border-linha-forte hover:text-text-soft"
     >
       Tirar do ar
     </button>

@@ -34,7 +34,7 @@ export function HomeMobile({
       </header>
 
       <div className="flex items-baseline gap-2.5 px-5.5 pt-2 pb-3.5">
-        <h1 className="font-display text-[31px] leading-none tracking-[-.3px] uppercase">
+        <h1 className="titulo text-[31px] leading-none tracking-[-.3px]">
           Hoje à noite
         </h1>
         {roles.length > 0 && (
@@ -53,8 +53,8 @@ export function HomeMobile({
           ))}
         </div>
       ) : (
-        <div className="mx-5.5 mb-4.5 rounded-[20px] border border-white/7 bg-card px-5 py-5.5">
-          <h2 className="font-display text-[22px] leading-tight uppercase">
+        <div className="elevado rounded-[16px] mx-5.5 mb-4.5 border border-linha bg-card px-5 py-5.5">
+          <h2 className="titulo text-[22px] leading-tight">
             Ainda não tem nada aqui
           </h2>
           <p className="mt-2.5 text-[13px] leading-relaxed text-muted text-pretty">
@@ -66,15 +66,15 @@ export function HomeMobile({
       )}
 
       <div className="flex items-center gap-3 px-5.5 pb-3.5">
-        <div className="h-px flex-1 bg-gradient-to-r from-magenta/45 to-amber/20" />
+        <div className="h-px flex-1 bg-gradient-to-r from-text-dim/45 to-text-dim/20" />
         <span className="rotulo text-muted-2">ou explore a região</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-amber/20 to-magenta/45" />
+        <div className="h-px flex-1 bg-gradient-to-r from-text-dim/20 to-text-dim/45" />
       </div>
 
       <MapaReal
         pins={pins}
         etiqueta={`${bairro} · agora`}
-        className="mx-4 mb-3 min-h-45 flex-1 rounded-[22px] border border-white/7"
+        className="rounded-[16px] mx-4 mb-3 min-h-45 flex-1 border border-linha"
       />
     </MobileShell>
   );

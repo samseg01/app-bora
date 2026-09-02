@@ -22,7 +22,7 @@ export function RoleMobile({
 }) {
   return (
     <MobileShell nav={false}>
-      <div className="relative h-62 shrink-0 bg-gradient-to-br from-magenta via-violet to-plum">
+      <div className="relative h-62 shrink-0 bg-gradient-to-br from-pedra via-pedra-funda to-pedra">
         <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent" />
         <Link
           href="/"
@@ -35,15 +35,15 @@ export function RoleMobile({
         </Link>
         <div className="absolute bottom-4 left-5.5 flex gap-2">
           <FrescorPill frescor={role.frescor} />
-          <span className="rounded-full bg-amber/16 px-2.5 py-1.5 text-[11px] font-semibold text-amber-soft">
+          <span className="rounded-full bg-text-dim/16 px-2.5 py-1.5 text-[11px] font-semibold text-text-dim">
             termina {hora(role.data_fim)}
           </span>
         </div>
       </div>
 
       <div className="px-5.5 pt-1">
-        <div className="rotulo text-amber">rolê de hoje · {role.categoria}</div>
-        <h1 className="mt-2.5 font-display text-[29px] leading-[1.04] uppercase">{role.titulo}</h1>
+        <div className="rotulo text-text-faint">rolê de hoje · {role.categoria}</div>
+        <h1 className="mt-2.5 titulo text-[29px] leading-[1.04]">{role.titulo}</h1>
         {role.descricao ? (
           <p className="mt-2.5 text-[13.5px] leading-relaxed text-muted text-pretty">
             {role.descricao}
@@ -55,14 +55,14 @@ export function RoleMobile({
         )}
       </div>
 
-      <div className="mx-5.5 mt-4.5 flex items-center justify-between border-y border-white/8 py-3.5">
+      <div className="rounded-[16px] mx-5.5 mt-4.5 flex items-center justify-between border-y border-linha py-3.5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="h-10.5 w-10.5 shrink-0 rounded-xl bg-gradient-to-br from-cyan to-violet" />
+          <div className="h-10.5 w-10.5 shrink-0 bg-gradient-to-br from-pedra to-pedra-funda" />
           <div className="min-w-0">
             {lugar ? (
               <Link
                 href={`/lugar/${lugar.id}`}
-                className="block truncate text-[15px] font-bold hover:text-magenta-soft"
+                className="block truncate text-[15px] font-bold hover:text-text-soft"
               >
                 {lugar.nome}
               </Link>
@@ -78,11 +78,11 @@ export function RoleMobile({
       </div>
 
       {comentarios.length > 0 && (
-        <div className="mx-5.5 mt-4 flex flex-col gap-3 rounded-[18px] border border-white/6 bg-card-alt p-4">
+        <div className="elevado rounded-[16px] mx-5.5 mt-4 flex flex-col gap-3 border border-linha bg-card-alt p-4">
           <div className="rotulo text-muted-3">quem está lá agora</div>
           {comentarios.slice(0, 2).map((c) => (
             <div key={`${c.autor_nome}-${c.created_at}`} className="flex items-start gap-2.5">
-              <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+              <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-pedra to-pedra-funda" />
               <p className="text-[12.5px] leading-snug text-text-dim">
                 “{c.texto}” — <span className="font-semibold text-white">{c.autor_nome}</span>,{" "}
                 {idade(c.created_at)}
@@ -93,8 +93,8 @@ export function RoleMobile({
       )}
 
       {role.sinais_recentes > 0 && (
-        <div className="mx-5.5 mt-3 rounded-2xl border border-white/6 bg-sunken px-4 py-3.5">
-          <div className="font-display text-[26px] leading-none">{role.sinais_recentes}</div>
+        <div className="rounded-[16px] mx-5.5 mt-3 border border-linha bg-sunken px-4 py-3.5">
+          <div className="titulo text-[26px] leading-none">{role.sinais_recentes}</div>
           <div className="mt-1 text-[11.5px] text-muted-2">sinalizaram nas últimas 2h</div>
         </div>
       )}

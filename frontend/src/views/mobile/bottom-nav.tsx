@@ -25,7 +25,7 @@ export function BottomNav() {
     // O padding de baixo soma a área segura do aparelho: instalado como PWA não há
     // barra de navegador, e a barra de gestos do sistema ficaria em cima dos rótulos.
     <nav
-      className="sticky bottom-0 z-10 mt-auto flex border-t border-white/7 bg-nav px-1 pt-3"
+      className="rounded-[16px] sticky bottom-0 z-10 mt-auto flex border-t border-linha bg-nav px-1 pt-3"
       style={{ paddingBottom: "calc(1.375rem + env(safe-area-inset-bottom))" }}
     >
       {NAV.map(({ href, label, Icone }) => {
@@ -36,7 +36,7 @@ export function BottomNav() {
             href={href}
             aria-current={ativo ? "page" : undefined}
             className={`flex min-w-0 flex-1 flex-col items-center gap-1.5 text-[9.5px] ${
-              ativo ? "font-semibold text-magenta" : "font-medium text-muted-3"
+              ativo ? "font-semibold text-selecao" : "font-medium text-muted-3"
             }`}
           >
             <Icone width={21} height={21} />

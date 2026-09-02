@@ -36,18 +36,18 @@ export function RoleDesktop({
             Voltar para a noite de hoje
           </Link>
 
-          <div className="relative h-67 shrink-0 overflow-hidden rounded-[22px] bg-gradient-to-br from-magenta via-violet to-plum">
+          <div className="rounded-[16px] relative h-67 shrink-0 overflow-hidden bg-gradient-to-br from-pedra via-pedra-funda to-pedra">
             <div className="absolute inset-0 bg-gradient-to-t from-surface/92 to-transparent" />
             <div className="absolute bottom-4.5 left-5.5 flex gap-2.5">
               <FrescorPill frescor={role.frescor} />
-              <span className="rounded-full bg-amber/16 px-3 py-1.5 text-[11.5px] font-semibold text-amber-soft">
+              <span className="rounded-full bg-text-dim/16 px-3 py-1.5 text-[11.5px] font-semibold text-text-dim">
                 termina {hora(role.data_fim)}
               </span>
             </div>
           </div>
 
-          <div className="rotulo mt-6 text-amber">rolê de hoje · {role.categoria}</div>
-          <h1 className="mt-2.5 font-display text-[46px] leading-[1.02] uppercase">{role.titulo}</h1>
+          <div className="rotulo mt-6 text-text-faint">rolê de hoje · {role.categoria}</div>
+          <h1 className="mt-2.5 titulo text-[46px] leading-[1.02]">{role.titulo}</h1>
 
           {role.descricao ? (
             <p className="mt-3.5 max-w-[560px] text-[15px] leading-relaxed text-text-faint text-pretty">
@@ -69,14 +69,14 @@ export function RoleDesktop({
         </section>
 
         <aside className="flex w-[356px] shrink-0 flex-col gap-3.5">
-          <div className="flex flex-col gap-3.5 rounded-[22px] border border-white/7 bg-card p-5">
+          <div className="elevado rounded-[20px] flex flex-col gap-3.5 border border-linha bg-card p-5">
             <div className="flex items-center gap-3">
-              <div className="h-11.5 w-11.5 shrink-0 rounded-[13px] bg-gradient-to-br from-cyan to-violet" />
+              <div className="h-11.5 w-11.5 shrink-0 bg-gradient-to-br from-pedra to-pedra-funda" />
               <div className="min-w-0">
                 {lugar ? (
                   <Link
                     href={`/lugar/${lugar.id}`}
-                    className="block truncate text-base font-bold hover:text-magenta-soft"
+                    className="block truncate text-base font-bold hover:text-text-soft"
                   >
                     {lugar.nome}
                   </Link>
@@ -97,8 +97,8 @@ export function RoleDesktop({
           </div>
 
           {lugar && (
-            <MapaReal pins={pins} className="h-44 shrink-0 rounded-[22px] border border-white/7">
-              <div className="absolute inset-x-3.5 bottom-3.5 flex items-center justify-between rounded-2xl border border-white/9 bg-sunken/92 px-3.5 py-2.5">
+            <MapaReal pins={pins} className="rounded-[16px] h-44 shrink-0 border border-linha">
+              <div className="rounded-[12px] absolute inset-x-3.5 bottom-3.5 flex items-center justify-between border border-linha bg-sunken/92 px-3.5 py-2.5">
                 <span className="truncate text-xs text-text-faint">
                   {lugar.endereco ?? lugar.bairro}
                 </span>
@@ -106,7 +106,7 @@ export function RoleDesktop({
                   href={`https://www.google.com/maps/dir/?api=1&destination=${lugar.lat},${lugar.lng}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="shrink-0 text-xs font-semibold text-magenta-soft"
+                  className="shrink-0 text-xs font-semibold text-text-soft"
                 >
                   Rota
                 </a>
@@ -115,11 +115,11 @@ export function RoleDesktop({
           )}
 
           {comentarios.length > 0 && (
-            <div className="flex flex-col gap-3.5 rounded-[22px] border border-white/6 bg-card-alt px-5 py-4.5">
+            <div className="elevado rounded-[16px] flex flex-col gap-3.5 border border-linha bg-card-alt px-5 py-4.5">
               <div className="rotulo text-muted-3">quem está lá agora</div>
               {comentarios.map((c) => (
                 <div key={`${c.autor_nome}-${c.created_at}`} className="flex items-start gap-2.5">
-                  <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-violet to-cyan" />
+                  <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-pedra to-pedra-funda" />
                   <p className="text-[12.5px] leading-snug text-text-dim">
                     “{c.texto}” — <span className="font-semibold text-white">{c.autor_nome}</span>,{" "}
                     {idade(c.created_at)}
@@ -136,8 +136,8 @@ export function RoleDesktop({
 
 function Stat({ valor, rotulo }: { valor: string; rotulo: string }) {
   return (
-    <div className="flex-1 rounded-2xl border border-white/6 bg-sunken px-4 py-3.5">
-      <div className="font-display text-[27px] leading-none">{valor}</div>
+    <div className="rounded-[12px] flex-1 border border-linha bg-sunken px-4 py-3.5">
+      <div className="titulo text-[27px] leading-none">{valor}</div>
       <div className="mt-1.5 text-[11.5px] leading-tight text-muted-2">{rotulo}</div>
     </div>
   );

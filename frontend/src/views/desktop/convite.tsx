@@ -19,21 +19,21 @@ export function ConviteDesktop() {
 
         <div className="mt-6 flex max-w-3xl gap-12">
           <div className="flex-1">
-            <h1 className="font-display text-[38px] leading-[1.04] uppercase">
+            <h1 className="titulo text-[38px] leading-[1.04]">
               Convidar quem você sai
             </h1>
             <p className="mt-3.5 text-sm leading-relaxed text-muted text-pretty">
               O link vale uma pessoa e expira em 7 dias. Quando ela abrir, você aceita ou não.
             </p>
 
-            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-sunken px-4 py-3.5">
+            <div className="rounded-[16px] mt-6 flex items-center gap-3 border border-linha bg-sunken px-4 py-3.5">
               <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-muted-3">
                 o link aparece aqui
               </span>
               <button
                 type="button"
                 disabled
-                className="flex shrink-0 cursor-not-allowed items-center gap-2 rounded-xl bg-magenta/12 px-3.5 py-3 text-[12.5px] font-semibold text-magenta-soft opacity-50"
+                className="rounded-[16px] flex shrink-0 cursor-not-allowed items-center gap-2 bg-card px-3.5 py-3 text-[12.5px] font-semibold text-text-soft opacity-50"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   <rect x="9" y="9" width="12" height="12" rx="2.5" />
@@ -46,7 +46,7 @@ export function ConviteDesktop() {
             <button
               type="button"
               disabled
-              className="mt-3 flex w-full cursor-not-allowed items-center justify-center gap-2.5 rounded-2xl bg-magenta/40 py-3.5 text-[15px] font-bold text-white/70"
+              className="rounded-[12px] mt-3 flex w-full cursor-not-allowed items-center justify-center gap-2.5 bg-text/40 py-3.5 text-[15px] font-bold text-bg/70"
             >
               Compartilhar
             </button>

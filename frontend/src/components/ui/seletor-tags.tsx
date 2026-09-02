@@ -48,10 +48,10 @@ export function SeletorTags({
               disabled={!marcada && cheio}
               className={`rounded-full px-3 py-1.5 text-[12px] transition-colors ${
                 marcada
-                  ? "border-[1.5px] border-cyan bg-cyan/16 font-semibold text-text"
+                  ? "border-[1.5px] border-muted bg-muted/16 font-semibold text-text"
                   : cheio
-                    ? "border border-white/6 bg-sunken font-medium text-muted-3"
-                    : "border border-white/8 bg-sunken font-medium text-text-faint"
+                    ? "border border-linha bg-sunken font-medium text-muted-3"
+                    : "border border-linha bg-sunken font-medium text-text-faint"
               }`}
             >
               {t}

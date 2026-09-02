@@ -13,7 +13,7 @@ export function MobileShell({
   nav?: boolean;
 }) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col bg-surface">
+    <div className="rounded-[16px] mx-auto flex min-h-dvh w-full max-w-md flex-col bg-surface">
       {children}
       {nav && <BottomNav />}
     </div>

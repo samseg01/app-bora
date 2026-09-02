@@ -27,7 +27,7 @@ export function TagsLugar({
       {lista.map((t) => (
         <li
           key={t}
-          className="rounded-full border border-cyan/25 bg-cyan/10 px-2.5 py-1 text-[11.5px] font-medium text-cyan"
+          className="rounded-full border border-muted/25 bg-muted/10 px-2.5 py-1 text-[11.5px] font-medium text-muted"
         >
           {t}
         </li>

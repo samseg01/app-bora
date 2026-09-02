@@ -3,50 +3,108 @@
 /* Tokens do sistema visual do hi-fi (Rolês - Telas hi-fi.dc.html).
    Tailwind v4: o tema vive aqui, não em tailwind.config.js. */
 @theme {
-  --color-bg: #08060f;
-  --color-surface: #0d0a18;
-  --color-card: #181227;
-  --color-card-alt: #171223;
-  --color-sunken: #141024;
-  --color-nav: #0f0b1c;
+  /* ---------------------------------------------------------------------------
+   * Monocromático — sistema visual de 02/09/2026.
+   *
+   * Terceira iteração do dia, e a definitiva. Substitui o carvão-e-areia, que
+   * tinha substituído o quase-preto arroxeado do hi-fi. O hi-fi continua valendo
+   * como registro do fluxo das telas; como referência de ESTILO, não mais.
+   *
+   * TRÊS REGRAS, e quebrar qualquer uma desfaz o sistema:
+   *
+   * 1. **Os nomes são de PAPEL, não de matiz.** Era `--color-magenta`, e o hue
+   *    no nome foi o que travou a mudança anterior: 143 arquivos diziam
+   *    "magenta" quando queriam dizer "agora". Nunca reintroduzir nome de cor.
+   *
+   * 2. **O branco É o acento, e por isso é escasso.** A inversão que faz este
+   *    sistema funcionar: o texto corrente NÃO é branco, é cinza
+   *    (`--color-text-dim`). Branco puro fica para título e para "agora". Num
+   *    sistema sem cor a hierarquia vem de peso, tamanho, posição e régua —
+   *    e branco em tudo é o mesmo erro que magenta em tudo, sem a cor.
+   *
+   * 3. **Não há card.** Conteúdo solto entre réguas de 1px, não dentro de caixas
+   *    com fundo e raio. É a diferença estrutural entre este sistema e os dois
+   *    anteriores, e é ela que produz o "ar" — mais que a paleta.
+   * ------------------------------------------------------------------------- */
 
-  --color-magenta: #ff3d81;
-  --color-magenta-soft: #ff6fa0;
-  --color-amber: #ffb443;
-  --color-amber-soft: #ffc774;
-  --color-cyan: #1fd0ff;
-  --color-violet: #7a1fff;
-  --color-plum: #26123f;
+  /* Sai do preto absoluto. `#000` puro contra um card claro cria uma aresta dura
+     que o olho lê como recorte, e a tela inteira fica "chapada" — o degrau de
+     luminosidade é o que dá maciez. Continua fundo de OLED para todo efeito
+     prático: a diferença para preto puro é imperceptível isolada, e decisiva ao
+     lado de uma superfície elevada. */
+  --color-bg: #08080a;
+  --color-surface: #0c0c0e;
+  --color-sunken: #0a0a0c;
+  --color-nav: #0a0a0c;
+  /* O card voltou, como ELEVAÇÃO. Cada um é um degrau acima do fundo — é isso
+     que agrupa conteúdo agora, no lugar do contorno. */
+  --color-card: #16161a;
+  --color-card-alt: #121215;
 
-  --color-text: #f3eefc;
-  --color-text-soft: #e8dfff;
-  --color-text-dim: #cfc6e2;
-  --color-text-faint: #b4a9cc;
-  --color-muted: #9083ad;
-  --color-muted-2: #8478a0;
-  --color-muted-3: #6f6690;
-  /* Pin de lugar curado SEM sinal de frescor. Era #6a5f88 — o mesmo tom de
-     --color-muted-3, a cor de texto desabilitado —, e sobre o mapa dark-matter
-     o lugar sumia: quem olhava concluía que não havia nada ali, quando havia uma
-     casa que alguém foi visitar a pé. Um lilás claro é o mais visível possível
-     sobre o mapa escuro e continua NEUTRO: magenta, âmbar e ciano seguem
-     significando "está acontecendo agora", que é o que não pode ser diluído. */
-  --color-pin-off: #ded4ff;
+  /* A escala começa em branco e desce rápido: o texto corrente mora em
+     `--color-text-dim`, não em `--color-text`. */
+  --color-text: #ffffff;
+  --color-text-soft: #d4d4d4;
+  --color-text-dim: #a3a3a3;
+  --color-text-faint: #8a8a8a;
+  --color-muted: #737373;
+  --color-muted-2: #525252;
+  --color-muted-3: #404040;
 
-  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
+  /* "Agora" é branco puro + pulso. Sem cor, quem grita é o contraste contra um
+     mundo cinza, e o pulso é o que sobrou de movimento. */
+  --color-agora: #ffffff;
+  --color-agora-soft: #d4d4d4;
+
+  /* Seleção e foco. É a MESMA cor de `--color-agora` hoje, e mesmo assim é token
+     separado: um chip que você está tocando e um rolê que está bombando são coisas
+     diferentes, e escrever `border-agora` num seletor de bairro é o mesmo tipo de
+     mentira que `bg-magenta` num CTA era. Se um dia seleção precisar divergir, o
+     lugar já existe. */
+  --color-selecao: #ffffff;
+
+  /* A régua continua, mas discreta: ela agora ACOMPANHA a elevação em vez de
+     substituí-la. Borda forte sobre superfície elevada é redundante e é
+     exatamente o que endurece a tela. */
+  --color-linha: #ffffff14;
+  --color-linha-forte: #ffffff26;
+
+  /* Pin de lugar curado SEM frescor. Cinza médio: visível sobre o mapa escuro
+     sem competir com o branco do "agora". O erro antigo foi usar a cor de texto
+     desabilitado — a casa que alguém visitou a pé sumia no mapa. */
+  --color-pin-off: #737373;
+
+  /* Bloco no lugar de foto. Cinza sobre preto: uma foto ausente não pode ser a
+     coisa mais viva da tela. */
+  --color-pedra: #1a1a1a;
+  --color-pedra-funda: #0a0a0a;
+
+  /* Uma família só. Inter em peso alto com tracking negativo faz o trabalho de
+     display sem carregar uma segunda fonte — e num app de descoberta espontânea
+     o primeiro carregamento é onde se ganha ou se perde alguém. O Anton saiu
+     (condensado, caixa alta, peso único: era o grito do sistema antigo) e a
+     Space Grotesk também: personalidade briga com a régua. */
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Raio generoso, e é a metade visível da suavização. A escala é curta de
+     propósito — três valores; mais que isso vira ruído e ninguém acerta qual usar. */
+  --radius-controle: 12px;  /* botão, campo, chip */
+  --radius-card: 16px;      /* card, item de lista */
+  --radius-painel: 20px;    /* bloco grande, painel, modal */
+  --radius-pill: 999px;
 }
 
 /* O pulse do estado "agora" — só no frescor live. Vem do design. */
 @keyframes pulse-agora {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 61, 129, 0.55);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
   }
   70% {
-    box-shadow: 0 0 0 9px rgba(255, 61, 129, 0);
+    box-shadow: 0 0 0 7px rgba(255, 255, 255, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 61, 129, 0);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
 }
 
@@ -55,11 +113,29 @@
 }
 
 /* Rótulo de seção: 600 10px, tracking largo, maiúsculas. Repete em 6 das 8 telas. */
+/* Rótulo de seção. O tracking caiu de 1.6px para 0.9px e o peso de 600 para 500:
+   caixa alta muito espaçada grita, e o sistema inteiro deixou de gritar. */
+/* O tracking VOLTOU a ser largo — 2px —, mas por outro motivo que no hi-fi:
+   aqui a caixa alta minúscula e espaçada é elemento suíço, e funciona porque
+   quase tudo à volta é cinza e sem ornamento. */
+/* O tracking caiu de 2px para 1.2px na suavização: caixa alta muito espaçada é
+   um gesto duro, de cartaz, e o sistema deixou de ser cartaz. */
 @utility rotulo {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.6px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
+}
+
+/* Título editorial. A serifa pede mais respiro entre linhas que o Anton
+   condensado pedia, e nada de maiúsculas — a caixa alta era metade do grito. */
+@utility titulo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.06;
+  /* O tracking negativo é metade do efeito "moderno": sem ele a grotesca fica
+     larga e datada. -0.03em foi o que o teste no telefone mostrou funcionar. */
+  letter-spacing: -0.03em;
 }
 
 /* O app é dark-only por design — não há troca de tema. */
@@ -68,11 +144,48 @@ html {
   background: var(--color-bg);
 }
 
+/* Três suavizações que não estão em token e fazem tanta diferença quanto o raio.
+   ------------------------------------------------------------------------- */
+
+/* 1. Transição em tudo que responde a toque. Sem isso o estado troca por corte
+      seco, e corte seco é metade da sensação de "duro" numa interface — mesmo
+      quando a cor e o raio já estão suaves. 140ms é o limite do que se percebe
+      como resposta imediata. */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea {
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    opacity 140ms ease;
+}
+
+/* 2. Profundidade sem cor. Num sistema monocromático a sombra é o único recurso
+      de elevação que sobra, e ela precisa ser quase invisível: sombra marcada
+      sobre fundo escuro vira mancha, não relevo. */
+@utility elevado {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 8px 24px -12px rgba(0, 0, 0, 0.7);
+}
+
 body {
   background: var(--color-bg);
-  color: var(--color-text);
+  /* Cinza, não branco — é a regra 2 dos tokens, e é aqui que ela se aplica ou
+     vaza. Texto sem classe herda daqui, e se herdasse branco o sistema inteiro
+     ficaria branco por omissão: sobraria nada para o título e para "agora"
+     significarem. Quem precisa de branco pede `text-text`, e são 27 lugares. */
+  color: var(--color-text-dim);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  /* 3. Entrelinha mais generosa no corpo. Texto apertado lê como denso e
+        técnico; 1.55 é o respiro que faz a mesma frase parecer calma. Custa
+        altura, e é por isso que é decisão e não default. */
+  line-height: 1.55;
 }
 
 /* Já vinha no design. Mantido. */
@@ -99,15 +212,15 @@ body {
  * ------------------------------------------------------------------------- */
 .popup-bora .maplibregl-popup-content {
   padding: 0;
-  border-radius: 14px;
-  background: var(--color-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  border-radius: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-linha-forte);
+  box-shadow: none;
 }
 
 .popup-bora .maplibregl-popup-tip {
-  border-top-color: var(--color-card);
-  border-bottom-color: var(--color-card);
+  border-top-color: var(--color-linha-forte);
+  border-bottom-color: var(--color-linha-forte);
 }
 
 .balao-pin {
@@ -131,5 +244,5 @@ body {
 }
 
 .balao-pin:hover strong {
-  color: var(--color-magenta-soft);
+  color: var(--color-text);
 }

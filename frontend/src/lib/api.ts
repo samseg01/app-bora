@@ -14,8 +14,31 @@ import type {
   UsuarioPublic,
 } from "./types";
 
+/**
+ * A base da API, e ela é **diferente no servidor e no cliente** — de propósito.
+ *
+ * `NEXT_PUBLIC_API_URL` existe para o navegador: é o endereço que o telefone do
+ * usuário consegue alcançar. Mas os server components buscam **na máquina que
+ * roda o Next**, e ali sair pela internet para chegar num serviço local é, na
+ * melhor hipótese, um desvio inútil.
+ *
+ * Na pior, quebra: em 02/09, com o backend exposto por um túnel Cloudflare para
+ * um teste no celular, o resolvedor de DNS desta rede não tinha o registro do
+ * host novo. O navegador do telefone resolvia (outra rede, outro resolvedor) e
+ * o servidor do Next não — então o app dizia "API fora do ar" enquanto a API
+ * respondia normalmente. O sintoma aponta para o lugar errado: parece backend
+ * caído, é DNS de quem faz a chamada.
+ *
+ * `API_URL_INTERNA` resolve: no servidor, fale direto com o serviço local.
+ * Também é o que vale em produção, onde backend e frontend podem se ver por
+ * rede interna sem passar pela borda pública.
+ */
+const NO_SERVIDOR = typeof window === "undefined";
+
 const BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  (NO_SERVIDOR ? process.env.API_URL_INTERNA : undefined) ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:8000/api/v1";
 
 /** 401, 403 e 409 têm tratamento de UI diferente — o status precisa sobreviver ao throw. */
 export class ApiError extends Error {

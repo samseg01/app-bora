@@ -29,7 +29,7 @@ export function ConexoesDesktop(d: DadosConexoes) {
   return (
     <DesktopShell>
       <section className="min-w-0 flex-1 px-8 py-8">
-        <h1 className="font-display text-[46px] leading-none uppercase">Conexões</h1>
+        <h1 className="titulo text-[46px] leading-none">Conexões</h1>
         <p className="mt-2 text-[13px] text-muted-2">
           {d.foraAgora.length} de {d.conexoes.length} estão na rua agora
         </p>
@@ -61,7 +61,7 @@ export function ConexoesDesktop(d: DadosConexoes) {
         {d.pendentes.map((p) => (
           <div
             key={p.id}
-            className="flex flex-col gap-3 rounded-[22px] border border-white/7 bg-card-alt p-5"
+            className="elevado rounded-[20px] flex flex-col gap-3 border border-linha bg-card-alt p-5"
           >
             <div className="rotulo text-muted-3">pedido pendente</div>
             <div className="flex items-center gap-3">
@@ -75,14 +75,14 @@ export function ConexoesDesktop(d: DadosConexoes) {
               <button
                 type="button"
                 disabled
-                className="flex-1 cursor-not-allowed rounded-[13px] bg-magenta/40 py-2.5 text-[12.5px] font-bold text-white/70"
+                className="rounded-[12px] flex-1 cursor-not-allowed bg-text/40 py-2.5 text-[12.5px] font-bold text-bg/70"
               >
                 Aceitar
               </button>
               <button
                 type="button"
                 disabled
-                className="flex-1 cursor-not-allowed rounded-[13px] border border-white/14 py-2.5 text-[12.5px] font-semibold text-muted-2 opacity-60"
+                className="rounded-[12px] flex-1 cursor-not-allowed border border-linha py-2.5 text-[12.5px] font-semibold text-muted-2 opacity-60"
               >
                 Recusar
               </button>
@@ -90,7 +90,7 @@ export function ConexoesDesktop(d: DadosConexoes) {
           </div>
         ))}
 
-        <div className="flex flex-1 flex-col gap-3.5 rounded-[22px] border border-white/7 bg-card-alt p-5">
+        <div className="elevado rounded-[20px] flex flex-1 flex-col gap-3.5 border border-linha bg-card-alt p-5">
           <div className="flex items-baseline justify-between">
             <span className="rotulo text-muted-3">suas conexões</span>
             <span className="text-xs text-muted-3">{d.conexoes.length}</span>
@@ -109,7 +109,7 @@ export function ConexoesDesktop(d: DadosConexoes) {
                   <span className="flex-1 text-[13.5px] font-semibold">{c.nome}</span>
                   {fora ? (
                     <span
-                      className={`h-[7px] w-[7px] shrink-0 rounded-full ${ui?.pin ?? "bg-cyan"}`}
+                      className={`h-[7px] w-[7px] shrink-0 rounded-full ${ui?.pin ?? "bg-muted"}`}
                     />
                   ) : (
                     <span className="text-[11px] text-muted-3">em casa</span>
@@ -121,7 +121,7 @@ export function ConexoesDesktop(d: DadosConexoes) {
 
           <Link
             href="/conexoes/convite"
-            className="mt-auto flex items-center justify-center gap-2.5 rounded-2xl border border-dashed border-white/18 py-3.5 text-[13.5px] font-semibold text-text-soft hover:border-white/30"
+            className="rounded-[16px] mt-auto flex items-center justify-center gap-2.5 border border-dashed border-linha py-3.5 text-[13.5px] font-semibold text-text-soft hover:border-linha"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path d="M12 5v14M5 12h14" />
@@ -140,8 +140,8 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
 
   return (
     <div
-      className={`flex items-center gap-4 rounded-[18px] border bg-card px-4 py-3.5 ${
-        checkin.frescor === "live" ? "border-magenta/30" : "border-white/7"
+      className={`flex items-center gap-4 border bg-card px-4 py-3.5 ${
+        checkin.frescor === "live" ? "border-linha-forte" : "border-linha"
       }`}
     >
       <Avatar nome={checkin.nome} tamanho={46} />
@@ -161,15 +161,15 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
         <span
           className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold ${
             checkin.frescor === "live"
-              ? "bg-magenta/16 text-magenta-soft"
-              : "bg-amber/14 text-amber-soft"
+              ? "bg-card text-text-soft"
+              : "bg-text-dim/14 text-text-dim"
           }`}
         >
           <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-agora" : ""}`} />
           {checkin.role_titulo.toLowerCase()}
         </span>
       ) : (
-        <span className="shrink-0 rounded-full border border-dashed border-white/16 px-2.5 py-1.5 text-[11px] font-semibold text-muted-2">
+        <span className="shrink-0 rounded-full border border-dashed border-linha px-2.5 py-1.5 text-[11px] font-semibold text-muted-2">
           sem lugar exato
         </span>
       )}
@@ -177,7 +177,7 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
       {checkin.role_id ? (
         <Link
           href={`/role/${checkin.role_id}`}
-          className="shrink-0 rounded-[14px] bg-magenta px-4 py-2.5 text-[12.5px] font-bold text-white"
+          className="rounded-[12px] shrink-0 bg-text px-4 py-2.5 text-[12.5px] font-bold text-bg"
         >
           Tô indo também
         </Link>
@@ -185,7 +185,7 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
         <button
           type="button"
           disabled
-          className="shrink-0 cursor-not-allowed rounded-[14px] border border-white/16 px-4 py-2.5 text-[12.5px] font-semibold text-text-soft opacity-50"
+          className="rounded-[12px] shrink-0 cursor-not-allowed border border-linha px-4 py-2.5 text-[12.5px] font-semibold text-text-soft opacity-50"
         >
           Chamar
         </button>
@@ -195,10 +195,10 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
 }
 
 const GRADIENTES = [
-  "from-plum to-violet",
-  "from-cyan to-plum",
-  "from-amber to-plum",
-  "from-violet to-magenta",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
+  "from-pedra to-pedra-funda",
+  "from-pedra via-pedra-funda to-pedra",
 ];
 
 export function CardSalvoDeConexao({
@@ -212,7 +212,7 @@ export function CardSalvoDeConexao({
 }) {
   const chave = (lugar.nome.charCodeAt(0) + indice) % GRADIENTES.length;
   return (
-    <div className="overflow-hidden rounded-[18px] border border-white/7 bg-card">
+    <div className="elevado rounded-[16px] overflow-hidden border border-linha bg-card">
       <div className={`h-23 bg-gradient-to-br ${GRADIENTES[chave]}`} />
       <div className="px-3.5 pt-3 pb-3.5">
         <div className="truncate text-sm font-bold">{lugar.nome}</div>
@@ -241,18 +241,18 @@ export function CardSalvoDeConexao({
 function ConexoesVaziasDesktop({ salvosDoCurador, curador, bairro }: DadosConexoes) {
   return (
     <section className="min-w-0 flex-1 px-8 py-8">
-      <h1 className="font-display text-[46px] leading-none uppercase">Conexões</h1>
+      <h1 className="titulo text-[46px] leading-none">Conexões</h1>
 
       <div className="mt-10 flex max-w-lg flex-col items-start">
-        <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-white/20">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6f6690" strokeWidth={1.8}>
+        <div className="flex h-18 w-18 items-center justify-center rounded-full border border-dashed border-linha">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
             <circle cx="9" cy="8" r="3.4" />
             <path d="M3 20c0-3.4 2.7-5.2 6-5.2s6 1.8 6 5.2" />
             <path d="M16.5 6.2a3.4 3.4 0 010 6.4" />
             <path d="M18.4 14.6c2 .7 3.6 2.3 3.6 5" />
           </svg>
         </div>
-        <h2 className="mt-5 font-display text-[28px] leading-tight uppercase">
+        <h2 className="mt-5 titulo text-[28px] leading-tight">
           Ainda é só você por aqui
         </h2>
         <p className="mt-3 text-[13.5px] leading-relaxed text-muted text-pretty">
@@ -261,7 +261,7 @@ function ConexoesVaziasDesktop({ salvosDoCurador, curador, bairro }: DadosConexo
         </p>
         <Link
           href="/conexoes/convite"
-          className="mt-6 rounded-2xl bg-magenta px-6 py-4 text-[15px] font-bold text-white"
+          className="rounded-[12px] mt-6 bg-text px-6 py-4 text-[15px] font-bold text-bg"
         >
           Convidar quem você sai
         </Link>
@@ -271,12 +271,12 @@ function ConexoesVaziasDesktop({ salvosDoCurador, curador, bairro }: DadosConexo
       </div>
 
       <div className="mt-10 flex items-center gap-3">
-        <div className="h-px flex-1 bg-gradient-to-r from-magenta/40 to-amber/18" />
+        <div className="h-px flex-1 bg-gradient-to-r from-text-dim/40 to-text-dim/18" />
         <span className="rotulo text-muted-2">enquanto isso</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-amber/18 to-magenta/40" />
+        <div className="h-px flex-1 bg-gradient-to-r from-text-dim/18 to-text-dim/40" />
       </div>
 
-      <div className="mt-5 flex items-center gap-3.5 rounded-[18px] border border-white/6 bg-card-alt p-4">
+      <div className="elevado rounded-[16px] mt-5 flex items-center gap-3.5 border border-linha bg-card-alt p-4">
         <Avatar nome={curador} tamanho={40} />
         <p className="text-[12.5px] leading-relaxed text-text-faint">
           <span className="font-semibold text-text">Quem cura {bairro} vai a pé.</span>{" "}

@@ -12,9 +12,9 @@ export function Sidebar() {
   const caminho = usePathname();
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-60 shrink-0 flex-col border-r border-white/7 bg-nav px-5 py-7">
-      <Link href="/" className="font-display text-3xl leading-none uppercase">
-        Bora<span className="text-amber">?</span>
+    <aside className="rounded-[20px] sticky top-0 flex h-dvh w-60 shrink-0 flex-col border-r border-linha bg-nav px-5 py-7">
+      <Link href="/" className="titulo text-3xl leading-none">
+        Bora<span className="text-text-faint">?</span>
       </Link>
 
       <nav className="mt-10 flex flex-col gap-1">
@@ -25,9 +25,9 @@ export function Sidebar() {
               key={href}
               href={href}
               aria-current={ativo ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm transition-colors ${
+              className={`flex items-center gap-3 px-3.5 py-3 text-sm transition-colors ${
                 ativo
-                  ? "bg-magenta/15 font-semibold text-magenta"
+                  ? "bg-card font-semibold text-selecao"
                   : "font-medium text-muted-2 hover:bg-white/4 hover:text-text"
               }`}
             >

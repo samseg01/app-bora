@@ -4,14 +4,14 @@
  */
 export function LegendaFrescor({ comBorda = false }: { comBorda?: boolean }) {
   const itens = [
-    { cor: "bg-magenta", label: "agora" },
-    { cor: "bg-amber", label: "enchendo" },
-    { cor: "bg-cyan", label: "novo" },
+    { cor: "bg-agora", label: "agora" },
+    { cor: "bg-text-dim", label: "enchendo" },
+    { cor: "bg-muted", label: "novo" },
   ];
 
   return (
     <div
-      className={`flex gap-4 text-[11px] text-muted-3 ${comBorda ? "border-t border-white/8 pt-3" : ""}`}
+      className={`flex gap-4 text-[11px] text-muted-3 ${comBorda ? "border-t border-linha pt-3" : ""}`}
     >
       {itens.map(({ cor, label }) => (
         <div key={label} className="flex items-center gap-1.5">
