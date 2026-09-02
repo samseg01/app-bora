@@ -65,13 +65,24 @@ tornava o regressivo confiável.
 
 ## Como verificar que está de pé
 
-1. Com o Docker **desligado**: `scripts/regressivo.sh` deve parar na etapa 0 e sair com código 1.
-2. `scripts/regressivo.sh --so-frontend` deve rodar lint+build e sair 0, avisando em amarelo que
-   isso **não** é o regressivo.
-3. Com o Docker ligado: `scripts/regressivo.ps1` inteiro deve terminar em `VERDE`, e
-   `docker compose exec postgres psql -U boraroles -l` deve listar `boraroles_test`.
-4. Quebre algo de propósito (uma linha em `services/frescor.py`) e confirme que fica vermelho no
-   passo 7, com código de saída 1.
+Os cinco caminhos abaixo foram executados em 01/09/2026, e é assim que se reverifica:
+
+| # | O quê | Resultado em 01/09 |
+|---|---|---|
+| 1 | Docker desligado → etapa 0 | ✅ falha em ~1s, código **1**, com o recado de não mergear |
+| 2 | `--so-frontend` | ✅ lint + build, código **0**, com o aviso amarelo de que não é o regressivo |
+| 3 | Regressivo inteiro | ✅ **VERDE em 143s** — 49 testes, ruff e mypy limpos, código **0** |
+| 4 | Bancos separados de verdade | ✅ `boraroles` com 7 lugares intacto, `boraroles_test` com 0 |
+| 5 | Prova negativa | ✅ `>=` virou `>` em `frescor.py` → **3 testes falharam**, código **1**; revertido, voltou ao verde |
+
+A prova negativa é a que importa mais: um portão que nunca fica vermelho não é portão. Ela também
+confirmou que o `--build` forçado pega mudança do disco, já que o bug foi lido a partir da árvore
+de trabalho e não da imagem anterior.
+
+O bind mount de `docker-compose.dev.yml` foi verificado nos dois sentidos: `boraroles.__file__`
+imprime `/app/src/boraroles/__init__.py` (e não `site-packages`), um arquivo criado em `./src`
+apareceu no container sem rebuild, e sumiu de lá ao ser apagado do disco. Era a premissa que
+faltava para fechar o item 49.
 
 ## O que deliberadamente não faz
 

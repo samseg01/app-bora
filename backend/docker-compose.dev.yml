@@ -23,22 +23,17 @@
 # sozinho, e um mount que quebre o import quebraria o `up` de todo mundo sem
 # avisar. Aqui você escolhe.
 #
-# ⚠️ FALTA UMA VERIFICAÇÃO — leia antes de confiar
-# ------------------------------------------------
-# Isto foi escrito com o Docker Desktop desligado e ainda NÃO foi executado uma
-# vez sequer. A premissa é que `uv sync` instala o projeto em modo editável, de
-# modo que `/app/src` montado por cima resolve os imports normalmente. Se a
-# instalação não for editável, o pacote `boraroles` continua vindo do site-packages
-# da imagem e você fica com metade velha e metade nova — que é pior que o
-# problema original, porque também se disfarça.
+# VERIFICADO EM 01/09 — funciona
+# ------------------------------
+# A premissa era que `uv sync` instala o projeto em modo editável, de forma que
+# `/app/src` montado por cima resolva os imports. Confirmado:
 #
-# Como verificar, uma vez só, com o Docker no ar:
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
-#   docker compose exec api python -c "import boraroles, sys; print(boraroles.__file__)"
-# Tem que imprimir um caminho dentro de /app/src. Se imprimir algo em
-# .venv/lib/python3.12/site-packages, o mount NÃO está valendo: nesse caso o
-# conserto é acrescentar `RUN uv sync --frozen --no-dev --inexact` ou instalar
-# com `-e`, e rodar a verificação de novo.
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml exec api python -c "import boraroles; print(boraroles.__file__)"
+#   -> /app/src/boraroles/__init__.py        (e não .venv/.../site-packages)
+#
+# E a prova nos dois sentidos: um arquivo criado em ./src apareceu no container
+# na hora, sem rebuild, e sumiu de lá ao ser removido do disco. Ou seja, o
+# "metade velha, metade nova" que o item 49 temia não acontece.
 #
 # O `scripts/regressivo.ps1` NÃO depende deste arquivo: ele força `--build` a
 # cada execução, o que resolve o mesmo problema por outro caminho e continua

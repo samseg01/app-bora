@@ -893,14 +893,14 @@ segue o hi-fi.
        **Cuidado ao fazer:** a imagem instala o pacote (`uv run` resolve `boraroles` do venv do
        container); montar por cima sem checar o modo de instalação pode dar import de metade
        velha e metade nova, que é pior que o problema.
-       **Andamento (01/09):** atacado por dois caminhos. O `scripts/regressivo.ps1` força
-       `--build` a cada execução, então o portão nunca mais testa imagem velha — essa metade
-       está fechada e verificada. A outra metade é `backend/docker-compose.dev.yml`, override
-       opt-in que monta `./src`, `./tests` e o alembic; está **escrito e não executado**, porque
-       o Docker estava desligado. Fica em Fazendo até alguém rodar a verificação que o próprio
-       arquivo descreve: subir com o override e conferir que
-       `python -c "import boraroles; print(boraroles.__file__)"` imprime caminho em `/app/src`, e
-       não em `site-packages` — que é exatamente o "metade velha, metade nova" acima.
+       **Resolvido em 01/09, pelos dois caminhos, e os dois verificados.** O
+       `scripts/regressivo.ps1` força `--build` a cada execução, então o portão nunca mais testa
+       imagem velha — confirmado pela prova negativa: um bug introduzido no disco apareceu na
+       execução seguinte. E `backend/docker-compose.dev.yml`, override opt-in que monta `./src`,
+       `./tests` e o alembic, funciona: `boraroles.__file__` imprime
+       `/app/src/boraroles/__init__.py` e não `site-packages`, um arquivo criado em `./src`
+       apareceu no container sem rebuild e sumiu ao ser apagado do disco. O "metade velha, metade
+       nova" que este item temia não acontece. Aguardando só sua validação para virar [x].
 - [ ] 50. **`seed/republica.json` e o banco divergiram.** O arquivo tem só o Bar do China, sem
        bairro nem coordenada; o banco tem Bar do China **e** Tokyo, com geo, cadastrados pelo
        painel do curador. O seed é a memória versionada da curadoria — enquanto o dado real só

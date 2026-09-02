@@ -55,8 +55,10 @@ backend/
 └── tests/
     ├── conftest.py                   # Postgres+PostGIS real via docker-compose local, sem mock; isolamento por
     │                                 # transação+savepoint revertida a cada teste (ver fixture db_session).
-    │                                 # ATENÇÃO: é o MESMO banco do dev, e os fixtures usam e-mails
-    │                                 # fixos — conta manual com @exemplo.com colide (use @local.dev)
+    │                                 # Lê a URL de settings.database_url, então o banco é escolhido
+    │                                 # por DATABASE_URL: o regressivo aponta pra boraroles_test.
+    │                                 # `pytest` na mão, sem sobrescrever, cai no banco do dev — e aí
+    │                                 # conta manual com @exemplo.com colide (use @local.dev)
     ├── test_security.py, test_geo.py, test_frescor.py   # unitários, sem banco
     └── test_auth_api.py, test_descoberta_api.py, test_mapa_api.py, test_curador_crud.py,
         test_estabelecimento_panel.py, test_smoke_e2e.py  # via httpx.AsyncClient + ASGITransport
@@ -91,7 +93,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Núcleo transversal (config, db/session, security, geo) | ✅ |
 | Auth + rotas API v1 | ✅ |
 | Serviço de frescor | ✅ |
-| Testes de integração + smoke E2E (42 testes) | ✅ |
+| Testes de integração + smoke E2E (**49 testes**) | ✅ |
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
@@ -138,9 +140,22 @@ comentário precisa usar esse predicado, não `Comentario.lugar_id ==` direto.
 
 ## Rodar os testes
 
-`docker compose exec api uv run pytest`. Até agosto/2026 isso não funcionava: `tests/` estava
-no `.dockerignore`, então a suíte nunca entrava na imagem e o pytest respondia "no files were
-found in testpaths" — parecendo sucesso. A linha foi removida.
+**O jeito certo é `..\scripts\regressivo.ps1`** (ou `scripts/regressivo.sh`), da raiz: ele
+constrói a imagem antes, usa o banco `boraroles_test` e roda ruff, mypy e pytest de uma vez.
+Ver `../docs/features/regressivo.md`.
+
+Na mão é `docker compose exec api uv run pytest`, com duas armadilhas que já morderam:
+
+- **Sem `docker compose up -d --build api` antes, você testa a imagem, não o disco.** O serviço
+  `api` não tem bind mount; o código entra no `COPY . .` e congela. Em 31/08 a suíte passou verde
+  contra código de 22 horas atrás. Para o dia a dia existe `docker-compose.dev.yml`, override
+  opt-in que monta `./src` e `./tests` (verificado em 01/09).
+- **Sem sobrescrever `DATABASE_URL`, a suíte roda no banco de desenvolvimento** e pode ficar
+  vermelha por dado que você criou à mão.
+
+Até agosto/2026 nem isso funcionava: `tests/` estava no `.dockerignore`, então a suíte nunca
+entrava na imagem e o pytest respondia "no files were found in testpaths" — parecendo sucesso.
+A linha foi removida.
 
 ## Vínculo de Estabelecimento — decidido no ADR-010, falta o script
 
