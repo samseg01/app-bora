@@ -11,7 +11,7 @@
 # Uso:
 #   scripts/regressivo.sh              # tudo
 #   scripts/regressivo.sh --so-backend
-#   scripts/regressivo.sh --so-frontend   # NÃO é o regressivo
+#   scripts/regressivo.sh --so-frontend   # lint + testes + build, sem backend
 #   scripts/regressivo.sh --sem-build     # atalho perigoso, ver abaixo
 
 set -uo pipefail
@@ -97,6 +97,9 @@ fi
 # --- Frontend (rápido, e não precisa de Docker) ------------------------------
 if [ "$SO_BACKEND" -eq 0 ]; then
   passo 'frontend: lint'  "$FRONTEND" npm run lint
+  # Vem antes do build de propósito: roda em menos de um segundo e falha por motivo
+  # muito mais interessante que erro de tipo.
+  passo 'frontend: testes' "$FRONTEND" npm test
   passo 'frontend: build' "$FRONTEND" npm run build
 fi
 

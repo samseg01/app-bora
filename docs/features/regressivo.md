@@ -112,11 +112,14 @@ projeto — não só para este.
 
 ## O que deliberadamente não faz
 
-- **Não testa comportamento de frontend.** O frontend do projeto não tem um único teste — zero
-  arquivos `.test`/`.spec`, zero ferramenta instalada. `lint` e `build` pegam erro de tipo e de
-  compilação, não regressão de comportamento. Três bugs recentes escapariam inteiros: o mapa que
-  não desenhava por altura 0, o pin que sumia, a ficha que descartava o frescor que a API já
-  mandava. **Então "regressivo" hoje quer dizer: regressivo do backend.**
+- **Testa a regra de negócio do frontend, não a interface.** Desde 02/09 há **46 testes de
+  `lib/`** — `horarios`, `frescor`, `tempo`, `localizacao` —, que é onde a regra mora por decisão
+  de arquitetura. São funções puras: sem DOM, sem rede, sem React, e por isso rodam em 1,4 s sem
+  setup de ambiente nenhum.
+  **O que continua descoberto é componente e fluxo**, e vale dizer exatamente quais bugs isso
+  deixa passar: o mapa que não desenha por altura 0, o pin que some, e o ✓ branco dentro de um
+  círculo branco de 02/09. Nenhum seria pego por teste de função pura, porque todos exigem
+  renderizar. Esse degrau é jsdom ou Playwright, e é o resto do item 50.
 - **Não roda sozinho.** Não há CI nem proteção de branch; nada impede um push direto na `master`.
   O script é o portão, mas quem fecha o portão ainda é você. É o item 14 do `TODO.md`, e o
   `regressivo.sh` foi escrito já pensando em ser o que a CI chama.

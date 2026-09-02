@@ -151,6 +151,9 @@ if (-not $SoFrontend) {
 # --- Frontend (rapido, e nao precisa de Docker) ------------------------------
 if (-not $SoBackend) {
     Invoke-Passo 'frontend: lint'  $Frontend 'npm' @('run', 'lint')
+    # Antes do build de proposito: roda em menos de um segundo e falha por motivo
+    # muito mais interessante que erro de tipo.
+    Invoke-Passo 'frontend: testes' $Frontend 'npm' @('test')
     Invoke-Passo 'frontend: build' $Frontend 'npm' @('run', 'build')
 }
 
