@@ -81,8 +81,9 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | [0006](docs/adr/0006-rbac-por-enum-simples.md) | RBAC por enum de 3 papéis fixos, sem tabela de permissões |
 | [0007](docs/adr/0007-promocao-de-papel-manual.md) | Promoção de papel é sempre manual (script), nunca self-service |
 | [0008](docs/adr/0008-estabelecimento-publica-com-atribuicao.md) | **Proposto** — dono publica o próprio rolê, com atribuição em vez de fila de aprovação |
-| [0009](docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md) | **Proposto** — sinalizar exige estar perto, verificado no servidor; separa "Tô aqui" de "Tô indo" |
+| [0009](docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md) | **Aceito 01/09** — sinalizar exige estar perto, verificado no servidor; separa "Tô aqui" de "Tô indo". Duas emendas: raio definido na criação do rolê (não constante global) e as duas ações são normativas |
 | [0010](docs/adr/0010-vinculo-de-estabelecimento-e-ato-de-curadoria.md) | Vincular estabelecimento é ato de curadoria, num ato só — sem autocadastro do dono |
+| [0011](docs/adr/0011-anonimato-tem-escopo.md) | **Aceito 01/09** — o anonimato tem escopo: público anônimo, chat identificado. Emenda ao item 23 |
 
 ## Status
 

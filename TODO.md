@@ -497,6 +497,10 @@ ancora o **sinal** em estar lá.
 Ordem sugerida de decisão: 43 primeiro (ele destrava o 40 e resolve o 41 de graça), depois 42, que
 depende do R9 e da conversa com o dono.
 
+**Atualização de 01/09: o 43 foi decidido** — ADR-009 aceito, com raio por rolê e a separação entre
+"Tô indo" e "Tô aqui" (item 51). Então o 40 está destravado e o 41 resolvido de graça, os dois
+esperando só a implementação de fase 2. Sobra o 42, que segue dependendo do R9 e da conversa.
+
 - [ ] 40. **[decisão] O que uma conta comum ganha ao entrar?** Hoje: salvar lugar e comentar. Não
        sinalizar (ADR-0006). Testado em 28/08 com conta comum de verdade — salvar 201, comentar
        201, sinalizar 403. Comentar acabou de ser destravado na interface, mas a pergunta de
@@ -529,8 +533,9 @@ depende do R9 e da conversa com o dono.
        banco e nunca foi exposta — sem coluna nova; (c) mostrar a atribuição no card. Depende do
        R9, porque sem `estabelecimento_id` preenchido não há posse a verificar.
 
-- [ ] 43. **[hipótese] "Tô aqui" — sinal de presença verificado por proximidade.** ADR-009 do
-       backend, status **proposto**. `POST /sinalizacoes` passa a receber `lat`/`lng` e o servidor
+- [ ] 43. **"Tô aqui" — sinal de presença verificado por proximidade. DECIDIDO em 01/09.** ADR-009
+       do backend, status **aceito** (ver item 51 para as duas emendas: raio por rolê e a separação
+       em duas ações). Deixou de ser hipótese; o que resta aqui é a implementação, que é fase 2. `POST /sinalizacoes` passa a receber `lat`/`lng` e o servidor
        recusa fora do raio; a coordenada é conferida e descartada, nunca guardada. Resolve a
        incoerência de o botão dizer intenção e o dado gravar presença — e **destrava o item 40**,
        porque sinal verificado deixa de ser ruído quando qualquer um pode dar. Resolve o 41 de
@@ -591,14 +596,31 @@ nada. Nada aqui compete com o R3.
 **O que elas mudam no que já estava no quadro:** a spec de presença **decide** o que o item 43
 tinha como hipótese — autodeclaração por toque, sem checagem, fica descartada. Ver o item 51.
 
-- [ ] 51. **[decisão] O ADR-009 deixou de ser hipótese nas specs, mas continua "proposto" no
-       backend.** `docs/plano-presenca.md` afirma como regra fechada que só sinaliza quem está
-       fisicamente no lugar, e o `plano-chat-role.md` constrói a trava do chat em cima disso. Mas
-       `backend/docs/adr/0009-sinal-de-presenca-verificado-por-proximidade.md` está **proposto**, e
-       o item 43 daqui ainda está escrito como "[hipótese]". **Ou o ADR-009 é aceito e o 43 deixa
-       de ser hipótese, ou as specs estão construindo em cima de decisão que não foi tomada.**
-       Resolver isto é de graça — é escolher entre dois textos — e destrava a leitura de tudo
-       abaixo.
+- [x] 51. **[decisão] ADR-009 aceito em 01/09 — com duas emendas.** A contradição era esta: as
+       specs de fase 2 afirmavam como regra fechada que só sinaliza quem está no lugar, enquanto o
+       ADR-009 estava "proposto" e o item 43 dizia "[hipótese]". Resolvido aceitando o ADR, com
+       duas mudanças em relação ao texto de 28/08:
+       **(1) O raio é do rolê, não uma constante global.** Definido na criação, por quem cria — o
+       curador, que esteve lá e é o único no fluxo que sabe o tamanho do lugar. O texto proposto
+       fazia dele configuração única (~150 m para tudo), e um número global erra nas duas direções
+       ao mesmo tempo: apertado para uma festa de rua, largo demais para separar dois bares
+       vizinhos do Arouche. Vira o item 57 (schema) e o 58 (painel).
+       **(2) "Tô indo" e "Tô aqui" são duas ações**, e isso é parte da decisão, não desdobramento:
+       "Tô indo" é de fora, sem GPS, avisa quem te acompanha; "Tô aqui" é dentro do raio,
+       verificado no servidor, e é o único que alimenta o frescor.
+       Isso **destrava o item 40** (sinal verificado deixa de ser forjável, então pode ser liberado
+       para conta comum) e **resolve o 41 de graça** (não dá para estar no bar às 10h da manhã de
+       um rolê das 21h).
+- [ ] 57. **`Role.raio_metros` — primeira consequência de schema do ADR-009.** Coluna nullable com
+       migration, e o valor global do `config.py` vira o **default** em vez da regra: obrigar o
+       curador a decidir um raio em todo rolê é atrito num formulário que já é longo, e quem não
+       preencher precisa cair em algum lugar. A calibração do R8 passa a calibrar o padrão.
+       **Pergunta deixada em aberto de propósito:** o raio talvez devesse nascer no `Lugar` (o
+       tamanho da casa não muda entre uma quinta e um sábado) e o `Role` só sobrescrever quando
+       for exceção — senão é redigitar o mesmo número toda semana. Decidir na implementação.
+- [ ] 58. **Campo de raio no painel do curador.** Formulário de publicar rolê. Sem isto a coluna
+       do item 57 existe e ninguém consegue preencher — e o valor só é bom se vier de quem esteve
+       no lugar.
 - [ ] 52. **[decisão] Método da verificação: geofence por GPS ou QR lido no local.** É a pergunta
        que ficou em aberto nas **duas** specs, e o ADR-009 só previa GPS. O QR é mais à prova de
        fraude mas depende do estabelecimento e acrescenta um passo — ou seja, empurra a decisão
@@ -637,16 +659,30 @@ tinha como hipótese — autodeclaração por toque, sem checagem, fica descarta
        os arquivos vão morar. Cadastro cru gera Story feio, e Story feio ninguém posta — então
        este item nasce atrás do 45, não em paralelo. A spec cita uma prévia `previa-story.html`
        que **não existe no repositório**; se ela existir em algum lugar, trazer junto.
-- [ ] 55. **[decisão] A presença deixa de ser anônima dentro do chat — e isso colide com o item
-       23.** O item 23 fechou o copy do anonimato em 28/08 numa regra limpa: **sinal é anônimo,
-       comentário é assinado**. O chat é uma terceira categoria que a regra não previu — a spec diz
-       que participantes aparecem "com o próprio perfil (não anônimo)", e a porta de entrada é a
-       presença. Ou seja: quem confirma presença para entrar no chat **deixa de ser anônimo para
-       todo mundo que está no chat**. Não é necessariamente errado, mas hoje o app promete outra
-       coisa em texto, e o item 23 está marcado como resolvido e verificado. Decidir e reescrever
-       o copy junto, não depois.
-       O mesmo vale, com menos força, para o card de Story, que a própria spec reconhece expor
-       localização em tempo real — lá a proteção é ser opt-in por toque.
+- [x] 55. **[decisão] O anonimato passa a ter escopo — ADR-011, aceito em 01/09.** A colisão era
+       real: o item 23 fechou "sinal é anônimo, comentário é assinado", e o chat é uma terceira
+       categoria que essa regra não previu, porque a porta de entrada é a presença e lá dentro
+       todo mundo aparece com o próprio perfil.
+       **Decidido:** o sinal continua anônimo **em público** — contagens, card, mapa e frescor
+       seguem só com números, nunca nomes. **Dentro do chat**, quem entra é identificado para quem
+       está lá. E a presença de quem entrou no chat **continua contando** na contagem pública: a
+       identificação vale dentro da conversa e não vaza para fora dela.
+       Como o chat nasce e morre com o rolê, a identificação também é efêmera — não constrói
+       histórico público de onde você esteve.
+       **O que isso obriga:** o copy tem que dizer o escopo. "Ninguém vê seu nome" deixa de ser
+       verdade sem qualificação, e a assimetria (você vê os nomes, eles veem o seu) só é legítima
+       se estiver dita **antes** de entrar. Vira o item 59.
+       Rejeitadas: apelido por rolê (enfraquece a moderação por contexto social e cria uma terceira
+       identidade), segundo toque explícito para entrar no chat (é o atrito que a spec de presença
+       existe para evitar) e trocar o chat por outro gancho (é trocar um cold start por um pior).
+- [ ] 59. **Reescrever o copy do anonimato com o escopo do ADR-011.** Hoje o perfil e a tela de
+       sinal dizem que ninguém vê seu nome, sem qualificar. Com o chat, isso passa a ser meia
+       verdade. Duas metades: (a) o texto atual precisa ganhar escopo — nome não aparece no rolê
+       nem nas contagens; (b) a tela de entrada do chat precisa dizer a assimetria antes do toque,
+       não depois.
+       **Reabre o item 23**, que está `[x]` e verificado. Não agora: enquanto o chat não existir, a
+       regra de duas metades ainda descreve o app real, e mudar o copy antes seria prometer uma
+       coisa que não acontece. O gatilho é o item 53 começar.
 
 ### O que já estava no quadro e converge com estas duas specs
 
@@ -656,7 +692,7 @@ Nenhum destes é trabalho novo — é reconhecer que já estavam apontando para 
 |---|---|
 | **43** — "Tô aqui" verificado por proximidade | É a **mesma feature** que o núcleo da spec de presença. Separa "Tô aqui" (no lugar, com GPS, alimenta frescor) de "Tô indo" (de casa, avisa amigos) — exatamente a distinção que a spec faz |
 | **40** — o que uma conta comum ganha ao entrar | A spec responde por um caminho que o item 40 não listava: entrar no **chat**. O 40 tinha três saídas (a, b, c) e esta é uma quarta |
-| **41** — frescor calculável antes de o rolê começar | Resolvido de graça pela regra da spec: não dá para estar fisicamente no lugar às 10h de um rolê das 21h |
+| **41** — frescor calculável antes de o rolê começar | **Resolvido de graça** pela regra, agora aceita (ADR-009): não dá para estar fisicamente no lugar às 10h de um rolê das 21h |
 | **10** — validar "favoritar lugar" × "sinalizar rolê" em campo | A spec abre a mesma pergunta com outras palavras ("como a interface distingue, sem ruído"). É pergunta 4 do `conceito.md`, e a interface já implementa a hipótese `1e` |
 | **24** — check-in de conta comum alimenta o frescor público? | Mesma pergunta que a spec faz ao separar o dado de presença verificada do aviso social |
 | **29** — check-in como `Sinalizacao` de `tipo=presenca` | Já concluiu que check-in **não precisa de tabela nova**. Vale para a presença da spec: a `Sinalizacao` já é o motor |
