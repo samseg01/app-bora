@@ -858,6 +858,12 @@ segue o hi-fi.
        task 1 (sem commit não há o que rodar CI em cima).
        Ganhou um motivo novo em 31/08: ver o item 49, em que a suíte passou verde contra código
        que não era o do disco. CI que constrói do zero não tem como cair nisso.
+       **E ganhou o motivo definitivo em 01/09**, com a regra de que todo trabalho vira branch de
+       feature e só merga passando no regressivo (ver `CLAUDE.md`). Hoje esse portão é manual e
+       nada o impõe: a `master` aceita push direto e ninguém checa. CI + proteção de branch no
+       GitHub é o que faz a regra existir de fato — sem isso ela vale por disciplina, e disciplina
+       é o que falha em dia corrido. Escopo mínimo: rodar os quatro comandos do portão em PR
+       contra a `master` e barrar o merge no vermelho.
 - [ ] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
        31/08: só o Postgres tem volume; `api` não tem bind mount. Então
        `docker compose exec api uv run pytest` roda **o código de quando a imagem foi construída**.
