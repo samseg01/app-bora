@@ -7,11 +7,15 @@ testes do backend — e responde uma coisa só: **verde ou vermelho**. É o port
 descrito no `CLAUDE.md`: nada merga na `master` sem ele verde.
 
 ```powershell
-.\scripts\regressivo.ps1      # PowerShell (o shell da máquina)
+.\scripts\regressivo.ps1      # é este que você roda
 ```
 ```bash
 scripts/regressivo.sh         # Git Bash, e é o que a CI vai chamar
 ```
+
+**Qual rodar:** o `.ps1`. PowerShell é o shell da máquina — é o que abre por padrão no Windows.
+O `.sh` existe para a CI, que roda em Linux, e para quem estiver no Git Bash. Os dois fazem a
+mesma coisa, na mesma ordem, com o mesmo código de saída.
 
 ## Por onde passa
 
@@ -75,6 +79,11 @@ Os cinco caminhos abaixo foram executados em 01/09/2026, e é assim que se rever
 | 4 | Bancos separados de verdade | ✅ `boraroles` com 7 lugares intacto, `boraroles_test` com 0 |
 | 5 | Prova negativa | ✅ `>=` virou `>` em `frescor.py` → **3 testes falharam**, código **1**; revertido, voltou ao verde |
 
+Os cinco foram feitos **nos dois scripts**. Vale insistir nisso porque a primeira rodada foi toda
+pelo `.sh`, e o `.ps1` — justamente o que se usa nesta máquina — não executava: dois bugs de
+PowerShell 5.1 que só aparecem rodando (ver a seção de armadilhas abaixo). Verificar um gêmeo não
+verifica o outro.
+
 A prova negativa é a que importa mais: um portão que nunca fica vermelho não é portão. Ela também
 confirmou que o `--build` forçado pega mudança do disco, já que o bug foi lido a partir da árvore
 de trabalho e não da imagem anterior.
@@ -83,6 +92,23 @@ O bind mount de `docker-compose.dev.yml` foi verificado nos dois sentidos: `bora
 imprime `/app/src/boraroles/__init__.py` (e não `site-packages`), um arquivo criado em `./src`
 apareceu no container sem rebuild, e sumiu de lá ao ser apagado do disco. Era a premissa que
 faltava para fechar o item 49.
+
+## Duas armadilhas do PowerShell que já morderam
+
+As duas custaram uma execução vermelha cada, e as duas valem para qualquer script `.ps1` deste
+projeto — não só para este.
+
+- **`regressivo.ps1` precisa continuar salvo em UTF-8 *com BOM*.** O Windows PowerShell 5.1 lê
+  `.ps1` sem BOM como ANSI: cada travessão ou acento vira lixo, o lixo quebra a próxima aspa, e o
+  arquivo inteiro para de fazer parse — com erros apontando para linhas inocentes, o que manda
+  você caçar no lugar errado. O `regressivo.sh` é o oposto: bash engasga **com** BOM. Não copie a
+  solução de um para o outro.
+- **`$ErrorActionPreference` é `Continue`, de propósito.** Com `Stop`, o PowerShell 5.1 embrulha
+  cada linha de stderr de um `.exe` num `NativeCommandError` terminante — e `docker compose`
+  escreve o progresso normal do build no stderr. O script abortava no meio de um build que estava
+  dando certo. Pelo mesmo motivo cada passo é julgado **só** pelo `$LASTEXITCODE`, nunca por `$?`
+  nem pelo fato de o comando ter escrito em stderr, e a saída dos nativos passa por
+  `2>&1 | ForEach-Object { "$_" }` para virar texto comum em vez de erro vermelho falso.
 
 ## O que deliberadamente não faz
 

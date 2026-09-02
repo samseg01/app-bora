@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
     O regressivo do bora-roles: um comando, tudo ou nada.
@@ -29,6 +29,21 @@
 
 .EXAMPLE
     .\scripts\regressivo.ps1
+
+.NOTES
+    ⚠️ ESTE ARQUIVO PRECISA CONTINUAR SALVO EM UTF-8 COM BOM.
+
+    O Windows PowerShell 5.1 le .ps1 sem BOM como ANSI (Windows-1252). Qualquer
+    caractere nao-ASCII — um travessao, um acento — vira lixo, e o lixo quebra a
+    proxima aspa, e o script inteiro para de fazer parse com erros que apontam
+    para linhas inocentes. Foi exatamente o que aconteceu na primeira versao.
+
+    Se seu editor salvar sem BOM, restaure com:
+      $c = [IO.File]::ReadAllText($p, (New-Object Text.UTF8Encoding($false)))
+      [IO.File]::WriteAllText($p, $c, (New-Object Text.UTF8Encoding($true)))
+
+    O gemeo scripts/regressivo.sh e o oposto: bash engasga COM BOM. Nao copie
+    a solucao de um para o outro.
 #>
 [CmdletBinding()]
 param(
@@ -37,7 +52,13 @@ param(
     [switch]$SemBuild
 )
 
-$ErrorActionPreference = 'Stop'
+# NAO use 'Stop' aqui. Este script e quase todo chamada a executavel nativo, e o
+# PowerShell 5.1 embrulha cada linha de stderr de um .exe num ErrorRecord
+# (NativeCommandError). Como `docker compose` escreve o progresso do build no
+# stderr, com 'Stop' o script aborta no meio de um build que estava dando certo.
+# Quem julga sucesso aqui e o $LASTEXITCODE de cada passo, sempre — nunca o
+# fato de o comando ter escrito em stderr.
+$ErrorActionPreference = 'Continue'
 
 $Raiz     = Split-Path -Parent $PSScriptRoot
 $Backend  = Join-Path $Raiz 'backend'
@@ -79,7 +100,14 @@ function Invoke-Passo {
     $inicio = Get-Date
     Push-Location $Dir
     try {
-        & $Exe @Argumentos
+        # O `2>&1 | ForEach-Object { "$_" }` nao e enfeite. Sem ele, o PowerShell
+        # 5.1 imprime cada linha de stderr de um .exe como ErrorRecord vermelho,
+        # com stack trace apontando para esta linha — e `docker compose` e `uv`
+        # escrevem progresso normal no stderr. O resultado era uma execucao
+        # verde salpicada de erro falso, justamente no script cujo trabalho e
+        # dizer se esta verde ou vermelho. Aqui as linhas viram texto comum; o
+        # veredito continua sendo so o $LASTEXITCODE.
+        & $Exe @Argumentos 2>&1 | ForEach-Object { "$_" }
         $codigo = $LASTEXITCODE
     } finally {
         Pop-Location
@@ -156,11 +184,14 @@ Escreva ''
 Escreva "[$n] banco de teste ($BancoTeste)" 'Cyan'
 Push-Location $Backend
 try {
-    $existe = docker compose exec -T postgres psql -U boraroles -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$BancoTeste'" 2>&1
+    $saida = docker compose exec -T postgres psql -U boraroles -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$BancoTeste'" 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Falhe 'banco de teste' ("Nao consegui falar com o Postgres do compose." + [Environment]::NewLine + $existe)
+        Falhe 'banco de teste' ("Nao consegui falar com o Postgres do compose." + [Environment]::NewLine + ($saida -join [Environment]::NewLine))
     }
-    if (("$existe".Trim()) -ne '1') {
+    # A saida pode trazer linhas de stderr junto; procuramos a linha que e o
+    # resultado da consulta em vez de assumir que ela e a unica.
+    $temBanco = @($saida | ForEach-Object { "$_".Trim() }) -contains '1'
+    if (-not $temBanco) {
         Escreva "    criando $BancoTeste" 'DarkGray'
         docker compose exec -T postgres createdb -U boraroles $BancoTeste 2>&1 | Out-Null
         if ($LASTEXITCODE -ne 0) {
