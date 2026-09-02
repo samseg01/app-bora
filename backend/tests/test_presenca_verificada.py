@@ -69,7 +69,16 @@ async def test_recusa_quem_esta_longe_e_diz_o_porque(
     )
     assert resp.status_code == 403
     detalhe = resp.json()["detail"]
-    assert "m" in detalhe and "limite" in detalhe
+    # O `detail` é OBJETO, e isso é contrato — não conveniência. O cliente monta a
+    # explicação a partir dos números; se ele tivesse que extraí-los da frase, bastaria
+    # alguém reescrever a mensagem para a distância sumir da tela em silêncio. Foi o que
+    # aconteceu até 02/09, com um `match()` no frontend.
+    assert isinstance(detalhe, dict)
+    assert isinstance(detalhe["distancia_m"], int)
+    assert detalhe["raio_m"] == 150  # o padrão do config, já que o lugar não tem medida
+    assert detalhe["distancia_m"] > detalhe["raio_m"]  # senão não teria sido recusado
+    # A frase continua, para cliente que não conhece o formato (curl, um app futuro).
+    assert "limite" in detalhe["mensagem"]
 
 
 async def test_presenca_sem_coordenada_e_recusada(

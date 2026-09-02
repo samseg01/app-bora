@@ -97,8 +97,9 @@ async def test_fluxo_completo_emitir_descobrir_sinalizar_salvar_comentar(
         headers=auth_headers(comum),
     )
     assert resp.status_code == 403
-    # A recusa diz a distância e o limite: vai acontecer com gente honesta cujo GPS errou.
-    assert "m" in resp.json()["detail"]
+    # A recusa devolve os números, não só a frase: é deles que a tela monta a
+    # explicação, e vai acontecer com gente honesta cujo GPS errou.
+    assert resp.json()["detail"]["distancia_m"] > resp.json()["detail"]["raio_m"]
 
     # 6c. "Tô indo" não precisa de GPS — e não acende nada, porque não é presença.
     resp = await client.post(

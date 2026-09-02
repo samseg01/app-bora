@@ -2,8 +2,8 @@
 
 ## Status
 
-**Aceito** em 01/09/2026, com duas emendas em relação ao texto proposto em 28/08 — ver
-"Emendas na aceitação", abaixo. **Ainda não implementado**: a feature é fase 2 (ver
+**Aceito** em 01/09/2026, com duas emendas em relação ao texto proposto em 28/08. Uma terceira
+emenda entrou em 02/09, depois do primeiro uso em campo — ver "Emendas na aceitação", abaixo. **Ainda não implementado**: a feature é fase 2 (ver
 `../../../docs/plano-presenca.md`), e o que a aceitação muda hoje é que ela deixa de ser hipótese
 e passa a ser a premissa em que `plano-presenca.md` e `plano-chat-role.md` podem se apoiar.
 
@@ -132,6 +132,43 @@ Três consequências, e a terceira é uma restrição de privacidade, não de es
    regra 2 deste ADR, que confere e descarta. Um app que promete não guardar onde você esteve não
    pode ficar checando onde você está. Então quem chega toca "Tô aqui"; o que o app pode fazer é
    **oferecer** esse toque a quem já disse que vinha, que é conveniência sem vigilância.
+
+### Emenda 3 — quem escolhe entre as duas ações é o app, não a pessoa (02/09)
+
+A emenda 2 estabeleceu que existem duas ações. Ela **não disse quem escolhe entre elas**, e a
+primeira implementação assumiu o óbvio: dois botões, a pessoa decide. Em uso ficou claro que o
+óbvio estava errado.
+
+**A diferença entre "Tô aqui" e "Tô indo" não é preferência — é fato verificável.** Ou você está
+dentro do raio ou não está, e o telefone sabe. Oferecer as duas era pedir que a pessoa declarasse
+algo que o aparelho podia medir, com dois custos:
+
+- **Ela podia declarar errado**, por engano ou de propósito. Um "Tô aqui" de quem está em casa é
+  exatamente o sinal forjado que este ADR existe para impedir — e a verificação no servidor
+  barrava, mas só depois de a pessoa ter escolhido o caminho errado e levado um erro na cara.
+- **Dava peso visual igual a uma ação que hoje não faz nada.** "Tô indo" não tem leitor: quem o
+  leria é a aba de Conexões, que não tem backend.
+
+**Agora há um botão só.** Ele pede a localização e o servidor decide:
+
+| Situação | Vira | Por quê |
+|---|---|---|
+| dentro do raio | `presenca` | é o caso que o produto quer |
+| longe (403) | `intencao` | ficar longe não é falha: a pessoa clicou certo, só não chegou |
+| sem permissão de GPS, ou GPS falhou | `intencao` | ver abaixo |
+
+O terceiro caso merece cuidado, porque parece contrariar a **regra 4** ("sem permissão de
+localização, sem sinal"). Não contraria: aquela regra é sobre **presença**, e continua literal —
+sem coordenada conferida, nada vira `presenca`, nunca. Intenção não afirma estar em lugar nenhum,
+então não precisa de GPS, e recusá-la por falta de permissão puniria quem só quis avisar que vem.
+
+**O que isso obriga na interface:** a tela tem que **dizer por que** virou intenção. Com um botão
+só, a pessoa toca esperando acender o rolê e às vezes recebe outra coisa — sem explicação, isso lê
+como o app ter feito algo pelas costas dela. Daí a recusa devolver `distancia_m` e `raio_m` em
+campo estruturado, e não só a frase: é dos números que a tela monta o recado.
+
+**O que NÃO muda:** as duas ações continuam distintas no dado, `intencao` continua fora do frescor,
+e a transição intenção→presença continua sendo a mesma linha renovada.
 
 ### A consequência que muda o produto
 
