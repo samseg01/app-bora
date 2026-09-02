@@ -614,9 +614,24 @@ tinha como hipótese — autodeclaração por toque, sem checagem, fica descarta
        dia. **Nada disso existe no backend**: não há entidade de mensagem, não há transporte em
        tempo real, e o ADR-004 descartou fila/worker/Redis — que é exatamente o tipo de coisa que
        um chat costuma pedir. Antes de estimar, decidir se o ADR-004 precisa ser reaberto.
-       Duas pontas soltas da própria spec: o que acontece com o chat depois do fim do rolê (some
-       ou vira arquivo read-only), e qual a janela para rolê **sem `data_fim`** — que o schema
-       permite.
+       Uma ponta solta da própria spec continua de pé: o que acontece com o chat depois do fim do
+       rolê — some de vez ou vira arquivo read-only por um tempo curto.
+       **A outra o schema já respondeu:** a spec pergunta qual a janela padrão para rolê "sem
+       horário de fim definido", mas `Role.data_fim` é `nullable=False` desde a migration 0001 —
+       não existe rolê sem fim neste banco. A janela do chat é `data_inicio`–`data_fim`, sem caso
+       de exceção. Se um dia rolê sem fim passar a existir, é decisão de schema primeiro, e aí a
+       pergunta da spec volta.
+- [ ] 56. **[decisão] Expiração da presença: reusar as janelas do frescor ou inventar outra.** A
+       spec lista "modelo de expiração da presença — quanto tempo uma sinalização conta como
+       agora" como pergunta em aberto, mas o app **já responde isso de fato**: `Sinalizacao` não
+       tem coluna de expiração, e o que decide é a janela lida em `config.py` —
+       `frescor_live_window_minutes = 30` e `frescor_warm_window_minutes = 120`. Ou seja, "agora"
+       já quer dizer 30 minutos e "ainda quente" já quer dizer 2 horas, calculados na leitura
+       (ADR-0001, sem cron).
+       A decisão real é outra: **a presença verificada usa as mesmas janelas?** Um sinal com GPS
+       confirmado é mais forte que um autodeclarado, e talvez devesse valer mais tempo — ou o
+       acesso ao chat, que a spec diz durar até o fim do rolê, é uma terceira janela que não é
+       nem 30 nem 120 minutos. São três durações diferentes num app que hoje tem duas.
 - [ ] 54. **Card de Story compartilhável** (seção do `docs/plano-presenca.md`). Depende de o rolê
        ter identidade visual boa, e isso é o **item 45**, que está bloqueado no R7 esperando onde
        os arquivos vão morar. Cadastro cru gera Story feio, e Story feio ninguém posta — então
