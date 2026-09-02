@@ -1,0 +1,53 @@
+# Override de desenvolvimento: monta o código em vez de assá-lo na imagem.
+#
+# POR QUE ISTO EXISTE (item 49 do TODO.md da raiz)
+# ------------------------------------------------
+# O `docker-compose.yml` constrói o serviço `api` com `build: .` e não monta
+# nada. O código vai para dentro da imagem no `COPY . .` do Dockerfile, e fica
+# congelado ali. Consequência: `docker compose exec api uv run pytest` testa o
+# código de quando a imagem foi construída, não o da sua árvore de trabalho.
+#
+# Isso já custou caro: em 31/08 o container estava de pé havia 22 horas e a
+# suíte inteira passou verde contra código velho, sem nenhum sinal de que não
+# era o do disco. É o pior tipo de falha — a que se disfarça de sucesso.
+#
+# Com este override, `./src` e `./tests` passam a ser montados, então o que roda
+# é sempre o que está no disco, e o `--reload` do uvicorn finalmente serve para
+# alguma coisa.
+#
+# COMO USAR (é opt-in, de propósito)
+# ----------------------------------
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# Não se chama `docker-compose.override.yml` porque esse nome o compose carrega
+# sozinho, e um mount que quebre o import quebraria o `up` de todo mundo sem
+# avisar. Aqui você escolhe.
+#
+# ⚠️ FALTA UMA VERIFICAÇÃO — leia antes de confiar
+# ------------------------------------------------
+# Isto foi escrito com o Docker Desktop desligado e ainda NÃO foi executado uma
+# vez sequer. A premissa é que `uv sync` instala o projeto em modo editável, de
+# modo que `/app/src` montado por cima resolve os imports normalmente. Se a
+# instalação não for editável, o pacote `boraroles` continua vindo do site-packages
+# da imagem e você fica com metade velha e metade nova — que é pior que o
+# problema original, porque também se disfarça.
+#
+# Como verificar, uma vez só, com o Docker no ar:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#   docker compose exec api python -c "import boraroles, sys; print(boraroles.__file__)"
+# Tem que imprimir um caminho dentro de /app/src. Se imprimir algo em
+# .venv/lib/python3.12/site-packages, o mount NÃO está valendo: nesse caso o
+# conserto é acrescentar `RUN uv sync --frozen --no-dev --inexact` ou instalar
+# com `-e`, e rodar a verificação de novo.
+#
+# O `scripts/regressivo.ps1` NÃO depende deste arquivo: ele força `--build` a
+# cada execução, o que resolve o mesmo problema por outro caminho e continua
+# correto mesmo que o mount não funcione.
+
+services:
+  api:
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini

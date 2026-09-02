@@ -862,9 +862,27 @@ segue o hi-fi.
        feature e só merga passando no regressivo (ver `CLAUDE.md`). Hoje esse portão é manual e
        nada o impõe: a `master` aceita push direto e ninguém checa. CI + proteção de branch no
        GitHub é o que faz a regra existir de fato — sem isso ela vale por disciplina, e disciplina
-       é o que falha em dia corrido. Escopo mínimo: rodar os quatro comandos do portão em PR
-       contra a `master` e barrar o merge no vermelho.
-- [ ] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
+       é o que falha em dia corrido.
+       **Ficou barato em 01/09:** o portão virou um comando com código de saída,
+       `scripts/regressivo.sh`, escrito já pensando em ser o que a CI chama. O escopo mínimo
+       agora é um workflow que roda esse script em PR contra a `master`, mais proteção de branch
+       no GitHub barrando merge no vermelho — não é mais "montar a CI", é "chamar o script".
+       O que **falta de verdade** é serviço de Postgres+PostGIS no runner, já que a suíte não
+       usa mock.
+- [ ] 50. **O frontend não tem um único teste — e é ali que o projeto quebra.** Levantado em
+       01/09 ao montar o regressivo: zero arquivos `.test`/`.spec` em `frontend/src`, zero
+       ferramenta instalada (nem Vitest, nem Playwright, nem Testing Library). `npm run lint` e
+       `npm run build` pegam erro de tipo e de compilação — **não pegam comportamento**. Então
+       chamar o portão de "regressivo" é honesto só para o backend.
+       **A evidência de que isso importa está no próprio histórico:** "mapa não desenhava —
+       container absolute resolvia para altura 0", "o pin que sumia do mapa" e "a ficha do lugar
+       descartava o frescor que a API já calculava" são três bugs reais e recentes, e nenhum dos
+       três quebraria o build.
+       **Degrau barato primeiro:** Vitest sobre `lib/` — `frescor.ts`, `horarios.ts` e `tempo.ts`
+       são funções puras, sem DOM e sem rede, e concentram a regra de negócio que o `CLAUDE.md`
+       diz que não pode escorregar para dentro de `views/`. Playwright para os fluxos fica para
+       depois do R7, quando houver ambiente de verdade para apontar.
+- [~] 49. **O serviço `api` do compose não monta o código — a imagem o assa.** Descoberto em
        31/08: só o Postgres tem volume; `api` não tem bind mount. Então
        `docker compose exec api uv run pytest` roda **o código de quando a imagem foi construída**.
        O container estava de pé havia 22 horas e a suíte passou verde contra a árvore velha, sem
@@ -875,6 +893,14 @@ segue o hi-fi.
        **Cuidado ao fazer:** a imagem instala o pacote (`uv run` resolve `boraroles` do venv do
        container); montar por cima sem checar o modo de instalação pode dar import de metade
        velha e metade nova, que é pior que o problema.
+       **Andamento (01/09):** atacado por dois caminhos. O `scripts/regressivo.ps1` força
+       `--build` a cada execução, então o portão nunca mais testa imagem velha — essa metade
+       está fechada e verificada. A outra metade é `backend/docker-compose.dev.yml`, override
+       opt-in que monta `./src`, `./tests` e o alembic; está **escrito e não executado**, porque
+       o Docker estava desligado. Fica em Fazendo até alguém rodar a verificação que o próprio
+       arquivo descreve: subir com o override e conferir que
+       `python -c "import boraroles; print(boraroles.__file__)"` imprime caminho em `/app/src`, e
+       não em `site-packages` — que é exatamente o "metade velha, metade nova" acima.
 - [ ] 50. **`seed/republica.json` e o banco divergiram.** O arquivo tem só o Bar do China, sem
        bairro nem coordenada; o banco tem Bar do China **e** Tokyo, com geo, cadastrados pelo
        painel do curador. O seed é a memória versionada da curadoria — enquanto o dado real só

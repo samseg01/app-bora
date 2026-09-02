@@ -27,6 +27,7 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── plano-conexoes.md            # check-in social e a colisão com a promessa de anonimato
 │   ├── features/                    # um .md por feature construída — obrigatório desde 01/09,
 │   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
+│   │   └── regressivo.md            # o portão em um comando
 │   ├── front-end-ideias/desktop/    # 5 artboards da partição de tela grande
 │   ├── front-end-ideias/conexoes/   # design da aba de Conexões (sem backend ainda)
 │   └── front-end-ideias/seguir-ideia-da-documenta-o/
@@ -42,6 +43,9 @@ bora-roles/                          # repositório git único na raiz (backend 
 │           └── uploads/conceito-app-role.md, previa-tela.jsx.txt  # cópias de docs/conceito.md e
 │                                     # mvp/preview-tela.jsx enviadas como contexto pro Claude Design —
 │                                     # mesmo conteúdo, não ler de novo
+├── scripts/
+│   ├── regressivo.ps1               # o portão: um comando, verde ou vermelho (PowerShell)
+│   └── regressivo.sh                # gêmeo em bash, para Git Bash e para a CI
 ├── mvp/
 │   └── preview-tela.jsx             # mockup React solto, 282 linhas (rail de descoberta + mapa),
 │                                     # ANTERIOR ao bundle de design acima; ver nota de escopo abaixo
@@ -199,10 +203,14 @@ Mais `GET /health` fora do prefixo versionado.
   `docker compose up -d --build api` antes de confiar no resultado. É o tipo de erro que não
   aparece: os testes passam, só que não são os seus.
 - **Frontend:** `cd frontend && npm run dev` → `http://localhost:3000`.
-- **Atenção nos testes:** a suíte roda contra o **mesmo banco** do desenvolvimento, e os
-  fixtures usam e-mails fixos (`dono@exemplo.com` e afins). Uma conta de teste criada à mão
-  com um desses e-mails faz o teste falhar por violação de unicidade — foi o que aconteceu ao
-  criar o dono do Bar do China. Use domínio `@local.dev` para contas manuais.
+- **Regressivo:** `.\scripts\regressivo.ps1` roda tudo de uma vez (ver "Fluxo de trabalho").
+- **Atenção nos testes — resolvido, mas saiba por quê:** a suíte rodava contra o **mesmo banco**
+  do desenvolvimento, e os fixtures usam e-mails fixos (`dono@exemplo.com` e afins); uma conta
+  criada à mão com um desses e-mails derrubava o teste por violação de unicidade — foi o que
+  aconteceu ao criar o dono do Bar do China. **Desde 01/09 o `regressivo` usa `boraroles_test`,
+  banco separado**, e o problema some. Mas quem rodar `pytest` na mão, sem sobrescrever
+  `DATABASE_URL`, cai no banco de desenvolvimento de novo — aí o `@local.dev` das contas manuais
+  ainda vale como rede de segurança.
 
 ## Fluxo de trabalho: branch de feature, e o regressivo como portão
 
@@ -254,17 +262,23 @@ O doc de feature responde ao próximo que abrir o código sem ter estado aqui:
 Se a mudança não é feature — correção de bug, ajuste de texto, refatoração sem efeito visível —
 não force um documento; o commit é o registro. A regra existe para o que muda o que o app faz.
 
-### O portão — o que "passar no regressivo" quer dizer aqui
+### O portão — um comando
 
-Não existe um alvo `npm test` nem um `make check` que rode tudo. O regressivo deste projeto,
-hoje, são estes quatro comandos, e **todos os quatro** precisam estar verdes:
+```powershell
+.\scripts\regressivo.ps1     # PowerShell, o shell da máquina
+```
+```bash
+scripts/regressivo.sh        # Git Bash, e é o que a CI vai chamar
+```
 
-| Onde | Comando | O que cobre |
-|---|---|---|
-| backend | `docker compose up -d --build api` | **obrigatório antes de testar** — sem `--build` você testa a imagem velha |
-| backend | `docker compose exec api uv run pytest` | **os 49 testes**, contra Postgres+PostGIS real |
-| backend | `docker compose exec api uv run ruff check . && docker compose exec api uv run mypy src` | lint e tipos |
-| frontend | `cd frontend && npm run build && npm run lint` | build de produção e lint |
+Verde sai com código 0, vermelho com 1. Roda, nesta ordem, parando no primeiro vermelho: daemon
+do Docker → `npm run lint` → `npm run build` → `docker compose up -d --build api` → criar
+`boraroles_test` se faltar → `ruff` → `mypy` → `pytest`. Detalhes, decisões de ordem e como
+verificar em `docs/features/regressivo.md`.
+
+Duas coisas que o script resolve e que antes eram lembrança sua: o **`--build` é forçado** (sem
+ele a suíte testa a imagem velha, ver item 49), e os **testes rodam em `boraroles_test`**, banco
+separado que ele cria sozinho — o banco de desenvolvimento não é mais tocado.
 
 Se a mudança foi só de documento (`.md`), o portão é dispensável — mas diga isso em voz alta ao
 mergear, em vez de deixar subentendido.
@@ -274,12 +288,16 @@ mergear, em vez de deixar subentendido.
 - **Ele é manual, e não há nada que o imponha.** Não existe CI (item 14 do `TODO.md`) nem
   proteção de branch no GitHub: a `master` aceita push direto hoje. A regra vale por disciplina,
   não por mecanismo — o que a torna exatamente o tipo de regra que se perde num dia corrido.
-  **CI é o que transforma isto em portão de verdade**, e por isso o item 14 subiu de prioridade.
-- **Ele depende do Docker Desktop ligado.** Com o daemon parado, nada do backend roda e o
-  regressivo simplesmente não pode ser executado. Nesse caso o certo é **não mergear** e dizer
-  que não foi verificado — não mergear alegando que "só mudou uma linha".
-- **A suíte usa o mesmo banco do desenvolvimento** (ver "Como rodar"): um teste pode falhar por
-  dado que você criou à mão, não por regressão. Ler a falha antes de culpar a branch.
+  **CI é o que transforma isto em portão de verdade**, e por isso o item 14 subiu de prioridade;
+  o `regressivo.sh` já foi escrito para ser o que ela chama.
+- **"Regressivo" hoje quer dizer regressivo do backend.** O frontend não tem **nenhum** teste —
+  zero arquivos `.test`/`.spec`, zero ferramenta instalada. `lint` e `build` pegam erro de tipo e
+  de compilação, não regressão de comportamento: o mapa que não desenhava por altura 0, o pin que
+  sumia e a ficha que descartava o frescor passariam os três. É a maior lacuna do portão.
+- **Ele depende do Docker Desktop ligado.** Com o daemon parado o script falha na etapa 0, de
+  propósito e em um segundo. Nesse caso o certo é **não mergear** e dizer que não foi verificado —
+  não mergear alegando que "só mudou uma linha". Para conferir só o frontend enquanto isso:
+  `scripts/regressivo.sh --so-frontend` (que o próprio script avisa não ser o regressivo).
 
 ## Decisões de arquitetura (fora do backend)
 
