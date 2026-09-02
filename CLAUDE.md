@@ -202,6 +202,54 @@ Mais `GET /health` fora do prefixo versionado.
   com um desses e-mails faz o teste falhar por violação de unicidade — foi o que aconteceu ao
   criar o dono do Bar do China. Use domínio `@local.dev` para contas manuais.
 
+## Fluxo de trabalho: branch de feature, e o regressivo como portão
+
+**Regra, decidida em 01/09/2026: nenhum trabalho vai direto na `master`.** Toda mudança nasce
+numa branch de feature, e só volta para a `master` depois de passar nos testes — em particular
+no **regressivo**, que aqui significa a suíte inteira, não só o teste da coisa que você mexeu.
+
+Vale para código e para documento. Commit direto na `master` deixa de ser o normal do projeto
+(os 16 primeiros commits foram assim; daqui pra frente, não).
+
+### O ciclo
+
+1. **Sair da `master` atualizada** e abrir a branch:
+   `git switch master && git pull && git switch -c feat/nome-curto`
+   Prefixos seguem os do commit: `feat/`, `fix/`, `docs/`, `refactor/`.
+2. **Trabalhar e commitar na branch**, quantos commits fizerem sentido.
+3. **Rodar o portão inteiro** (abaixo). Vermelho não merga — nem "só o lint", nem "só um teste
+   que já estava quebrado".
+4. **Merge na `master`** com `--no-ff`, para o histórico mostrar que houve uma feature:
+   `git switch master && git merge --no-ff feat/nome-curto`
+5. **Push** da `master`, e apagar a branch (`git branch -d`).
+
+### O portão — o que "passar no regressivo" quer dizer aqui
+
+Não existe um alvo `npm test` nem um `make check` que rode tudo. O regressivo deste projeto,
+hoje, são estes quatro comandos, e **todos os quatro** precisam estar verdes:
+
+| Onde | Comando | O que cobre |
+|---|---|---|
+| backend | `docker compose up -d --build api` | **obrigatório antes de testar** — sem `--build` você testa a imagem velha |
+| backend | `docker compose exec api uv run pytest` | **os 49 testes**, contra Postgres+PostGIS real |
+| backend | `docker compose exec api uv run ruff check . && docker compose exec api uv run mypy src` | lint e tipos |
+| frontend | `cd frontend && npm run build && npm run lint` | build de produção e lint |
+
+Se a mudança foi só de documento (`.md`), o portão é dispensável — mas diga isso em voz alta ao
+mergear, em vez de deixar subentendido.
+
+### Onde este portão é frágil, e é bom saber
+
+- **Ele é manual, e não há nada que o imponha.** Não existe CI (item 14 do `TODO.md`) nem
+  proteção de branch no GitHub: a `master` aceita push direto hoje. A regra vale por disciplina,
+  não por mecanismo — o que a torna exatamente o tipo de regra que se perde num dia corrido.
+  **CI é o que transforma isto em portão de verdade**, e por isso o item 14 subiu de prioridade.
+- **Ele depende do Docker Desktop ligado.** Com o daemon parado, nada do backend roda e o
+  regressivo simplesmente não pode ser executado. Nesse caso o certo é **não mergear** e dizer
+  que não foi verificado — não mergear alegando que "só mudou uma linha".
+- **A suíte usa o mesmo banco do desenvolvimento** (ver "Como rodar"): um teste pode falhar por
+  dado que você criou à mão, não por regressão. Ler a falha antes de culpar a branch.
+
 ## Decisões de arquitetura (fora do backend)
 
 - **Duas camadas na tela** (descoberta empurra no topo, mapa puxa embaixo) em vez de abrir no mapa
