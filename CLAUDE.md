@@ -25,6 +25,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── arquitetura-backend-frontend.md  # arquitetura acordada (schema, stack, sequenciamento)
 │   ├── plano-frontend.md            # as 8 telas hi-fi cruzadas com a API real
 │   ├── plano-conexoes.md            # check-in social e a colisão com a promessa de anonimato
+│   ├── features/                    # um .md por feature construída — obrigatório desde 01/09,
+│   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
 │   ├── front-end-ideias/desktop/    # 5 artboards da partição de tela grande
 │   ├── front-end-ideias/conexoes/   # design da aba de Conexões (sem backend ainda)
 │   └── front-end-ideias/seguir-ideia-da-documenta-o/
@@ -206,7 +208,8 @@ Mais `GET /health` fora do prefixo versionado.
 
 **Regra, decidida em 01/09/2026: nenhum trabalho vai direto na `master`.** Toda mudança nasce
 numa branch de feature, e só volta para a `master` depois de passar nos testes — em particular
-no **regressivo**, que aqui significa a suíte inteira, não só o teste da coisa que você mexeu.
+no **regressivo**, que aqui significa a suíte inteira, não só o teste da coisa que você mexeu —
+e, se for feature, de ter documentação em `docs/features/`.
 
 Vale para código e para documento. Commit direto na `master` deixa de ser o normal do projeto
 (os 16 primeiros commits foram assim; daqui pra frente, não).
@@ -217,11 +220,39 @@ Vale para código e para documento. Commit direto na `master` deixa de ser o nor
    `git switch master && git pull && git switch -c feat/nome-curto`
    Prefixos seguem os do commit: `feat/`, `fix/`, `docs/`, `refactor/`.
 2. **Trabalhar e commitar na branch**, quantos commits fizerem sentido.
-3. **Rodar o portão inteiro** (abaixo). Vermelho não merga — nem "só o lint", nem "só um teste
+3. **Escrever a documentação da feature** em `docs/features/` (abaixo). Faz parte da branch, não
+   é tarefa de depois — feature sem doc não merga.
+4. **Rodar o portão inteiro** (abaixo). Vermelho não merga — nem "só o lint", nem "só um teste
    que já estava quebrado".
-4. **Merge na `master`** com `--no-ff`, para o histórico mostrar que houve uma feature:
+5. **Merge na `master`** com `--no-ff`, para o histórico mostrar que houve uma feature:
    `git switch master && git merge --no-ff feat/nome-curto`
-5. **Push** da `master`, e apagar a branch (`git branch -d`).
+6. **Push** da `master`, e apagar a branch (`git branch -d`).
+
+### Toda feature precisa de documentação em `docs/`
+
+**Regra, decidida em 01/09/2026: nenhuma feature merga sem um documento em `docs/features/`.**
+Um arquivo por feature, `docs/features/<nome-curto>.md`, criado na mesma branch da feature.
+
+**Não confundir com ADR, que já existe neste projeto e continua valendo.** São coisas diferentes,
+e duplicar uma na outra é como isto apodrece:
+
+| | O que registra | Onde mora |
+|---|---|---|
+| **ADR** | a **decisão** e por que ela venceu a alternativa | `backend/docs/adr/`, `frontend/docs/adr/` |
+| **Doc de feature** | o que foi **construído** e como se comporta | `docs/features/` |
+
+O doc de feature responde ao próximo que abrir o código sem ter estado aqui:
+
+- **O que a feature faz**, em uma frase, do ponto de vista de quem usa o app.
+- **Por onde ela passa** — rotas de API, telas, tabelas/migrations, serviços tocados. É o mapa
+  que evita ter que caçar no `git log`.
+- **Como verificar que está de pé** — o caminho manual, não só o nome dos testes.
+- **O que ela deliberadamente não faz**, e por quê. Esta é a seção que mais economiza tempo
+  depois: sem ela, todo limite vira suspeita de bug e alguém "conserta" uma decisão.
+- **Link para o ADR**, quando a feature nasceu de uma decisão registrada.
+
+Se a mudança não é feature — correção de bug, ajuste de texto, refatoração sem efeito visível —
+não force um documento; o commit é o registro. A regra existe para o que muda o que o app faz.
 
 ### O portão — o que "passar no regressivo" quer dizer aqui
 
