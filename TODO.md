@@ -95,9 +95,16 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       degradação para sinal ruim. A caçada está contada no registro de 28/08 mais abaixo.
       ✅ **Confirmado em navegador.** Levou uma caçada: o container `absolute inset-0` resolvia
       para altura 0 e o MapLibre caía num fallback interno de 400x300, sem emitir erro nenhum.
-- [ ] R7. **Deploy** (item 12). Backend + Postgres gerenciado **com PostGIS** (essa extensão é o
-      detalhe que costuma dar trabalho — nem todo provedor entrega), frontend na Vercel,
-      `JWT_SECRET` vindo do ambiente e `CORS_ORIGINS` no domínio da Vercel.
+- [~] R7. **Deploy** (item 12). **Provedor decidido em 03/09** — ver
+      `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md`. O plano antigo (Railway/Fly/Render +
+      Vercel + Postgres gerenciado) foi **descartado**: PostGIS incerto, disco efêmero deixaria o
+      item 45 bloqueado, e o SSR `force-dynamic` de toda rota pagaria uma volta de rede por tela.
+      **Decidido: uma VPS só em São Paulo (Hostinger KVM 2), rodando o `docker compose` inteiro** —
+      Postgres+PostGIS, FastAPI, Next SSR e Caddy à frente. Front e back na mesma origem, sem CORS.
+      Falta executar: `output: "standalone"` e Dockerfile do frontend (não existe), Caddy,
+      `JWT_SECRET`/`POSTGRES_PASSWORD` do ambiente, tirar a porta 5432 do compose, `pg_dump` diário
+      saindo da máquina, swapfile. **Selecionar São Paulo no checkout** — sem isso a decisão inteira
+      se perde.
 - [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Cresceu muito em 02/09: era
       só a ressalva de altura, e virou o único juiz da feature de presença. **Cinco perguntas, e a
       segunda é a que decide se a feature presta:**
@@ -1027,10 +1034,10 @@ segue o hi-fi.
 
 ## Técnico / infra / testes
 
-- [ ] 12. **Deploy de produção.** Hoje só existe `docker compose up -d` local. Plano registrado em
-       `docs/arquitetura-backend-frontend.md`: Railway/Fly.io/Render pro backend, Vercel pro
-       Next.js, Postgres gerenciado com PostGIS. Pré-requisito: `JWT_SECRET` vindo do ambiente
-       (o default em `config.py` é um placeholder).
+- [~] 12. **Deploy de produção.** Hoje só existe `docker compose up -d` local. O plano que estava
+       aqui (Railway/Fly.io/Render + Vercel + Postgres gerenciado, de
+       `docs/arquitetura-backend-frontend.md`) foi substituído em 03/09 por
+       `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md`. Execução acompanhada no R7.
 - [ ] 13. **Decidir se o cron de expiração/decaimento é necessário.** A arquitetura acordada
        previa "cron simples pra expirar rolês e decair sinalizações"; o backend construído não tem
        nenhum — frescor é 100% calculado na leitura (`services/frescor.py`, ADR-0001). Provavelmente

@@ -27,6 +27,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── plano-conexoes.md            # check-in social e a colisão com a promessa de anonimato
 │   ├── plano-presenca.md            # presença verificada por localização, escada de incentivos, Story
 │   ├── plano-chat-role.md           # chat por rolê, efêmero, com entrada travada por presença
+│   ├── adr/                         # ADRs de raiz — decisões que atravessam backend E frontend;
+│   │   └── 0001-deploy-em-vps-unico-sao-paulo.md   # onde o app roda (substitui o plano da arquitetura)
 │   ├── features/                    # um .md por feature construída — obrigatório desde 01/09,
 │   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
 │   │   ├── regressivo.md            # o portão em um comando
@@ -187,7 +189,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
 | Curadoria de campo no piloto | ⚠️ | **2 de 10–15 lugares** no banco (Bar do China, Tokyo); o resto é o R3, e é o gargalo |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
-| Deploy de produção | ❌ | só `docker compose` local hoje |
+| Deploy de produção | ⚠️ | só `docker compose` local hoje; **provedor e forma decididos em 03/09** (ADR de raiz 0001): VPS única em SP, front e back no mesmo box. Falta executar — é o R7 |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
@@ -326,6 +328,14 @@ mergear, em vez de deixar subentendido.
   público seguem só números, nunca nomes; **dentro do chat** você é identificado para quem está
   lá, e sua presença **continua contando** na contagem pública. Como o chat morre com o rolê, a
   identificação é efêmera. Obriga a reescrever o copy — ver item 59.
+- **Uma VPS só em São Paulo, front e back no mesmo box** (ADR de raiz 0001, **aceito em 03/09**).
+  O plano anterior — Railway/Fly/Render + Vercel + Postgres gerenciado — caiu por três razões que
+  vêm do que já está construído: PostGIS não é garantido em Postgres gerenciado, disco efêmero
+  deixaria o item 45 (foto) bloqueado, e **toda rota de leitura é `force-dynamic`**, então cada
+  render SSR faz um fetch servidor→servidor que pagaria uma volta de internet por tela. Juntando os
+  dois lados atrás de um Caddy, front e back viram a **mesma origem**: sem CORS e com o fetch em
+  loopback. Provedor: Hostinger KVM 2, SP. O gatilho de reavaliação é **surgir um CNPJ** — aí a
+  Magalu ganha pela NF-e, e migrar é `pg_dump` + DNS.
 - **PWA agora, nativo depois** — descoberta espontânea não pode ter fricção de "baixar da loja",
   e sem base instalada o link compartilhado *é* o canal de distribuição. Mas **nativo é o destino
   declarado**, não uma possibilidade remota: a decisão é de ordem, não de permanência. Gatilhos
@@ -456,6 +466,9 @@ contradisserem, o ADR ganha.
 - Backend — como rodar: `backend/README.md`
 - Schema real: `backend/src/boraroles/db/models.py`
 - Motor de frescor: `backend/src/boraroles/services/frescor.py` (+ `services/descoberta.py`)
+- **Onde o app roda em produção, e por que não é PaaS + Vercel:**
+  `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md` — ADR de raiz, porque decide backend e frontend
+  ao mesmo tempo. Tem o desenho do Caddy, as alternativas descartadas e os gatilhos de migração
 - ADRs do backend em `backend/docs/adr/`. Os quatro mais recentes: `0008` (a casa publica, o app
   atribui) segue **proposto**; `0009` (sinal verificado por proximidade), `0010` (vínculo é ato de
   curadoria) e `0011` (o anonimato tem escopo) estão **aceitos** — o 0009 e o 0011 em 01/09, e as
