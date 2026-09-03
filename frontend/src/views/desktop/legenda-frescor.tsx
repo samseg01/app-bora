@@ -4,7 +4,7 @@
  */
 export function LegendaFrescor({ comBorda = false }: { comBorda?: boolean }) {
   const itens = [
-    { cor: "bg-agora", label: "agora" },
+    { cor: "bg-live", label: "agora" },
     { cor: "bg-text-dim", label: "enchendo" },
     { cor: "bg-muted", label: "novo" },
   ];

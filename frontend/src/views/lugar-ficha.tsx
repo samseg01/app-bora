@@ -5,6 +5,7 @@ import { TagsLugar } from "@/components/ui/tags-lugar";
 import { abertaAgora, faixaLegivel } from "@/lib/horarios";
 import { hora } from "@/lib/tempo";
 import type { LugarDetalhe, RolePin } from "@/lib/types";
+import { corDaCategoria } from "@/lib/categorias";
 
 /**
  * A ficha do lugar — o conteúdo da tela `/lugar/[id]`, compartilhado pelas duas
@@ -62,7 +63,7 @@ export function LugarFicha({
 
       <div className="-mt-6 flex flex-col gap-5 px-5.5 pb-8 lg:px-8">
       <div>
-        <div className="rotulo text-text-faint">{lugar.categoria}</div>
+        <div className={`rotulo ${corDaCategoria(lugar.categoria)}`}>{lugar.categoria}</div>
         <h1 className="mt-2 titulo text-[34px] leading-none lg:text-[42px]">
           {lugar.nome}
         </h1>

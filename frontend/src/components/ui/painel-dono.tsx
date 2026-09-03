@@ -136,8 +136,12 @@ export function PainelDono() {
         <>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Numero valor={dados.lugares.length} rotulo="lugares seus no app" />
-            <Numero valor={dados.eng.total_salvos} rotulo="pessoas salvaram" destaque />
-            <Numero valor={dados.eng.total_sinalizacoes} rotulo="sinais de presença" />
+            <Numero valor={dados.eng.total_salvos} rotulo="pessoas salvaram" cor="warm" />
+            <Numero
+              valor={dados.eng.total_sinalizacoes}
+              rotulo="sinais de presença"
+              cor="live"
+            />
           </div>
           <p className="-mt-1 text-[11.5px] leading-relaxed text-muted-3">
             Totais desde que a casa entrou no app, não desta semana. Sinal de presença é
@@ -200,28 +204,38 @@ function Moldura({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Um número do painel, com a cor dizendo **que tipo de número é**.
+ *
+ * O painel do dono não existe no hi-fi — foi construído sem design prévio, então
+ * aqui não há referência a copiar. A decisão da camada 2: usar **o mesmo vocabulário
+ * de cor que o dono vê do lado de fora**, no app público. Assim ele aprende o
+ * sistema sem que ninguém explique — magenta é agora, âmbar é o que fica.
+ *
+ * - `live` → sinais de presença. É o número do **agora**, e é o que o produto
+ *   inteiro promete entregar a ele.
+ * - `warm` → pessoas que salvaram. Interesse que **fica**, não urgência.
+ * - neutro → contagem de inventário, que não é conquista nem sinal.
+ *
+ * **Zero nunca ganha cor.** Um "0 sinais de presença" em magenta seria celebrar o
+ * vazio — a cor aqui marca que algo aconteceu, e nada aconteceu.
+ */
 function Numero({
   valor,
   rotulo,
-  destaque = false,
+  cor = "neutro",
 }: {
   valor: number;
   rotulo: string;
-  destaque?: boolean;
+  cor?: "neutro" | "live" | "warm";
 }) {
+  const aceso = valor > 0 && cor !== "neutro";
+  const borda = aceso ? (cor === "live" ? "border-live/30" : "border-warm/30") : "border-linha";
+  const texto = aceso ? (cor === "live" ? "text-live" : "text-warm") : "";
+
   return (
-    <div
-      className={`flex-1 border bg-sunken px-4 py-4 ${
-        destaque && valor > 0 ? "border-muted/28" : "border-linha"
-      }`}
-    >
-      <div
-        className={`titulo text-[30px] leading-none ${
-          destaque && valor > 0 ? "text-muted" : ""
-        }`}
-      >
-        {valor}
-      </div>
+    <div className={`flex-1 border bg-sunken px-4 py-4 ${borda}`}>
+      <div className={`titulo text-[30px] leading-none ${texto}`}>{valor}</div>
       <div className="mt-1.5 text-[11.5px] text-muted-2">{rotulo}</div>
     </div>
   );

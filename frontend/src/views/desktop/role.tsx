@@ -7,6 +7,7 @@ import { MapaReal } from "@/components/ui/mapa-real";
 import { DesktopShell } from "./shell";
 import { hora, idade } from "@/lib/tempo";
 import type { ComentarioResumo, LugarDetalhe, MapaPin, RolePublic } from "@/lib/types";
+import { corDaCategoria } from "@/lib/categorias";
 
 /** Tela de detalhe, visualização desktop: o rolê à esquerda, o que fazer com ele à direita. */
 export function RoleDesktop({
@@ -46,7 +47,10 @@ export function RoleDesktop({
             </div>
           </div>
 
-          <div className="rotulo mt-6 text-text-faint">rolê de hoje · {role.categoria}</div>
+          <div className="rotulo mt-6 text-text-faint">
+            rolê de hoje ·{" "}
+            <span className={corDaCategoria(role.categoria)}>{role.categoria}</span>
+          </div>
           <h1 className="mt-2.5 titulo text-[46px] leading-[1.02]">{role.titulo}</h1>
 
           {role.descricao ? (

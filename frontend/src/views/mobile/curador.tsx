@@ -5,6 +5,7 @@ import { FormPublicar } from "../desktop/form-publicar";
 import { frescorUI } from "@/lib/frescor";
 import { hora } from "@/lib/tempo";
 import type { LugarPublic, RoleDescoberta } from "@/lib/types";
+import { pinDaCategoria } from "@/lib/categorias";
 
 /**
  * O painel do curador é uma superfície de desktop — mas o curador é justamente quem
@@ -67,7 +68,7 @@ export function CuradorMobile({
                   </div>
                 </div>
                 <span
-                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${ui?.pin ?? "bg-pin-off"} ${ui?.pulsa ? "pulse-agora" : ""}`}
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${ui?.pin ?? pinDaCategoria(role.categoria)} ${ui?.pulsa ? "pulse-live" : ""}`}
                 />
               </div>
             );

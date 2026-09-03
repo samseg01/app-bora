@@ -1,4 +1,8 @@
-# Sistema visual monocromático — a fundação
+# Sistema visual — fundação monocromática e a volta da cor
+
+> **Duas camadas, e o arquivo cobre as duas.** A camada 1 (02/09) tirou toda a cor; a
+> camada 2 (02–03/09) devolveu por eixo semântico. Ler as duas em ordem: a segunda só
+> faz sentido sabendo o que a primeira consertou.
 
 ## O que faz
 
@@ -105,6 +109,86 @@ um dia precisarem divergir o lugar já existe.
 Depois disso, `agora` sobrou em **seis lugares**: `lib/frescor.ts` (3), a legenda do mapa e a barra
 de expiração do sinal. É onde ele devia estar desde o começo, e é o número a conferir se alguém
 suspeitar de regressão.
+
+## Camada 2 — a cor volta, por eixo semântico
+
+A camada 1 resolveu o problema (cor sem significado) e criou outro: **o app ficou preto e
+branco demais.** A cor voltou, mas com uma regra que impede o ciclo de recomeçar — ela
+volta por **eixo**, e são dois, independentes:
+
+| Eixo | Cores | Comportamento |
+|---|---|---|
+| **Frescor** — o que acontece agora | magenta `#ff3d81`, âmbar `#ffb443`, ciano `#1fd0ff` | saturado, pulsa, é o teto de vibração da tela |
+| **Categoria** — o que o lugar é | 8 matizes | vibrante, mas **nunca mais que o frescor** |
+
+Os três hexes do frescor são os do hi-fi, sem alteração: é o único uso em que a cor
+antiga sempre apareceu sozinha e sempre significou uma coisa só.
+
+**O que NÃO recebeu cor de volta, de propósito:** CTA primário, aba ativa, link e
+seleção. Foi devolvê-los ao neutro que liberou o acento — se o botão voltar a magenta,
+volta a competir com o `live`, e o sistema antigo está de volta com outro nome.
+
+### As 8 categorias, e por que essas matizes
+
+`lib/categorias.ts` é o ponto único, no molde do `frescor.ts`. Três propriedades
+deliberadas:
+
+1. **A matiz encoda a escada do `conceito.md`.** Boteco, Bar, Feira e Praça em tons de
+   terra — a base que o produto quer atender. Sarau, Galeria, Casa de show e Balada em
+   frios — o topo programado. Quem cadastra lê o eixo sem que ninguém explique.
+2. **Evitam a vizinhança do frescor.** Magenta vive em 340°, âmbar em 38°, ciano em
+   190°. A categoria que mais se aproxima é Balada (325°), e ela se separa por saturação
+   e por posição: rótulo pequeno contra ponto que pulsa.
+3. **Vibrantes, com teto.** O primeiro corte era tão dessaturado que o app continuava
+   parecendo monocromático — subiram a pedido. **Se uma categoria gritar mais que um
+   rolê bombando, a hierarquia inverteu e está errada.**
+
+### Onde a cor aparece
+
+- **Card** — o bloco no lugar da foto vira gradiente da categoria. É a maior superfície
+  do card, e foi o que resolveu o "card cinza com uma palavra colorida" da primeira
+  tentativa. De quebra, o gradiente **deixou de girar por índice na lista**: variar por
+  posição era decoração, e o prop `indice` morreu junto.
+- **Mapa** — cor **e tamanho**, na escala do hi-fi: 10px sem frescor, 14px em
+  `warm`/`new`, 16px em `live`. Redundância deliberada: um mapa lido de relance na rua
+  precisa que o "está bombando" chegue pelo tamanho antes da cor.
+- **Pin sem rolê** — mostra a **categoria**, não cinza. O mapa de um bairro sem rolê
+  ficava inteiro apagado, dizendo sem querer que não havia nada ali — quando havia casas
+  que alguém foi visitar a pé. A hierarquia se mantém porque o frescor ganha em três
+  eixos ao mesmo tempo: cor, tamanho e pulso.
+- **Confirmação de presença** — círculo magenta e a barra de expiração com o gradiente
+  `90deg, #ff3d81 → #ffb443`, literalmente o do hi-fi. Ela vai de "agora" a "esfriando",
+  que é o que ela mede.
+- **Painel do estabelecimento** — sem design prévio, então a decisão foi dar ao dono **o
+  mesmo vocabulário que ele vê no app público**: sinais de presença em magenta (o número
+  do agora), pessoas que salvaram em âmbar (interesse que fica), inventário neutro. Zero
+  nunca ganha cor — seria celebrar o vazio.
+
+### `--color-agora` foi removido
+
+Ele nasceu na camada 1 para ser "o acento". Quando a cor voltou, descobriu-se que **tudo
+que o usava falava do lugar estar cheio** — era `live` com outro nome, inclusive o
+círculo do "Tá marcado", que no hi-fi sempre foi magenta. Manter dois tokens para a mesma
+afirmação era o começo do problema de novo.
+
+### A armadilha do Tailwind v4 que quase passou
+
+O gradiente foi escrito primeiro como template: `` from-${cor}/45 ``. **Não funciona** —
+o Tailwind v4 varre o código atrás de nome de classe **literal**, e uma montada em
+template não é gerada. O bloco ficaria transparente **sem erro nenhum**, nem no build nem
+no lint. As classes agora são escritas por extenso, e há um teste com regex que rejeita
+classe montada.
+
+### O que a camada 2 revelou sobre o dado
+
+O card do único rolê de República **não colorava** — e não era bug: `Lugar.categoria`
+estava como `"forró"`, fora do vocabulário, então caía em neutro de propósito. **Foi a
+camada de cor que denunciou o item 48**, e ele foi corrigido no mesmo movimento: a
+categoria virou `Boteco` e `Forró` foi para as tags, que é onde essa informação sempre
+pertenceu.
+
+Vale como propriedade do sistema: **cor que não aparece quando o dado é inválido é melhor
+que cor inventada.**
 
 ## Em aberto — o basemap do mapa
 

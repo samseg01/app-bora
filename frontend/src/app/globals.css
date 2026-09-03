@@ -51,16 +51,69 @@
   --color-muted-2: #525252;
   --color-muted-3: #404040;
 
-  /* "Agora" é branco puro + pulso. Sem cor, quem grita é o contraste contra um
-     mundo cinza, e o pulso é o que sobrou de movimento. */
-  --color-agora: #ffffff;
-  --color-agora-soft: #d4d4d4;
+  /* ---------------------------------------------------------------------------
+   * A COR VOLTA — camada 2, 02/09/2026. E volta por EIXO SEMÂNTICO.
+   *
+   * A camada 1 tirou toda a cor porque ela não significava nada: magenta era CTA,
+   * aba ativa, link, badge e frescor ao mesmo tempo, em 143 lugares. Cor usada em
+   * cinco papéis não é sinal, é decoração.
+   *
+   * Agora ela volta com um eixo só cada, e são DOIS eixos independentes:
+   *
+   *   FRESCOR   — o que está acontecendo AGORA. Saturado, vivo, pulsa.
+   *   CATEGORIA — o que o lugar É, permanente. Dessaturado, nunca compete.
+   *
+   * A regra que separa os dois é a mesma que já governava as tags:
+   * **permanente nunca grita.** Uma casa vazia com categoria vibrante pareceria
+   * acesa, e é exatamente a mentira que o produto não pode contar.
+   *
+   * E o que NÃO recebe cor de volta, de propósito: CTA primário, aba ativa,
+   * link e seleção. Foi devolvê-los ao neutro que liberou o acento — se o botão
+   * voltar a magenta, ele volta a competir com o `live`.
+   * ------------------------------------------------------------------------- */
 
-  /* Seleção e foco. É a MESMA cor de `--color-agora` hoje, e mesmo assim é token
-     separado: um chip que você está tocando e um rolê que está bombando são coisas
-     diferentes, e escrever `border-agora` num seletor de bairro é o mesmo tipo de
-     mentira que `bg-magenta` num CTA era. Se um dia seleção precisar divergir, o
-     lugar já existe. */
+  /* Frescor. Os três hexes vêm do hi-fi, sem alteração: é o único uso em que a
+     cor antiga sempre foi sozinha e sempre significou uma coisa só. */
+  --color-live: #ff3d81;
+  --color-warm: #ffb443;
+  --color-novo: #1fd0ff;
+  /* Só como ponta de gradiente — no hi-fi o violeta nunca apareceu sólido. Não é
+     uma quarta cor do sistema, é um modificador. */
+  --color-violeta: #7a1fff;
+
+  /* Categoria. Sistema NOVO: o hi-fi usava âmbar para as oito, então não há
+     referência a seguir — e âmbar agora é `warm`, então nem daria.
+     Três propriedades deliberadas:
+     1. **A matiz encoda a escada do `conceito.md`**: os quatro primeiros são a base
+        que o produto quer atender (terra, quentes); os quatro últimos são o topo
+        programado (frios). Quem cadastra lê o eixo sem que ninguém explique.
+     2. **As matizes evitam a vizinhança do frescor.** Magenta vive em 340°, âmbar
+        em 38° e ciano em 190° — as categorias se afastam disso. A que chega mais
+        perto é Balada (325°), e ela se separa do magenta por saturação e por
+        posição: rótulo pequeno contra ponto que pulsa.
+     3. **Vibrantes, mas nunca as mais vibrantes da tela.** Subiram de saturação em
+        02/09 a pedido — o primeiro corte era tão contido que o app continuava
+        parecendo monocromático. O teto continua sendo o frescor: se uma categoria
+        gritar mais que um rolê bombando, a hierarquia inverteu e está errada. */
+  --color-cat-boteco: #e8794a;
+  --color-cat-bar: #d4a83c;
+  --color-cat-feira: #9fc23f;
+  --color-cat-praca: #3fc28a;
+  --color-cat-sarau: #3f8ac2;
+  --color-cat-galeria: #7f6fe0;
+  --color-cat-show: #b05fd9;
+  --color-cat-balada: #d95fa8;
+
+  /* `--color-agora` foi removido na camada 2, e a razão vale registro: ele nasceu
+     na camada 1 para ser "o acento", e quando a cor voltou descobriu-se que TUDO
+     que o usava falava do lugar estar cheio — ou seja, era `live` com outro nome.
+     Inclusive o círculo do "Tá marcado", que no hi-fi sempre foi magenta.
+     Manter dois tokens para a mesma afirmação era o começo do problema de novo. */
+
+  /* Seleção e foco. Branco, e deliberadamente NÃO colorido: um chip que você está
+     tocando e um rolê que está bombando são coisas diferentes. Foi juntar os dois no
+     mesmo token que produziu o problema do sistema antigo, em que magenta era CTA,
+     aba, link e frescor ao mesmo tempo. */
   --color-selecao: #ffffff;
 
   /* A régua continua, mas discreta: ela agora ACOMPANHA a elevação em vez de
@@ -69,10 +122,13 @@
   --color-linha: #ffffff14;
   --color-linha-forte: #ffffff26;
 
-  /* Pin de lugar curado SEM frescor. Cinza médio: visível sobre o mapa escuro
-     sem competir com o branco do "agora". O erro antigo foi usar a cor de texto
-     desabilitado — a casa que alguém visitou a pé sumia no mapa. */
-  --color-pin-off: #737373;
+  /* Pin de lugar curado SEM frescor.
+     ⚠️ **Nunca usar aqui a cor de texto desabilitado.** Já foi `#6a5f88` no hi-fi,
+     o mesmo tom do `muted-3` da época, e sobre o mapa escuro a casa simplesmente
+     SUMIA: quem olhava concluía que não havia nada ali, quando havia um lugar que
+     alguém foi visitar a pé. Precisa ser claro o bastante para ser visto e neutro
+     o bastante para não competir com magenta, âmbar e ciano. */
+  --color-pin-off: #a8a8a8;
 
   /* Bloco no lugar de foto. Cinza sobre preto: uma foto ausente não pode ser a
      coisa mais viva da tela. */
@@ -96,30 +152,26 @@
 }
 
 /* O pulse do estado "agora" — só no frescor live. Vem do design. */
-@keyframes pulse-agora {
+/* O pulso do "agora" — só no frescor `live`, e é a única animação do app.
+   Voltou ao magenta do hi-fi na camada 2. Chegou a existir um segundo pulso,
+   branco, para a confirmação de presença; foi removido ao se ver que tudo que
+   pulsava dizia a mesma coisa: tem gente nesse lugar neste momento. */
+@keyframes pulse-live {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
+    box-shadow: 0 0 0 0 rgba(255, 61, 129, 0.55);
   }
   70% {
-    box-shadow: 0 0 0 7px rgba(255, 255, 255, 0);
+    box-shadow: 0 0 0 8px rgba(255, 61, 129, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    box-shadow: 0 0 0 0 rgba(255, 61, 129, 0);
   }
 }
 
-@utility pulse-agora {
-  animation: pulse-agora 1.8s infinite;
+@utility pulse-live {
+  animation: pulse-live 1.8s infinite;
 }
 
-/* Rótulo de seção: 600 10px, tracking largo, maiúsculas. Repete em 6 das 8 telas. */
-/* Rótulo de seção. O tracking caiu de 1.6px para 0.9px e o peso de 600 para 500:
-   caixa alta muito espaçada grita, e o sistema inteiro deixou de gritar. */
-/* O tracking VOLTOU a ser largo — 2px —, mas por outro motivo que no hi-fi:
-   aqui a caixa alta minúscula e espaçada é elemento suíço, e funciona porque
-   quase tudo à volta é cinza e sem ornamento. */
-/* O tracking caiu de 2px para 1.2px na suavização: caixa alta muito espaçada é
-   um gesto duro, de cartaz, e o sistema deixou de ser cartaz. */
 @utility rotulo {
   font-size: 10px;
   font-weight: 500;

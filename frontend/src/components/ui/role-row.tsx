@@ -4,6 +4,7 @@ import { BotaoToIndo } from "./botao-to-indo";
 import { FrescorPill } from "./frescor-pill";
 import { hora } from "@/lib/tempo";
 import type { RoleDescoberta } from "@/lib/types";
+import { corDaCategoria, gradienteDaCategoria } from "@/lib/categorias";
 
 /**
  * A linha larga da visualização desktop. É o que o card do rail vira quando há
@@ -19,14 +20,7 @@ import type { RoleDescoberta } from "@/lib/types";
  * botão estava desabilitado por falta de dado, não por regra — agora o schema traz.
  */
 
-const GRADIENTES = [
-  "from-pedra-funda to-pedra",
-  "from-pedra via-pedra-funda to-pedra",
-  "from-pedra to-pedra-funda",
-  "from-pedra to-pedra-funda",
-];
-
-export function RoleRow({ role, indice }: { role: RoleDescoberta; indice: number }) {
+export function RoleRow({ role }: { role: RoleDescoberta }) {
   return (
     <div
       className={`flex gap-[18px] border bg-card p-4 ${
@@ -34,12 +28,12 @@ export function RoleRow({ role, indice }: { role: RoleDescoberta; indice: number
       }`}
     >
       <div
-        className={`h-[124px] w-[124px] shrink-0 bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`}
+        className={`h-[124px] w-[124px] shrink-0 bg-gradient-to-br ${gradienteDaCategoria(role.categoria)}`}
       />
 
       <div className="flex min-w-0 flex-1 flex-col gap-[7px]">
         <div className="flex items-center gap-2.5">
-          <span className="rotulo text-text-faint">{role.categoria}</span>
+          <span className={`rotulo ${corDaCategoria(role.categoria)}`}>{role.categoria}</span>
           <FrescorPill frescor={role.frescor} />
         </div>
 

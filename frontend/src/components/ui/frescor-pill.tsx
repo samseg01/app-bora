@@ -9,7 +9,7 @@ export function FrescorPill({ frescor }: { frescor: Frescor | null }) {
   return (
     <div className="inline-flex items-center gap-1.5 rounded-full bg-surface/75 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm">
       <span
-        className={`h-[7px] w-[7px] rounded-full ${ui.ponto} ${ui.pulsa ? "pulse-agora" : ""}`}
+        className={`h-[7px] w-[7px] rounded-full ${ui.ponto} ${ui.pulsa ? "pulse-live" : ""}`}
       />
       {ui.label}
     </div>

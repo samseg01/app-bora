@@ -46,7 +46,7 @@ export function SalvosDesktop({ itens }: { itens: ItemSalvo[] }) {
         {comRole.length > 0 && (
           <div className="mt-6.5 flex items-center justify-between gap-5 border border-linha-forte bg-gradient-to-br from-text-dim/14 to-text-dim/7 px-5.5 py-4.5">
             <div className="flex items-center gap-3.5">
-              <span className="pulse-agora h-2.5 w-2.5 shrink-0 rounded-full bg-agora" />
+              <span className="pulse-live h-2.5 w-2.5 shrink-0 rounded-full bg-live" />
               <p className="text-sm leading-snug text-text-soft">
                 <span className="font-semibold">
                   {comRole.length}{" "}
@@ -107,14 +107,23 @@ function CardSalvo({
 }) {
   const ui = frescorUI(role?.frescor ?? null);
 
+  // Mesmo cuidado da versão mobile: com rolê, o card inteiro é o link, e o nome do
+  // lugar não pode ser outro `<a>` dentro dele — HTML inválido, erro de hidratação.
   const corpo = (
     <>
       <div className={`h-33 bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`} />
       <div className="flex items-start justify-between gap-2.5 px-4 pt-3.5 pb-4.5">
         <div className="min-w-0">
-          <Link href={`/lugar/${lugar.id}`} className="truncate text-[15.5px] font-bold hover:text-text-soft">
-            {lugar.nome}
-          </Link>
+          {role ? (
+            <div className="truncate text-[15.5px] font-bold">{lugar.nome}</div>
+          ) : (
+            <Link
+              href={`/lugar/${lugar.id}`}
+              className="block truncate text-[15.5px] font-bold hover:text-text-soft"
+            >
+              {lugar.nome}
+            </Link>
+          )}
           <div className="mt-1 truncate text-xs text-muted-2">
             {lugar.categoria} · {lugar.bairro}
           </div>
@@ -129,7 +138,7 @@ function CardSalvo({
                   : "bg-muted/14 text-muted"
             }`}
           >
-            <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-agora" : ""}`} />
+            <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-live" : ""}`} />
             tem rolê
           </span>
         ) : (

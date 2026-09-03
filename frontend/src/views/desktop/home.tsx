@@ -55,8 +55,8 @@ export function HomeDesktop({
               Tudo aqui foi visto de perto hoje. Se estiver ruim, sai da lista.
             </p>
             <div className="mt-6 flex flex-col gap-3.5">
-              {roles.map((role, i) => (
-                <RoleRow key={role.id} role={role} indice={i} />
+              {roles.map((role) => (
+                <RoleRow key={role.id} role={role} />
               ))}
             </div>
             <div className="mt-4 max-w-[34rem]">

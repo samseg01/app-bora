@@ -10,10 +10,19 @@ import { frescorUI } from "./frescor";
  * só `live` seja acentuado, que `new` se distinga por forma, e que `null` não vire badge.
  */
 describe("frescorUI", () => {
-  it("só live é acentuado — os outros dois são neutros", () => {
-    expect(frescorUI("live")!.ponto).toContain("agora");
-    expect(frescorUI("warm")!.ponto).not.toContain("agora");
-    expect(frescorUI("new")!.ponto).not.toContain("agora");
+  it("cada estado tem cor própria, e nenhuma se repete", () => {
+    const cores = (["live", "warm", "new"] as const).map((f) => frescorUI(f)!.texto);
+    expect(new Set(cores).size).toBe(3);
+  });
+
+  /** O acento de presença confirmada (`agora`, branco) é sobre VOCÊ; o frescor é
+      sobre o LUGAR. Usar o mesmo token nos dois faria "eu marquei" e "está cheio"
+      parecerem a mesma afirmação. */
+  it("frescor não usa o token de presença confirmada", () => {
+    for (const f of ["live", "warm", "new"] as const) {
+      expect(frescorUI(f)!.ponto).not.toContain("agora");
+      expect(frescorUI(f)!.texto).not.toContain("agora");
+    }
   });
 
   it("só live pulsa", () => {
