@@ -66,3 +66,23 @@ const MAPA: Record<Frescor, FrescorUI> = {
 export function frescorUI(frescor: Frescor | null | undefined): FrescorUI | null {
   return frescor ? MAPA[frescor] : null;
 }
+
+/**
+ * O frescor deve ganhar da categoria na cor do PIN?
+ *
+ * Só quando ele diz alguma coisa sobre **calor**. `live` e `warm` afirmam que tem
+ * gente ali agora — isso domina qualquer outra informação e o pin tem de gritar.
+ *
+ * `new` não afirma calor: significa "recém-criado, ninguém sinalizou ainda", que é o
+ * estado de **todo rolê no minuto em que nasce**. Deixá-lo ganhar pintava o mapa
+ * inteiro de ciano — oito casas de categorias diferentes viravam oito pontos
+ * idênticos, e a cor voltava a não dizer nada. Foi exatamente o que apareceu na
+ * primeira tela da camada 2.
+ *
+ * No CARD o `new` continua com seu anel ciano: lá ele é um badge pequeno ao lado do
+ * rótulo e do bloco-foto, que já carregam a categoria. É no mapa, onde o pin é a
+ * única marca disponível, que a disputa existe.
+ */
+export function frescorDominaOPin(frescor: Frescor | null | undefined): boolean {
+  return frescor === "live" || frescor === "warm";
+}

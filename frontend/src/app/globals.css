@@ -96,7 +96,11 @@
         parecendo monocromático. O teto continua sendo o frescor: se uma categoria
         gritar mais que um rolê bombando, a hierarquia inverteu e está errada. */
   --color-cat-boteco: #e8794a;
-  --color-cat-bar: #d4a83c;
+  /* Latão escuro, e a escolha é forçada: o dourado claro que estava aqui antes
+     (#d4a83c) ficava perto demais do âmbar do `warm` (#ffb443) — no mapa, um pin
+     de categoria e um pin quente pareciam a mesma coisa. Como as duas matizes são
+     vizinhas e nenhuma pode sair do lugar, quem separa é a LUMINOSIDADE. */
+  --color-cat-bar: #a8802f;
   --color-cat-feira: #9fc23f;
   --color-cat-praca: #3fc28a;
   --color-cat-sarau: #3f8ac2;

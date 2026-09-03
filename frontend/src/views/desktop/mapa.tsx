@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MapaReal } from "@/components/ui/mapa-real";
 import { SugerirLugar } from "@/components/ui/sugerir-lugar";
 import { DesktopShell } from "./shell";
-import { frescorUI } from "@/lib/frescor";
+import { frescorDominaOPin, frescorUI } from "@/lib/frescor";
 import { hora, idade } from "@/lib/tempo";
 import type { ComentarioResumo, MapaPin } from "@/lib/types";
 import { pinDaCategoria } from "@/lib/categorias";
@@ -77,7 +77,7 @@ export function MapaDesktop({
                   </div>
                 </div>
                 <span
-                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${ui ? ui.pin : pinDaCategoria(pin.lugar.categoria)} ${ui?.pulsa ? "pulse-live" : ""}`}
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${frescorDominaOPin(pin.role_ativo?.frescor ?? pin.frescor) && ui ? ui.pin : pinDaCategoria(pin.lugar.categoria)} ${ui?.pulsa ? "pulse-live" : ""}`}
                 />
               </button>
             );

@@ -1,5 +1,5 @@
 import { pinDaCategoria } from "@/lib/categorias";
-import { frescorUI } from "@/lib/frescor";
+import { frescorDominaOPin, frescorUI } from "@/lib/frescor";
 import type { MapaPin } from "@/lib/types";
 
 /**
@@ -80,12 +80,11 @@ export function MapaEstilizado({
       {posicionados.map(({ pin, left, top }) => {
         const frescor = pin.role_ativo?.frescor ?? pin.frescor;
         const ui = frescorUI(frescor);
-        const temRole = pin.role_ativo !== null;
         // Mesma escala do mapa real e do hi-fi: 10 / 14 / 16px. Os dois mapas
         // precisam concordar, senão a mesma casa muda de tamanho ao trocar de tela.
         const classe = `absolute z-4 -translate-x-1/2 -translate-y-1/2 rounded-full ${
-          frescor === "live" ? "h-4 w-4" : temRole || ui ? "h-3.5 w-3.5" : "h-2.5 w-2.5"
-        } ${ui ? ui.pin : pinDaCategoria(pin.lugar.categoria)} ${ui?.pulsa ? "pulse-live" : ""} ${
+          frescor === "live" ? "h-4 w-4" : frescor === "warm" ? "h-3.5 w-3.5" : "h-3 w-3"
+        } ${frescorDominaOPin(frescor) && ui ? ui.pin : pinDaCategoria(pin.lugar.categoria)} ${ui?.pulsa ? "pulse-live" : ""} ${
           selecionadoId === pin.lugar.id ? "ring-3 ring-white/70" : ""
         }`;
         const posicao = { left: `${left}%`, top: `${top}%` };
