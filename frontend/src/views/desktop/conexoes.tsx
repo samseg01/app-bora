@@ -165,7 +165,7 @@ function LinhaForaAgora({ checkin, agora }: { checkin: CheckInDeConexao; agora: 
               : "bg-text-dim/14 text-text-dim"
           }`}
         >
-          <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-agora" : ""}`} />
+          <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-live" : ""}`} />
           {checkin.role_titulo.toLowerCase()}
         </span>
       ) : (

@@ -8,6 +8,7 @@ import { DesktopShell } from "./shell";
 import { frescorUI } from "@/lib/frescor";
 import { hora, idade } from "@/lib/tempo";
 import type { ComentarioResumo, MapaPin } from "@/lib/types";
+import { pinDaCategoria } from "@/lib/categorias";
 
 /**
  * Mapa em tela cheia, visualização desktop. A diferença de fundo em relação ao
@@ -76,7 +77,7 @@ export function MapaDesktop({
                   </div>
                 </div>
                 <span
-                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${ui ? ui.pin : "bg-pin-off"} ${ui?.pulsa ? "pulse-agora" : ""}`}
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${ui ? ui.pin : pinDaCategoria(pin.lugar.categoria)} ${ui?.pulsa ? "pulse-live" : ""}`}
                 />
               </button>
             );
@@ -112,7 +113,7 @@ export function MapaDesktop({
               <div className="rounded-[12px] flex items-center gap-2 bg-card px-3 py-2.5">
                 <span
                   className={`h-[7px] w-[7px] rounded-full ${frescorUI(selecionado.role_ativo.frescor)?.pin ?? "bg-pin-off"} ${
-                    selecionado.role_ativo.frescor === "live" ? "pulse-agora" : ""
+                    selecionado.role_ativo.frescor === "live" ? "pulse-live" : ""
                   }`}
                 />
                 <span className="text-[12.5px] font-semibold text-text-soft">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FrescorPill } from "./frescor-pill";
 import type { RoleDescoberta } from "@/lib/types";
+import { corDaCategoria, gradienteDaCategoria } from "@/lib/categorias";
 
 /**
  * Card do rolê. Fluido — quem define a largura é o container (rail no mobile,
@@ -9,20 +10,11 @@ import type { RoleDescoberta } from "@/lib/types";
  * O bloco de cor no lugar da foto é proposital: fotos reais de campo entram depois.
  */
 
-const GRADIENTES = [
-  "from-pedra-funda to-pedra",
-  "from-pedra via-pedra-funda to-pedra",
-  "from-pedra to-pedra-funda",
-  "from-pedra to-pedra-funda",
-];
-
 export function RoleCard({
   role,
-  indice,
   alturaFoto = "h-[116px]",
 }: {
   role: RoleDescoberta;
-  indice: number;
   alturaFoto?: string;
 }) {
   return (
@@ -31,14 +23,14 @@ export function RoleCard({
       className="elevado rounded-[16px] block overflow-hidden border border-linha bg-card transition-colors hover:border-linha"
     >
       <div
-        className={`relative ${alturaFoto} bg-gradient-to-br ${GRADIENTES[indice % GRADIENTES.length]}`}
+        className={`relative ${alturaFoto} bg-gradient-to-br ${gradienteDaCategoria(role.categoria)}`}
       >
         <div className="absolute top-2.5 left-2.5">
           <FrescorPill frescor={role.frescor} />
         </div>
       </div>
       <div className="px-3.5 pt-3 pb-4">
-        <div className="rotulo text-text-faint">{role.categoria}</div>
+        <div className={`rotulo ${corDaCategoria(role.categoria)}`}>{role.categoria}</div>
         <div className="mt-1.5 text-[15.5px] leading-[1.22] font-bold">
           {role.titulo}
         </div>

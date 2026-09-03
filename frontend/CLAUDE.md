@@ -281,6 +281,30 @@ wireframe foram resolvidas (home = `1a` empilhado, detalhe = `1e` dois gestos). 
 **estilo**, não vale mais: o quase-preto arroxeado, o Anton maiúsculo e as quatro cores saturadas
 foram substituídos. Não "voltar ao design" copiando cor de lá.
 
+### A cor voltou na camada 2 — e voltou por EIXO
+
+A camada 1 tirou toda a cor porque ela não significava nada. A camada 2 devolveu com uma
+regra que impede o ciclo de recomeçar: **dois eixos independentes, e cada um manda no
+seu.**
+
+| Eixo | Onde vive | Cores |
+|---|---|---|
+| **Frescor** — o que acontece agora | `lib/frescor.ts` | magenta, âmbar, ciano — os hexes do hi-fi |
+| **Categoria** — o que o lugar é | `lib/categorias.ts` | 8 matizes, a escada do `conceito.md` |
+
+**CTA, aba ativa, link e seleção continuam neutros.** Não é omissão — foi devolvê-los ao
+branco que liberou o acento. Um botão magenta volta a competir com o `live`, e o problema
+do sistema antigo está de volta com outro nome.
+
+**O teto de vibração é o frescor.** Se uma categoria gritar mais que um rolê bombando, a
+hierarquia inverteu.
+
+⚠️ **Classe do Tailwind v4 tem de ser literal.** O gradiente de categoria foi escrito
+primeiro como `` from-${cor}/45 `` e **não funciona**: o Tailwind varre o código atrás de
+nomes literais, e a classe montada não é gerada — o bloco fica transparente sem erro no
+build nem no lint. `lib/categorias.ts` escreve os nomes por extenso, e há teste que
+rejeita classe montada.
+
 ### As três regras do sistema
 
 1. **Os nomes dos tokens são de PAPEL, não de matiz.** `--color-agora`, nunca `--color-magenta`.

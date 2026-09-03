@@ -494,15 +494,19 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        **O que isso resolve, concretamente:** o Bar do China está no banco com `categoria = "forró"`,
        que nem existe no vocabulário fechado. Não era descuido — era falta de onde pôr "tem forró".
        Ver item 48.
-- [ ] 48. **Acertar `categoria` nos dois lugares reais — são dois registros, não um.** Auditoria
-       do banco em 31/08: o **Bar do China** está `"forró"`, fora do vocabulário fechado de
-       `lib/categorias.ts` (é gênero musical, não categoria); com o item 47 no ar, o certo é
-       `categoria = "Boteco"` (ou "Bar", decidir no R3 vendo a casa) e `Forró` como **tag**. O
-       **Tokyo** está `"Bar"` com maiúscula, contra `"bar"` minúsculo nos fictícios — a UI colore
-       e filtra por categoria, então divergência de caixa vira card sem cor.
-       O fundo do problema: `Lugar.categoria` é `String(60)` livre no schema, e nada impõe o
-       vocabulário do lado do servidor. Corrigir os dois registros pelo painel é o gesto de agora;
-       decidir se a coluna vira enum é o item que fica.
+- [x] 48. **`categoria` dos dois lugares reais — corrigido em 03/09, e quem denunciou foi a cor.**
+       O Bar do China estava como `"forró"`, que é gênero musical e não categoria. Com a camada 2
+       no ar, o card dele simplesmente **não colorava** — o `corDaCategoria` cai em neutro fora do
+       vocabulário, de propósito. O sintoma apontou direto para o dado.
+       Corrigido: `categoria = 'Boteco'` e **`Forró` foi para as tags**, que é onde essa
+       informação sempre pertenceu — o vocabulário de `lib/tags.ts` já tinha a entrada esperando.
+       O rolê dele herdava a categoria errada e foi junto.
+       **O Tokyo estava certo o tempo todo:** `"Bar"` bate com `CATEGORIAS_LUGAR`, que é
+       capitalizado. Este item suspeitava dele pela caixa alta, e a suspeita era infundada — o
+       mapeamento compara sem caixa, então `"bar"` dos fictícios também funciona.
+       **Fica a propriedade que isso revelou:** cor que não aparece quando o dado é inválido é
+       melhor que cor inventada. O fundo do problema segue de pé — `Lugar.categoria` é
+       `String(60)` livre e nada impõe o vocabulário no servidor.
 - [ ] 46. **Dropar `Lugar.horario_funcionamento`.** A migration 0006 adicionou `horarios`
        (estruturado) e **não** removeu o texto livre, de propósito: havia um registro real
        preenchido em campo ("segunda a sexta - 12:00 às 01:00", no Bar do China) e dropar junto
@@ -1078,11 +1082,24 @@ segue o hi-fi.
        branco (era `stroke="#fff"` fixo, branco sobre branco), a distância real vinda do campo
        estruturado, e o anel vazado do `new` contra o ponto cheio do `warm` — a distinção por
        forma em vez de cor, legível na tela.
-- [ ] 61. **Camada 2 de estilo: composição e densidade.** A camada 1 mudou o vocabulário visual
-       (cor, tipo, superfície) e **não tocou em layout**. Falta o desenho de fato: espaçamento,
-       hierarquia dentro do card, a lista, a navegação, os estados vazios — que aliás nunca foram
-       desenhados em sistema nenhum. Decidido em 02/09 fazer em passada separada: meio app
-       recomposto é pior que nenhum, e a fundação precisava estar de pé antes.
+- [?] 61. **Camada 2 de estilo — a cor voltou por eixo semântico.** Feita em 02–03/09,
+       aguardando validação. **Mudou de escopo no caminho:** o item previa "composição e
+       densidade", e o que se mostrou necessário foi cor — a camada 1 tinha deixado o app preto e
+       branco demais.
+       Dois eixos independentes: **frescor** (magenta/âmbar/ciano do hi-fi, saturado, pulsa) e
+       **categoria** (8 matizes, vibrantes mas com teto no frescor). CTA, aba ativa, link e
+       seleção continuam neutros de propósito — foi isso que liberou o acento.
+       A cor aparece no rótulo e no bloco-foto do card, nos pins do mapa (com a escala 10/14/16px
+       do hi-fi de volta), na confirmação de presença e no painel do dono. **O pin sem rolê deixou
+       de ser cinza** e mostra a categoria: o mapa de um bairro sem rolê ficava inteiro apagado,
+       dizendo sem querer que não havia nada ali.
+       Doc em `docs/features/sistema-visual-monocromatico.md`, que agora cobre as duas camadas.
+       **Composição e densidade continuam sem fazer** — espaçamento, hierarquia dentro do card, a
+       navegação e os estados vazios, que nunca foram desenhados em sistema nenhum. Fica para uma
+       camada 3.
+       **Falta validar as 8 cores juntas:** o banco só tem `Boteco` e `Bar` em República, então
+       só 2 das 8 foram vistas em tela. A paleta é a única parte inventada sem referência (o hi-fi
+       usava âmbar para todas), e é a mais provável de estar errada.
 - [ ] 62. **O basemap do mapa perdeu a justificativa.** O `mapa-real.tsx` diz, textualmente, que o
        CARTO dark-matter foi escolhido "para conviver com o `#08060f` do app e fazer os pins
        magenta/âmbar/ciano saltarem". **As duas metades expiraram em 02/09:** o fundo virou

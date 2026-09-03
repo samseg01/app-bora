@@ -5,6 +5,7 @@ import { TirarDoAr } from "@/components/ui/tirar-do-ar";
 import { frescorUI } from "@/lib/frescor";
 import { hora } from "@/lib/tempo";
 import type { LugarPublic, RoleDescoberta } from "@/lib/types";
+import { pinDaCategoria } from "@/lib/categorias";
 
 /**
  * Painel do curador — a superfície mais desktop-native do produto: é onde alguém
@@ -85,7 +86,7 @@ export function CuradorDesktop({
                   }`}
                 >
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${ui?.pin ?? "bg-pin-off"} ${ui?.pulsa ? "pulse-agora" : ""}`}
+                    className={`h-1.5 w-1.5 rounded-full ${ui?.pin ?? pinDaCategoria(role.categoria)} ${ui?.pulsa ? "pulse-live" : ""}`}
                   />
                   {ui?.label ?? "sem sinal"}
                 </span>

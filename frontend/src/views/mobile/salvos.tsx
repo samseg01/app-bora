@@ -32,6 +32,10 @@ export function SalvosMobile({ itens }: { itens: ItemSalvo[] }) {
       <div className="mt-4.5 flex flex-col gap-2.5 px-5.5">
         {itens.map(({ lugar, role }, i) => {
           const ui = frescorUI(role?.frescor ?? null);
+          // O card INTEIRO vira link quando há rolê — e aí o nome do lugar não pode
+          // ser link também: `<a>` dentro de `<a>` é HTML inválido e o React acusa
+          // erro de hidratação. Sem rolê não há link externo, então o nome volta a
+          // levar à ficha da casa, que é o único destino que faz sentido ali.
           const conteudo = (
             <>
               <div
@@ -40,16 +44,23 @@ export function SalvosMobile({ itens }: { itens: ItemSalvo[] }) {
                 }`}
               />
               <div className="min-w-0 flex-1">
-                <Link href={`/lugar/${lugar.id}`} className="truncate text-[15px] font-bold hover:text-text-soft">
-                  {lugar.nome}
-                </Link>
+                {role ? (
+                  <div className="truncate text-[15px] font-bold">{lugar.nome}</div>
+                ) : (
+                  <Link
+                    href={`/lugar/${lugar.id}`}
+                    className="block truncate text-[15px] font-bold hover:text-text-soft"
+                  >
+                    {lugar.nome}
+                  </Link>
+                )}
                 <div className="mt-0.5 truncate text-xs text-muted-2">
                   {lugar.categoria} · {lugar.bairro}
                 </div>
               </div>
               {role && ui ? (
                 <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-card px-2.5 py-1.5 text-[11px] font-semibold text-text-soft">
-                  <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-agora" : ""}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full ${ui.pin} ${ui.pulsa ? "pulse-live" : ""}`} />
                   tem rolê
                 </span>
               ) : (

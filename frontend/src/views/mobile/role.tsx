@@ -6,6 +6,7 @@ import { FrescorPill } from "@/components/ui/frescor-pill";
 import { MobileShell } from "./shell";
 import { hora, idade } from "@/lib/tempo";
 import type { ComentarioResumo, LugarDetalhe, RolePublic } from "@/lib/types";
+import { corDaCategoria } from "@/lib/categorias";
 
 /**
  * Tela 2d — detalhe do rolê. Sem barra inferior, como no design: aqui a pessoa está
@@ -42,7 +43,10 @@ export function RoleMobile({
       </div>
 
       <div className="px-5.5 pt-1">
-        <div className="rotulo text-text-faint">rolê de hoje · {role.categoria}</div>
+        <div className="rotulo text-text-faint">
+          rolê de hoje ·{" "}
+          <span className={corDaCategoria(role.categoria)}>{role.categoria}</span>
+        </div>
         <h1 className="mt-2.5 titulo text-[29px] leading-[1.04]">{role.titulo}</h1>
         {role.descricao ? (
           <p className="mt-2.5 text-[13.5px] leading-relaxed text-muted text-pretty">

@@ -46,9 +46,9 @@ export function HomeMobile({
 
       {roles.length > 0 ? (
         <div className="flex gap-3.5 overflow-x-auto px-5.5 pt-0.5 pb-4.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {roles.map((role, i) => (
+          {roles.map((role) => (
             <div key={role.id} className="w-[206px] shrink-0">
-              <RoleCard role={role} indice={i} />
+              <RoleCard role={role} />
             </div>
           ))}
         </div>

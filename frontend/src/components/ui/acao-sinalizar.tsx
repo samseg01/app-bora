@@ -298,11 +298,11 @@ function Confirmado({
 
   return (
     <div className="flex flex-col items-center text-center">
-      <span className="pulse-agora flex h-19 w-19 items-center justify-center rounded-full bg-agora">
-        {/* `text-bg` porque o círculo é branco: o check era `stroke="#fff"` fixo, e
-            quando o acento virou branco ficou branco sobre branco — um disco liso,
-            sem símbolo nenhum. Hex fixo em SVG não é alcançado por varredura de
-            classe, e foi o único erro do redesign que só apareceu em tela. */}
+      <span className="pulse-live flex h-19 w-19 items-center justify-center rounded-full bg-live">
+        {/* `text-text` porque o círculo voltou a ser magenta na camada 2. Este ✓ já
+            foi invisível uma vez — era `stroke="#fff"` fixo dentro de um círculo que
+            virou branco, e só apareceu num screenshot de telefone. Agora a cor vem
+            da classe, então ela acompanha o fundo em vez de ficar para trás. */}
         <svg
           width="34"
           height="34"
@@ -310,7 +310,7 @@ function Confirmado({
           fill="none"
           stroke="currentColor"
           strokeWidth={3}
-          className="text-bg"
+          className="text-text"
         >
           <path d="M5 13l4 4L19 7" />
         </svg>
@@ -329,7 +329,11 @@ function Confirmado({
         </div>
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/9">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-agora to-pedra-funda"
+            // O gradiente magenta→âmbar é literalmente o do hi-fi
+            // (`linear-gradient(90deg,#ff3d81,#ffb443)`): a barra vai de "agora" a
+            // "esfriando", que é o que ela mede. Na camada 1 tinha virado
+            // branco→preto, e a metáfora se perdia junto com a cor.
+            className="h-full rounded-full bg-gradient-to-r from-live to-warm"
             style={{ width: `${Math.min(100, (restante / JANELA_MIN) * 100)}%` }}
           />
         </div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Map as MapLibreMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MapaEstilizado } from "./mapa-estilizado";
+import { pinDaCategoria } from "@/lib/categorias";
 import { frescorUI } from "@/lib/frescor";
 import type { MapaPin } from "@/lib/types";
 
@@ -306,7 +307,8 @@ export function MapaReal({
         // Sem rolê o pin caía sempre em `bg-pin-off`, mesmo com o lugar aceso por sinal
         // próprio — um bar cheio numa terça ficava apagado para sempre. O frescor do rolê
         // vem primeiro por ser mais específico; o do lugar é a rede de segurança.
-        const ui = frescorUI(pin.role_ativo?.frescor ?? pin.frescor);
+        const frescor = pin.role_ativo?.frescor ?? pin.frescor;
+        const ui = frescorUI(frescor);
         const temRole = pin.role_ativo !== null;
 
         const el = document.createElement("button");
@@ -314,11 +316,19 @@ export function MapaReal({
         el.setAttribute("aria-label", pin.lugar.nome);
         el.className = [
           "rounded-full border border-black/40 shadow-lg",
-          // O pin sem rolê continua menor que o com rolê — a hierarquia é real e
-          // fica de pé —, mas 2.5 sobre a cor apagada antiga somava para invisível.
-          temRole ? "h-3.5 w-3.5" : "h-3 w-3",
-          ui ? ui.pin : "bg-pin-off",
-          ui?.pulsa ? "pulse-agora" : "",
+          // Tamanho E cor, como no hi-fi: os pins de lá eram 10px sem frescor, 14px
+          // em warm/new e 16px em live. É redundância deliberada — um mapa lido de
+          // relance, com o braço estendido na rua, precisa que o "está bombando"
+          // chegue pelo tamanho antes de a cor ser processada.
+          //
+          // A camada 1 tinha achatado isso em dois tamanhos, porque sem cor a
+          // escala inteira estava carregando sozinha o trabalho de três estados.
+          frescor === "live" ? "h-4 w-4" : temRole || ui ? "h-3.5 w-3.5" : "h-2.5 w-2.5",
+          // Sem frescor o pin mostra a CATEGORIA, não um cinza. O mapa de um bairro
+          // sem rolê ficava inteiro apagado, dizendo sem querer que não havia nada
+          // ali — quando havia casas que alguém foi visitar a pé.
+          ui ? ui.pin : pinDaCategoria(pin.lugar.categoria),
+          ui?.pulsa ? "pulse-live" : "",
           selecionadoId === pin.lugar.id ? "ring-3 ring-white/70" : "",
           onSelecionar ? "cursor-pointer" : "cursor-default",
         ].join(" ");

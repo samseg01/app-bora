@@ -8,18 +8,21 @@ import type { Frescor } from "./types";
  * `new` —, e o resultado é que nenhuma significava nada: a tela ficava colorida
  * inteira e o olho não tinha para onde ir primeiro.
  *
- * Agora **só `live` tem cor**. Os outros dois se distinguem por *peso* e *forma*,
- * que é como hierarquia funciona quando não se pode gastar cor:
+ * **A cor voltou na camada 2 (02/09), e os três hexes são os do hi-fi**, sem
+ * alteração — este é o único uso em que a cor antiga sempre apareceu sozinha e
+ * sempre significou uma coisa só.
  *
  * | estado | cor | forma | por quê |
  * |---|---|---|---|
- * | `live` | terracota | ponto cheio, pulsando | é o produto inteiro: tem gente lá agora |
- * | `warm` | areia clara | ponto cheio, parado | está acontecendo, sem a urgência |
- * | `new` | rótulo apagado | anel vazado | é informação de catálogo, não de agora |
+ * | `live` | magenta `#ff3d81` | ponto cheio, pulsando | é o produto inteiro: tem gente lá agora |
+ * | `warm` | âmbar `#ffb443` | ponto cheio, parado | está acontecendo, sem a urgência |
+ * | `new` | ciano `#1fd0ff` | **anel vazado** | é informação de catálogo, não de agora |
  *
- * O anel vazado do `new` não é enfeite: ele diz "ainda não tem ninguém" pela
- * própria forma — um contorno sem preenchimento —, o que a cor sozinha nunca
- * conseguiu dizer quando ciano parecia tão vivo quanto magenta.
+ * **A forma ficou, mesmo com a cor de volta.** O anel vazado do `new` sobreviveu à
+ * camada 1 e continua: ele diz "ainda não tem ninguém" pela própria ausência de
+ * preenchimento, e é redundância barata com a cor. No sistema antigo o ciano
+ * parecia tão vivo quanto o magenta, e era só isso que separava os dois — o mapa
+ * lido de relance não distinguia.
  */
 export interface FrescorUI {
   label: string;
@@ -36,25 +39,26 @@ export interface FrescorUI {
 const MAPA: Record<Frescor, FrescorUI> = {
   live: {
     label: "Bombando agora",
-    ponto: "bg-agora",
-    pin: "bg-agora",
+    ponto: "bg-live",
+    pin: "bg-live",
     pulsa: true,
-    texto: "text-agora",
+    texto: "text-live",
   },
   warm: {
     label: "Começando a encher",
-    ponto: "bg-text-dim",
-    pin: "bg-text-dim",
+    ponto: "bg-warm",
+    pin: "bg-warm",
     pulsa: false,
-    texto: "text-text-dim",
+    texto: "text-warm",
   },
   new: {
     label: "Novo por aqui",
-    // Anel vazado: a ausência de preenchimento é a mensagem.
-    ponto: "border border-muted ring-inset",
-    pin: "bg-muted",
+    // Anel vazado: a ausência de preenchimento é a mensagem, e ela sobrevive à
+    // volta da cor — as duas juntas são mais legíveis de relance que qualquer uma.
+    ponto: "border-[1.5px] border-novo ring-inset",
+    pin: "bg-novo",
     pulsa: false,
-    texto: "text-muted",
+    texto: "text-novo",
   },
 };
 
