@@ -143,6 +143,12 @@ deliberadas:
    parecendo monocromático — subiram a pedido. **Se uma categoria gritar mais que um
    rolê bombando, a hierarquia inverteu e está errada.**
 
+**O caso `Bar`, que precisou de um segundo corte.** A matiz dele (45°) é vizinha do âmbar do
+`warm` (38°), e em tela um pin de categoria e um pin quente pareciam a mesma cor. Nenhuma das
+duas podia sair do lugar — o âmbar é do hi-fi, e `Bar` precisa ficar entre `Boteco` e `Feira`
+para a escada se ler. Então quem separa é a **luminosidade**: `#a8802f`, latão escuro, contra
+`#ffb443`. Vale como método para o próximo conflito de matiz.
+
 ### Onde a cor aparece
 
 - **Card** — o bloco no lugar da foto vira gradiente da categoria. É a maior superfície
@@ -152,7 +158,16 @@ deliberadas:
 - **Mapa** — cor **e tamanho**, na escala do hi-fi: 10px sem frescor, 14px em
   `warm`/`new`, 16px em `live`. Redundância deliberada: um mapa lido de relance na rua
   precisa que o "está bombando" chegue pelo tamanho antes da cor.
-- **Pin sem rolê** — mostra a **categoria**, não cinza. O mapa de um bairro sem rolê
+- **Pin sem rolê, e sem calor** — mostra a **categoria**, não cinza. E "sem calor" inclui
+  `new`: só `live` e `warm` ganham da categoria no pin, porque só eles afirmam que tem gente
+  ali. `new` significa "recém-criado, ninguém sinalizou ainda" — o estado de **todo rolê no
+  minuto em que nasce** —, e deixá-lo ganhar pintava o mapa inteiro de ciano: oito casas de
+  categorias diferentes viravam oito pontos idênticos, e a cor voltava a não dizer nada.
+  Apareceu na primeira tela da camada 2, num screenshot. No **card** o `new` mantém o anel
+  ciano, porque lá é um badge pequeno ao lado do rótulo e do bloco-foto, que já carregam a
+  categoria; a disputa só existe onde o pin é a única marca.
+  A regra vive em `frescorDominaOPin()` e tem teste — ela é sutil e some fácil numa
+  refatoração. O mapa de um bairro sem rolê
   ficava inteiro apagado, dizendo sem querer que não havia nada ali — quando havia casas
   que alguém foi visitar a pé. A hierarquia se mantém porque o frescor ganha em três
   eixos ao mesmo tempo: cor, tamanho e pulso.

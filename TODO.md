@@ -1097,9 +1097,16 @@ segue o hi-fi.
        **Composição e densidade continuam sem fazer** — espaçamento, hierarquia dentro do card, a
        navegação e os estados vazios, que nunca foram desenhados em sistema nenhum. Fica para uma
        camada 3.
-       **Falta validar as 8 cores juntas:** o banco só tem `Boteco` e `Bar` em República, então
-       só 2 das 8 foram vistas em tela. A paleta é a única parte inventada sem referência (o hi-fi
-       usava âmbar para todas), e é a mais provável de estar errada.
+       **As 8 cores foram validadas em tela em 03/09**, com um rolê por categoria na Vila
+       Madalena (que é fictícia por decisão, então a curadoria real de República não foi suja).
+       O teste pegou dois problemas que só apareciam com dado:
+       (a) **todos os pins ficavam cianos** — `new` atropelava a categoria, e `new` é o estado de
+       todo rolê recém-criado. Agora só `live` e `warm` dominam o pin (`frescorDominaOPin`);
+       (b) **o dourado do `Bar` colidia com o âmbar do `warm`** — matizes vizinhas, e nenhuma
+       podia sair do lugar, então quem separa passou a ser a luminosidade (`#a8802f`).
+       Ficou de fora, e é limitação conhecida: a **Vila Madalena não existe em produção** (ver
+       `lib/bairros.ts` — dado fictício não vaza para build de produção), então a paleta inteira
+       só é visível em dev. Em produção só se vê o que a curadoria real tiver.
 - [ ] 62. **O basemap do mapa perdeu a justificativa.** O `mapa-real.tsx` diz, textualmente, que o
        CARTO dark-matter foi escolhido "para conviver com o `#08060f` do app e fazer os pins
        magenta/âmbar/ciano saltarem". **As duas metades expiraram em 02/09:** o fundo virou

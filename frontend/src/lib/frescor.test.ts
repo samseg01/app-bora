@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { frescorUI } from "./frescor";
+import { frescorDominaOPin, frescorUI } from "./frescor";
 
 /**
  * O mapeamento frescor → UI é pequeno, e mesmo assim é o único lugar do frontend que
@@ -64,5 +64,37 @@ describe("frescorUI", () => {
       expect(ui).toHaveProperty("pin");
       expect(ui).toHaveProperty("texto");
     }
+  });
+});
+
+/**
+ * A regra que separa "calor" de "existe". Ela é sutil e some fácil numa refatoração,
+ * e quando some o sintoma é o mapa inteiro de uma cor só.
+ */
+describe("frescorDominaOPin", () => {
+  it("live e warm ganham da categoria — os dois afirmam calor", () => {
+    expect(frescorDominaOPin("live")).toBe(true);
+    expect(frescorDominaOPin("warm")).toBe(true);
+  });
+
+  /**
+   * `new` é o estado de TODO rolê no minuto em que nasce. Deixá-lo ganhar pintava o
+   * mapa inteiro de ciano — oito casas de categorias diferentes viravam oito pontos
+   * idênticos, e a cor voltava a não dizer nada. Apareceu na primeira tela da camada 2.
+   */
+  it("new NÃO ganha: é 'recém-criado', não 'tem gente lá'", () => {
+    expect(frescorDominaOPin("new")).toBe(false);
+  });
+
+  it("sem frescor a categoria manda", () => {
+    expect(frescorDominaOPin(null)).toBe(false);
+    expect(frescorDominaOPin(undefined)).toBe(false);
+  });
+
+  /** No CARD o `new` mantém o anel ciano: lá é um badge pequeno ao lado do rótulo e
+      do bloco-foto, que já carregam a categoria. A disputa só existe no pin. */
+  it("mas new continua tendo aparência própria no card", () => {
+    expect(frescorUI("new")).not.toBeNull();
+    expect(frescorUI("new")!.ponto).toContain("novo");
   });
 });

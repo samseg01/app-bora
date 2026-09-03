@@ -6,7 +6,7 @@ import type { Map as MapLibreMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MapaEstilizado } from "./mapa-estilizado";
 import { pinDaCategoria } from "@/lib/categorias";
-import { frescorUI } from "@/lib/frescor";
+import { frescorDominaOPin, frescorUI } from "@/lib/frescor";
 import type { MapaPin } from "@/lib/types";
 
 /**
@@ -309,7 +309,6 @@ export function MapaReal({
         // vem primeiro por ser mais específico; o do lugar é a rede de segurança.
         const frescor = pin.role_ativo?.frescor ?? pin.frescor;
         const ui = frescorUI(frescor);
-        const temRole = pin.role_ativo !== null;
 
         const el = document.createElement("button");
         el.type = "button";
@@ -323,11 +322,11 @@ export function MapaReal({
           //
           // A camada 1 tinha achatado isso em dois tamanhos, porque sem cor a
           // escala inteira estava carregando sozinha o trabalho de três estados.
-          frescor === "live" ? "h-4 w-4" : temRole || ui ? "h-3.5 w-3.5" : "h-2.5 w-2.5",
+          frescor === "live" ? "h-4 w-4" : frescor === "warm" ? "h-3.5 w-3.5" : "h-3 w-3",
           // Sem frescor o pin mostra a CATEGORIA, não um cinza. O mapa de um bairro
           // sem rolê ficava inteiro apagado, dizendo sem querer que não havia nada
           // ali — quando havia casas que alguém foi visitar a pé.
-          ui ? ui.pin : pinDaCategoria(pin.lugar.categoria),
+          frescorDominaOPin(frescor) && ui ? ui.pin : pinDaCategoria(pin.lugar.categoria),
           ui?.pulsa ? "pulse-live" : "",
           selecionadoId === pin.lugar.id ? "ring-3 ring-white/70" : "",
           onSelecionar ? "cursor-pointer" : "cursor-default",
