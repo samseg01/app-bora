@@ -437,6 +437,12 @@ contradisserem, o ADR ganha.
 - **`services/engajamento.py` ainda conta linhas**, de propósito: o painel do dono rotula o
   número como "sinais de presença" (eventos, somados desde sempre), e a mesma pessoa voltando
   em noites diferentes é informação real para ele. Não confundir com a contagem de frescor.
+- **Gotcha de script PowerShell: tem que ter BOM.** O shell da máquina é o Windows PowerShell
+  5.1, que lê arquivo UTF-8 **sem** BOM como ANSI. Aí todo acento vira lixo e, pior, o travessão
+  `—` vira três bytes cujo terceiro é uma aspa — que fecha string no meio e derruba o parse do
+  arquivo inteiro, com erro apontando para uma linha que não tem nada de errado. Aconteceu com
+  `scripts/puxar-backup.ps1` em 05/09. `scripts/regressivo.ps1` sempre teve BOM; qualquer `.ps1`
+  novo precisa ser gravado em `utf-8-sig`.
 - **Gotcha de enum no backend**: qualquer novo enum de coluna precisa passar por `_pg_enum()` em
   `db/models.py`, não por `sa.Enum(...)` direto — sem isso, o SQLAlchemy grava `.name` em vez de
   `.value` e quebra em runtime, não em teste de schema.

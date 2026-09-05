@@ -293,7 +293,12 @@ imagens construídas, os quatro serviços de pé, Caddy roteando `/health` e `/a
 o backend e o resto para o Next, CSS e `manifest.webmanifest` servidos, SSR renderizando a
 home com `NODE_ENV=production`, signup/login/`/auth/me` respondendo e `pg_dump` saindo
 íntegro. O que **não** foi exercitado é o que só existe no servidor: TLS do Let's Encrypt
-de verdade (no teste local o Caddy usou o CA interno), o cron e o `puxar-backup.ps1`.
+de verdade (no teste local o Caddy usou o CA interno) e o cron.
+
+O `puxar-backup.ps1` foi exercitado contra o servidor real em 05/09 e **estava quebrado** —
+gravado sem BOM, o PowerShell 5.1 leu como ANSI e o travessão de um comentário virou uma
+aspa que fechava string no meio. Corrigido; a lição está nos issues do `CLAUDE.md`. Todo
+`.ps1` novo neste repositório precisa ser gravado em `utf-8-sig`.
 
 ## O que ela deliberadamente não faz
 

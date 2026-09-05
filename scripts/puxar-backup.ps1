@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Puxa o backup mais recente do banco de produção para esta máquina.
 
