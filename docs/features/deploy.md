@@ -282,9 +282,17 @@ já que em produção não há fixture para mascarar), `/api/v1/descoberta` resp
 com o banco ainda vazio. **Latência: conexão 18 ms, handshake 41 ms, primeiro byte 55 ms**
 — o requisito 3 do ADR está satisfeito com folga, e a ressalva de Campinas fica encerrada.
 
-O que **falta para o R7 fechar**: a curadoria no banco de produção (seção 7) e o backup
-ligado dos dois lados (seção 8). Sem o segundo, o ADR é explícito que o R7 não está
-concluído.
+**O backup está ligado dos dois lados desde 05/09:**
+
+- servidor, `crontab -l` de root: `17 4 * * * /docker/bora-roles/deploy/backup.sh >> /var/log/boraroles-backup.log 2>&1`.
+  Exercitado com `env -i PATH=/usr/bin:/bin HOME=/root sh backup.sh` — o ambiente que o cron de
+  fato entrega, e a causa clássica de job que roda no shell e falha agendado;
+- esta máquina, tarefa `bora-roles - puxar backup` às 05:00, com `StartWhenAvailable` para
+  recuperar o dia em que o computador estiver desligado no horário. Disparada à mão:
+  `LastTaskResult 0`. O dump puxado tem o Bar do China e o rolê dentro.
+
+Falta apenas ver as duas rodarem sozinhas, em 06/09. **Teste a restauração uma vez** antes de
+acumular curadoria: backup não restaurado é hipótese, não backup.
 
 ## Registro do teste local
 

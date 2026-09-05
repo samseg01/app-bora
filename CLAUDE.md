@@ -197,7 +197,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
 | Curadoria de campo no piloto | ⚠️ | **2 de 10–15 lugares** no banco (Bar do China, Tokyo); o resto é o R3, e é o gargalo |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
-| Deploy de produção | ⚠️ | **no ar desde 05/09: `https://179-199-145-189.sslip.io`** — VPS em Campinas, 4 contêineres (postgres+api+web+Caddy), TLS do Let's Encrypt, 18 ms de latência. Falta o **backup ligado** (sem ele o ADR não considera o R7 concluído) e a curadoria no banco de produção, que está vazio. Roteiro em `docs/features/deploy.md` |
+| Deploy de produção | ⚠️ | **no ar desde 05/09: `https://179-199-145-189.sslip.io`** — VPS em Campinas, 4 contêineres (postgres+api+web+Caddy), TLS do Let's Encrypt, 18 ms de latência. Backup ligado dos dois lados (cron 4h17 no servidor, tarefa agendada 5h00 aqui), ambos exercitados. **Aguardando só a primeira execução automática**, em 06/09. Roteiro em `docs/features/deploy.md` |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
@@ -376,6 +376,11 @@ contradisserem, o ADR ganha.
 - **Sem fluxo de vínculo de `Estabelecimento`** — a decisão saiu (ADR-010: o curador vincula em
   campo, num ato só; o dono cria a própria conta), falta o script. `Estabelecimento` não é a casa:
   é a conta comercial do dono, e a casa já entra como `Lugar`. Ver `backend/CLAUDE.md`.
+- **O banco de produção nasceu do zero, e não é o de desenvolvimento.** Decidido em 05/09: nada
+  foi migrado. O que está no ar é o que foi cadastrado pelo painel em produção — hoje o Bar do
+  China e um rolê. O banco desta máquina segue sendo o de desenvolvimento, com os 5 lugares
+  fictícios de Vila Madalena, e os dois **não** se falam. A curadoria do R3 escreve direto em
+  produção, do celular, na calçada.
 - **A curadoria de campo mal começou: 2 lugares de 10–15.** O banco tem Bar do China e Tokyo em
   República, mais 5 lugares fictícios de Vila Madalena — fictícios de propósito, para não serem
   confundidos com real. `backend/seed/republica.json` ainda tem só o Bar do China, e sem bairro

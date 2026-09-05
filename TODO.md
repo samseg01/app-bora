@@ -95,7 +95,7 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       degradação para sinal ruim. A caçada está contada no registro de 28/08 mais abaixo.
       ✅ **Confirmado em navegador.** Levou uma caçada: o container `absolute inset-0` resolvia
       para altura 0 e o MapLibre caía num fallback interno de 400x300, sem emitir erro nenhum.
-- [~] R7. **Deploy** (item 12). **Provedor decidido em 03/09** (ADR de raiz 0001) e **a VPS foi
+- [?] R7. **Deploy** (item 12). **Provedor decidido em 03/09** (ADR de raiz 0001) e **a VPS foi
       assinada em 05/09**. Uma VPS só em São Paulo (Hostinger KVM 2) rodando os quatro serviços:
       Postgres+PostGIS, FastAPI, Next SSR e Caddy à frente. Front e back na mesma origem, sem CORS.
       **O que era "falta executar" virou código em 05/09** e está em `docs/features/deploy.md`:
@@ -109,11 +109,17 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       Let's Encrypt). Verificado de fora: `/health`, redirecionamento para a abertura, home
       renderizando por SSR — o que prova o fetch interno até a api — e latência de **18 ms de
       conexão**, que encerra a ressalva de Campinas do ADR.
-      **Falta para fechar:** (a) levar a curadoria para o banco de produção, que está vazio — os
-      dois lugares de República só existem no banco desta máquina; (b) promover um curador lá
-      (`scripts/promote_role.py`); (c) **ligar o backup dos dois lados** — cron no servidor mais
-      `scripts/puxar-backup.ps1` aqui. O (c) não é opcional: o ADR diz que sem `pg_dump` saindo
-      da máquina o R7 não está concluído.
+      **Tudo ligado em 05/09.** Conta de curador criada e promovida em produção; primeiro lugar
+      (Bar do China, com coordenada, horários, preço datado e tags) e primeiro rolê cadastrados
+      pelo painel, e os dois aparecendo em `/descoberta` e `/mapa`. Backup dos dois lados: cron
+      às 4h17 no servidor — exercitado com `env -i PATH=/usr/bin:/bin`, que é o ambiente real do
+      cron e a causa clássica de job que só funciona no shell — e tarefa agendada às 5h00 nesta
+      máquina, disparada à mão com resultado 0. O dump puxado tem o Bar do China dentro.
+      **Em teste até 06/09:** falta só ver as duas automações rodarem sozinhas. Vira `[x]` quando
+      houver um arquivo carimbado 04:17 no servidor e a cópia dele em `~/backups/bora-roles`.
+      **Duas pendências de campo que o cadastro revelou:** o lugar está com `raio_metros` nulo
+      (cai no padrão de 150 m, o chute de escritório — itens 57/58 pedem medir na porta) e o rolê
+      está sem `descricao`, que é o "motivo pra ir" que o card da home mostra.
 - [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Cresceu muito em 02/09: era
       só a ressalva de altura, e virou o único juiz da feature de presença. **Cinco perguntas, e a
       segunda é a que decide se a feature presta:**
@@ -1043,12 +1049,13 @@ segue o hi-fi.
 
 ## Técnico / infra / testes
 
-- [~] 12. **Deploy de produção.** O plano que estava aqui (Railway/Fly.io/Render + Vercel +
+- [?] 12. **Deploy de produção.** O plano que estava aqui (Railway/Fly.io/Render + Vercel +
        Postgres gerenciado, de `docs/arquitetura-backend-frontend.md`) foi substituído em 03/09 por
        `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md`. **Os arquivos existem desde 05/09** —
        `docker-compose.prod.yml`, `deploy/Caddyfile`, `frontend/Dockerfile`, os dois scripts de
-       backup — e o stack foi verificado nesta máquina. Falta rodar no servidor. Execução
-       acompanhada no R7; o o quê e o como em `docs/features/deploy.md`.
+       backup — e **o app está no ar desde 05/09** em `https://179-199-145-189.sslip.io`, com a
+       curadoria começando a entrar direto em produção. Execução acompanhada no R7; o o quê e o
+       como em `docs/features/deploy.md`.
 - [ ] 13. **Decidir se o cron de expiração/decaimento é necessário.** A arquitetura acordada
        previa "cron simples pra expirar rolês e decair sinalizações"; o backend construído não tem
        nenhum — frescor é 100% calculado na leitura (`services/frescor.py`, ADR-0001). Provavelmente
