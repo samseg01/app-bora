@@ -66,7 +66,7 @@ export function ConviteMobile() {
           Compartilhar
         </button>
         <p className="mt-2.5 text-center text-[11.5px] text-muted-3">
-          Gerar convite depende do login — ainda não implementado.
+          Gerar convite depende do backend de Conexões, que ainda não existe.
         </p>
       </div>
 
