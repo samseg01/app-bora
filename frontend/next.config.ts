@@ -2,6 +2,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
+   * Empacota o app num `server.js` com só as dependências que ele de fato importa,
+   * em vez de exigir o `node_modules` inteiro na imagem. É o que torna o Dockerfile
+   * do frontend viável (ADR de raiz 0001: front e back no mesmo box).
+   *
+   * Efeito colateral a lembrar: o standalone **não** copia `public/` nem
+   * `.next/static` — quem faz isso é o Dockerfile. Se um dia a imagem subir sem CSS
+   * e sem ícone do PWA, é este par de COPY que faltou, não o build.
+   */
+  output: "standalone",
+
+  /**
    * O servidor de desenvolvimento do Next 16 bloqueia requisições cross-origin aos
    * assets de dev por padrão. Sem liberar o domínio do túnel, abrir o app pelo celular
    * em outra rede carrega o HTML e nada mais — o JS e o HMR são recusados, e a tela

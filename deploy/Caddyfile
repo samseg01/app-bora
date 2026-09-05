@@ -1,0 +1,36 @@
+# A borda: um domínio, TLS automático, e o corte entre back e front.
+#
+# O corte é por caminho e não por subdomínio de propósito — é isso que faz front e
+# back serem a MESMA ORIGEM, que é metade do motivo do ADR de raiz 0001: sem CORS,
+# e o `fetch` do SSR vira loopback em vez de uma volta de internet por tela.
+
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMINIO} {
+	encode zstd gzip
+
+	# Todas as rotas da API vivem sob /api/v1. O prefixo NÃO é removido: o FastAPI
+	# monta o router já com ele, então `handle_path` (que corta) quebraria tudo.
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	# O /health do backend mora fora do prefixo versionado. Fica exposto porque é o
+	# que responde "o back está de pé?" de fora da máquina, sem precisar de ssh.
+	handle /health {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+
+	log {
+		output file /data/acesso.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}

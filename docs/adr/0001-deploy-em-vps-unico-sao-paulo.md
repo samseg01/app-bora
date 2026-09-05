@@ -2,7 +2,11 @@
 
 ## Status
 
-**Aceito** em 03/09/2026. Não implementado — a execução é o R7 do `TODO.md`.
+**Aceito** em 03/09/2026. **Construído em 05/09** — os arquivos do deploy existem e o stack
+foi exercitado ponta a ponta na máquina de desenvolvimento; ver `docs/features/deploy.md`.
+Falta rodar no servidor, que é o que resta do R7 do `TODO.md`. As "pendências que o deploy
+torna obrigatórias", mais abaixo, estão todas resolvidas em código — menos o swapfile e a
+seleção de São Paulo no checkout, que são atos no servidor e no painel do provedor.
 
 Primeiro ADR de raiz. Os ADRs existentes moram em `backend/docs/adr/` e `frontend/docs/adr/`, e
 esta decisão não cabe em nenhum dos dois: ela define onde as **duas** partes rodam.

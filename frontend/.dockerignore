@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.git/
+.env.local
+.env.*.local
+*.tsbuildinfo
+npm-debug.log*
+docs/
+README.md
+CLAUDE.md
+AGENTS.md

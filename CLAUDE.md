@@ -20,6 +20,11 @@ desconhecido de hoje) é o filtro de escopo do produto inteiro.
 ```
 bora-roles/                          # repositório git único na raiz (backend + frontend + docs)
 ├── CLAUDE.md, TODO.md               # este arquivo — visão geral do monorepo
+├── docker-compose.prod.yml          # produção: postgres + api + web + caddy num box só (ADR raiz 0001)
+├── .env.producao.example            # modelo dos segredos; o .env real só existe no servidor
+├── deploy/
+│   ├── Caddyfile                    # a borda: TLS automático, /api/* → api, resto → web
+│   └── backup.sh                    # pg_dump diário, por cron, NO SERVIDOR
 ├── docs/
 │   ├── conceito.md                  # tese de produto, motores de incentivo, monetização (135 linhas)
 │   ├── arquitetura-backend-frontend.md  # arquitetura acordada (schema, stack, sequenciamento)
@@ -32,7 +37,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── features/                    # um .md por feature construída — obrigatório desde 01/09,
 │   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
 │   │   ├── regressivo.md            # o portão em um comando
-│   │   └── presenca-verificada.md   # "Tô aqui"/"Tô indo", o raio por lugar
+│   │   ├── presenca-verificada.md   # "Tô aqui"/"Tô indo", o raio por lugar
+│   │   └── deploy.md                # o roteiro do servidor: do zero ao app no ar, e o backup
 │   ├── front-end-ideias/desktop/    # 5 artboards da partição de tela grande
 │   ├── front-end-ideias/conexoes/   # design da aba de Conexões (sem backend ainda)
 │   └── front-end-ideias/seguir-ideia-da-documenta-o/
@@ -50,7 +56,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │                                     # mesmo conteúdo, não ler de novo
 ├── scripts/
 │   ├── regressivo.ps1               # o portão: um comando, verde ou vermelho (PowerShell)
-│   └── regressivo.sh                # gêmeo em bash, para Git Bash e para a CI
+│   ├── regressivo.sh                # gêmeo em bash, para Git Bash e para a CI
+│   └── puxar-backup.ps1             # traz o dump do servidor para cá — é o que tira o backup do box
 ├── mvp/
 │   └── preview-tela.jsx             # mockup React solto, 282 linhas (rail de descoberta + mapa),
 │                                     # ANTERIOR ao bundle de design acima; ver nota de escopo abaixo
@@ -62,6 +69,7 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   ├── seed/                        # exemplo-ficticio.json (dev) + republica.json (campo)
 │   └── docs/adr/0001..0010-*.md     # decisões de design do backend, uma por arquivo
 └── frontend/                        # Next 16 + React 19 + Tailwind v4 — 14 rotas no ar
+    ├── Dockerfile                   # imagem de produção (SSR standalone) — só existe por causa do ADR raiz 0001
     ├── CLAUDE.md                    # convenções, partição, contratos da API
     │                                # (não há frontend/TODO.md: unificado na raiz em 28/08)
     ├── docs/adr/0001-pwa-agora-nativo-depois.md
@@ -116,7 +124,7 @@ de assumir que funciona como desenhado.
 |---|---|---|
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) + asyncpg, Postgres + PostGIS (GeoAlchemy2), Alembic, JWT caseiro (PyJWT + pwdlib/argon2), uv + ruff + mypy + pytest | ✅ esqueleto completo, **49 testes** |
 | Frontend | Next 16.3.3 + React 19.2.8 + Tailwind v4 + MapLibre GL 5 (CARTO dark-matter, sem chave) + PWA instalável (manifest, ícones, service worker) | ✅ 14 rotas; sistema visual **monocromático** desde 02/09 |
-| Infra | Docker Compose local (api + postgres/postgis); produção planejada: Railway/Fly.io/Render (backend) + Vercel (Next.js) | ⚠️ só local, nada de produção configurado |
+| Infra | Docker Compose local (api + postgres/postgis); produção: VPS única em SP com `docker-compose.prod.yml` — postgres + api + web + Caddy (ADR de raiz 0001) | ⚠️ os arquivos existem e foram verificados localmente; falta rodar no servidor |
 
 ## Modelo de dados (resumo — schema completo em `backend/src/boraroles/db/models.py`)
 
@@ -189,7 +197,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
 | Curadoria de campo no piloto | ⚠️ | **2 de 10–15 lugares** no banco (Bar do China, Tokyo); o resto é o R3, e é o gargalo |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
-| Deploy de produção | ⚠️ | só `docker compose` local hoje; **provedor e forma decididos em 03/09** (ADR de raiz 0001): VPS única em SP, front e back no mesmo box. Falta executar — é o R7 |
+| Deploy de produção | ⚠️ | **construído em 05/09**: `docker-compose.prod.yml` (4 serviços), `deploy/Caddyfile`, `frontend/Dockerfile` + `output: "standalone"`, segredos por ambiente, 5432 fora da host, backup nos dois lados. Stack exercitado nesta máquina ponta a ponta. **Falta rodar no servidor** — roteiro em `docs/features/deploy.md`, é o R7 |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
@@ -469,6 +477,8 @@ contradisserem, o ADR ganha.
 - **Onde o app roda em produção, e por que não é PaaS + Vercel:**
   `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md` — ADR de raiz, porque decide backend e frontend
   ao mesmo tempo. Tem o desenho do Caddy, as alternativas descartadas e os gatilhos de migração
+- **Como subir o app no servidor, e como publicar uma mudança depois:** `docs/features/deploy.md` —
+  o roteiro passo a passo, o que foi verificado e o que não foi, e o backup nos dois lados
 - ADRs do backend em `backend/docs/adr/`. Os quatro mais recentes: `0008` (a casa publica, o app
   atribui) segue **proposto**; `0009` (sinal verificado por proximidade), `0010` (vínculo é ato de
   curadoria) e `0011` (o anonimato tem escopo) estão **aceitos** — o 0009 e o 0011 em 01/09, e as
