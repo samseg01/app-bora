@@ -92,12 +92,17 @@ async def atualizar_lugar(
         lugar.geo = point_from_latlng(
             lat if lat is not None else current_lat, lng if lng is not None else current_lng
         )
+    # `horarios` já vem como lista de dicionários, que é o que a coluna JSONB quer:
+    # `model_dump()` é recursivo e converte os modelos aninhados junto. Aqui havia um
+    # segundo `[f.model_dump() for f in ...]`, copiado de `criar_lugar` — onde a leitura é
+    # `body.horarios`, atributo, e aí sim são modelos. Nesta rota estourava
+    # `AttributeError: 'dict' object has no attribute 'model_dump'`, virava 500, e a tela
+    # dizia "Não deu pra salvar. Tenta de novo." Consequência prática: **corrigir qualquer
+    # casa com horário cadastrado era impossível** — incluindo gravar o raio de presença,
+    # que é o que o curador faz de pé na porta (itens 57/58).
+
     # Corrigir o preço recarimba a data: um valor novo com data velha diria que o preço
     # de hoje foi visto semana passada.
-    # `horarios` é lista de modelos Pydantic; a coluna é JSONB e precisa de dicionário.
-    if dados.get("horarios") is not None:
-        dados["horarios"] = [f.model_dump() for f in dados["horarios"]]
-
     if "preco_longneck" in dados:
         lugar.preco_visto_em = date.today() if dados["preco_longneck"] is not None else None
 

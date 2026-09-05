@@ -8,8 +8,9 @@ import { PassosCurador } from "@/components/ui/passos-curador";
 import { Porta } from "@/components/ui/porta";
 import { DesktopShell } from "@/views/desktop/shell";
 import { MobileShell } from "@/views/mobile/shell";
-import { api, ApiError } from "@/lib/api";
+import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
+import { porQueFalhou } from "@/lib/erros";
 import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
 import { CATEGORIAS_LUGAR } from "@/lib/categorias";
 import { SeletorTags } from "@/components/ui/seletor-tags";
@@ -167,11 +168,9 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       setPreco("");
       setFoto("");
     } catch (err) {
-      setErro(
-        err instanceof ApiError && err.status === 403
-          ? "Sua conta não é de curador."
-          : "Não deu pra cadastrar. Confere os campos.",
-      );
+      // Antes o único caso tratado era o 403; todo o resto virava "confere os campos",
+      // inclusive 500. Ver lib/erros.ts.
+      setErro(porQueFalhou(err, "cadastrar"));
     } finally {
       setEnviando(false);
     }
