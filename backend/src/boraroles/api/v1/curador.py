@@ -2,7 +2,8 @@ import uuid
 from datetime import UTC, date, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from pydantic import BaseModel
 from sqlalchemy import select
 
 from boraroles.api.deps import DbSession, require_role
@@ -11,6 +12,7 @@ from boraroles.db.models import Lugar, PapelUsuario, Role, Usuario
 from boraroles.schemas.lugar import LugarCreate, LugarPublic, LugarUpdate
 from boraroles.schemas.role import RoleCreate, RolePublic, RoleUpdate
 from boraroles.services.descoberta import frescor_de_role
+from boraroles.services.fotos import FotoGrandeDemais, TipoDeFotoInvalido, salvar_foto
 from boraroles.services.lugares import lugar_to_public
 from boraroles.services.roles import role_to_public
 
@@ -114,6 +116,46 @@ async def deletar_lugar(lugar_id: uuid.UUID, usuario: CuradorUser, db: DbSession
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lugar não encontrado")
     await db.delete(lugar)
     await db.commit()
+
+
+# ---- Fotos ----
+
+
+class FotoEnviada(BaseModel):
+    """O caminho público da foto recém-gravada."""
+
+    url: str
+
+
+@router.post("/fotos", response_model=FotoEnviada, status_code=status.HTTP_201_CREATED)
+async def enviar_foto(usuario: CuradorUser, arquivo: Annotated[UploadFile, File()]) -> FotoEnviada:
+    """Recebe a foto que o curador tirou e devolve o caminho para guardar em `Lugar.fotos`.
+
+    **Não escreve no banco de propósito.** Guardar arquivo e alterar o lugar são duas
+    coisas, e juntá-las criaria um segundo caminho de escrita em `Lugar.fotos` convivendo
+    com o `PATCH /curador/lugares/{id}` — dois jeitos de mexer no mesmo campo é como um
+    deles fica para trás. O cliente envia a foto, recebe a URL e salva a ficha como sempre.
+
+    O preço disso é arquivo órfão quando alguém envia e desiste antes de salvar. É barato
+    (kilobytes num disco de 100 GB) e visível: sobra em `fotos_dir` sem estar em
+    `Lugar.fotos`. Faxina é assunto do dia em que houver volume, não de hoje.
+
+    Só curador. A foto é a afirmação "eu estive aqui e é assim que é" — a mesma que
+    sustenta a curadoria inteira (`docs/conceito.md`).
+    """
+    try:
+        url = await salvar_foto(arquivo)
+    except TipoDeFotoInvalido:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Esse arquivo não é JPEG, PNG nem WebP",
+        ) from None
+    except FotoGrandeDemais:
+        raise HTTPException(
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            detail="A foto passa do limite de 8 MB",
+        ) from None
+    return FotoEnviada(url=url)
 
 
 # ---- Rolês ----

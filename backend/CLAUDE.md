@@ -43,12 +43,14 @@ backend/
 │   │       ├── mapa.py                # GET /mapa, GET /lugares/{id}
 │   │       ├── contribuicao.py       # /salvos, /sinalizacoes (restrito, ver ADR-006), /comentarios
 │   │       │                          # + GET /sinalizacoes/minhas: sinais ativos do próprio usuário
-│   │       ├── curador.py            # CRUD /curador/lugares, /curador/roles (papel=curador)
+│   │       ├── curador.py            # CRUD /curador/lugares, /curador/roles + POST /curador/fotos (papel=curador)
 │   │       └── estabelecimento.py    # GET /meus (qual casa é minha), GET .../lugares, GET .../engajamento
 │   └── services/
 │       ├── frescor.py                # classificar_frescor() — a aposta técnica central (ADR-001)
 │       ├── descoberta.py             # queries agregadas: listar_descoberta, frescor_de_role, frescor_de_lugar
 │       │                             # conta PESSOAS (count distinct usuario_id), não linhas — ver nota abaixo
+│       ├── fotos.py                  # grava a foto do curador em disco (item 45): assinatura dos bytes,
+│       │                             # nome sorteado, teto conferido enquanto lê. Ver ../docs/features/foto-do-lugar.md
 │       ├── lugares.py, roles.py      # serializadores ORM -> schema (evitam duplicar Geometry->lat/lng em 3 rotas)
 │       │                             # lugares.comentarios_do_lugar(): comentários do lugar E dos rolês dele
 │       └── engajamento.py            # agregação pro painel do estabelecimento
@@ -94,7 +96,7 @@ passar por `_pg_enum()`, não por `sa.Enum(...)` direto.
 | Núcleo transversal (config, db/session, security, geo) | ✅ |
 | Auth + rotas API v1 | ✅ |
 | Serviço de frescor | ✅ |
-| Testes de integração + smoke E2E (**49 testes**) | ✅ |
+| Testes de integração + smoke E2E (**63 testes**) | ✅ |
 | Docs: ADRs + este arquivo | ✅ |
 | `ruff check .` / `mypy src` | ✅ limpos |
 | Frontend | ❌ fora de escopo desta rodada — ver `../docs/arquitetura-backend-frontend.md` |
@@ -129,6 +131,23 @@ outros sinais ativos da mesma pessoa no mesmo alvo, senão cancelar não cancela
 
 `services/engajamento.py` continua contando linhas de propósito: o painel do dono fala de
 eventos ("sinais de presença", somados desde sempre), não de pessoas únicas.
+
+## Nota sobre as fotos
+
+`POST /curador/fotos` recebe multipart e devolve `{"url": "/fotos/<uuid>.<ext>"}`. Ele **não
+escreve no banco** de propósito: quem grava em `Lugar.fotos` é o `POST`/`PATCH /curador/lugares`,
+para não existirem dois caminhos de escrita no mesmo campo.
+
+O arquivo vai para `settings.fotos_dir` (`/dados/fotos`, volume nomeado nos dois composes) e é
+servido por `StaticFiles` montado em `/fotos` no `main.py` — não pelo `file_server` do Caddy, que
+faz só `reverse_proxy`. É paridade: o caminho resolve igual em dev, teste e produção.
+
+Três coisas que parecem detalhe e são a feature: o tipo vem da **assinatura dos bytes** (o
+`Content-Type` é escrito pelo cliente), o nome vem de `uuid4` (nome de upload é travessia de
+diretório esperando acontecer) e o tamanho é conferido **enquanto lê** (medir depois é aceitar o
+arquivo inteiro antes de recusá-lo). `tests/test_upload_foto.py` guarda as três.
+
+⚠️ O `pg_dump` não cobre o volume. `deploy/backup.sh` arquiva as fotos à parte.
 
 ## Nota sobre comentários
 

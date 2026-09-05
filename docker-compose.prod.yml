@@ -49,6 +49,13 @@ services:
       FRESCOR_WARM_WINDOW_MINUTES: 120
       PRESENCA_RAIO_PADRAO_METROS: ${PRESENCA_RAIO_PADRAO_METROS:-150}
       FUSO_LOCAL: America/Sao_Paulo
+      FOTOS_DIR: /dados/fotos
+    volumes:
+      # As fotos que o curador tira em campo (item 45). Volume nomeado, não bind mount:
+      # sobrevive a `up -d --build` e a troca de imagem. É o disco que o ADR de raiz 0001
+      # comprou ao escolher VPS em vez de PaaS — sem ele a foto sumiria a cada deploy.
+      # ⚠️ O `pg_dump` NÃO cobre este volume. Quem cuida dele é o `deploy/backup.sh`.
+      - fotos:/dados/fotos
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,5 +95,6 @@ services:
 
 volumes:
   pgdata:
+  fotos:
   caddy_data:
   caddy_config:

@@ -489,16 +489,21 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        **O que reabre isto:** o curador reclamar de republicar o mesmo rolê toda semana (aí a
        saída é um toque de confirmação no painel, não automação), ou o ADR-008 ser aceito e o dono
        passar a preencher a programação — nesse caso quem afirma é a casa, e a pergunta muda.
-- [ ] 45. **Foto do lugar, tirada pelo curador em campo. DESBLOQUEADO em 05/09 pelo R7** — e por um
+- [?] 45. **Foto do lugar, tirada pelo curador em campo. CONSTRUÍDA em 05/09** — e destravou por um
        motivo diferente do que este item previa. A hipótese era "vai precisar de conta e chave de
        S3/R2"; o ADR de raiz 0001 escolheu VPS justamente para não precisar: são **100 GB de NVMe
        com volume persistente**, e o `docker-compose.prod.yml` já monta volume nomeado. Guardar
        arquivo em disco deixou de ser problema de infraestrutura.
-       **O que falta agora é código, não decisão:** endpoint de upload no backend (multipart,
-       validação de tipo e tamanho, nome não adivinhável), um volume novo montado na api, uma
-       rota no Caddy servindo `/fotos/*` do disco, e o botão de tirar foto no painel do curador —
-       que é onde ela nasce, com o telefone na mão, na calçada. Objeto (S3/R2) fica como saída
-       futura se o disco apertar, não como pré-requisito.
+       **Feito, e documentado em `docs/features/foto-do-lugar.md`:** `POST /curador/fotos`
+       (multipart, tipo decidido pelos bytes e não pelo `Content-Type`, nome sorteado, teto de
+       8 MB conferido enquanto lê), volume `fotos` montado na api, `/fotos/*` servido pela
+       própria API por paridade dev/prod, e o botão de câmera **nos dois** formulários do
+       curador — cadastrar e corrigir —, senão a caminhada teria duas passagens por casa.
+       O backup cresceu junto: o `pg_dump` não cobre arquivo, então `deploy/backup.sh` agora
+       arquiva o volume também. Sem migration: `Lugar.fotos` existia desde o começo.
+       **Em teste:** exercitado localmente ponta a ponta (upload, bytes idênticos na volta, 415
+       com `Content-Type` mentiroso) e por 13 testes novos, mas **nunca com câmera de verdade**.
+       Vira `[x]` quando uma foto tirada na rua estiver no ar.
        A ficha já **exibe** a foto em primeiro
        plano (`views/lugar-ficha.tsx`, lendo `fotos[0]`), e o formulário de correção aceita a URL.
        Sem foto, cai no bloco de cor do design — que não é provisório, é a escolha visual do

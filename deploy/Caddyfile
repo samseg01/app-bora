@@ -17,6 +17,15 @@
 		reverse_proxy api:8000
 	}
 
+	# As fotos do curador (item 45). Vão para a **api**, e não para um `file_server` daqui,
+	# de propósito: assim `/fotos/x.jpg` resolve igual em desenvolvimento, no teste e em
+	# produção, sem o Caddy precisar montar o volume. Servir imagem por Python custa mais
+	# que servir por Caddy — e a esta escala, um punhado de fotos de bar, isso não é medido
+	# por ninguém. Virar `file_server` é trocar estas três linhas no dia em que for.
+	handle /fotos/* {
+		reverse_proxy api:8000
+	}
+
 	# O /health do backend mora fora do prefixo versionado. Fica exposto porque é o
 	# que responde "o back está de pé?" de fora da máquina, sem precisar de ssh.
 	handle /health {
