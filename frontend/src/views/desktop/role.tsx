@@ -53,13 +53,14 @@ export function RoleDesktop({
           </div>
           <h1 className="mt-2.5 titulo text-[46px] leading-[1.02]">{role.titulo}</h1>
 
-          {role.descricao ? (
+          {/* Sem descrição não se diz nada: ausência do "motivo pra ir" é ausência, não
+              defeito. Até 05/09 havia aqui um recado dizendo que o campo "ainda não existe
+              no backend" — e existe desde a migration 0002 (R4). O texto sobreviveu à
+              feature, foi para produção e culpava o backend por uma frase que o curador é
+              que não escreveu. */}
+          {role.descricao && (
             <p className="mt-3.5 max-w-[560px] text-[15px] leading-relaxed text-text-faint text-pretty">
               {role.descricao}
-            </p>
-          ) : (
-            <p className="mt-3.5 max-w-[560px] text-[13.5px] leading-relaxed text-muted-3">
-              Sem descrição — o campo do “motivo pra ir” ainda não existe no backend.
             </p>
           )}
 
