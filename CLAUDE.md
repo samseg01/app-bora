@@ -448,6 +448,12 @@ contradisserem, o ADR ganha.
 - **`services/engajamento.py` ainda conta linhas**, de propósito: o painel do dono rotula o
   número como "sinais de presença" (eventos, somados desde sempre), e a mesma pessoa voltando
   em noites diferentes é informação real para ele. Não confundir com a contagem de frescor.
+- **Gotcha de deploy: mudou o `Caddyfile`, precisa de `restart caddy`.** O arquivo é bind mount
+  e o Caddy o lê ao subir; como a definição do serviço não muda, `docker compose up -d --build`
+  não recria o contêiner e ele segue com a configuração velha. Mordeu em 05/09 na rota `/fotos/*`:
+  o upload funcionava, o arquivo estava no disco, e a foto não aparecia — porque `/fotos/x.jpg`
+  caía no Next em vez da API. Parece bug de upload e é roteamento parado. É o **inverso** do
+  gotcha do `env_file`, onde `restart` é que não relê. Ver `docs/features/deploy.md`.
 - **Gotcha de script PowerShell: tem que ter BOM.** O shell da máquina é o Windows PowerShell
   5.1, que lê arquivo UTF-8 **sem** BOM como ANSI. Aí todo acento vira lixo e, pior, o travessão
   `—` vira três bytes cujo terceiro é uma aspa — que fecha string no meio e derruba o parse do
