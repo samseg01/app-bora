@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
+import { porQueFalhou } from "@/lib/erros";
 import { EditorHorarios } from "./editor-horarios";
 import { EnviarFoto } from "./enviar-foto";
 import { SeletorTags } from "./seletor-tags";
@@ -87,8 +88,8 @@ export function CorrigirLugar({
       });
       aoSalvar(atualizado);
       setAberto(false);
-    } catch {
-      setErro("Não deu pra salvar. Tenta de novo.");
+    } catch (e) {
+      setErro(porQueFalhou(e));
     } finally {
       setSalvando(false);
     }

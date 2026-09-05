@@ -85,3 +85,62 @@ async def test_role_data_fim_antes_de_inicio_e_rejeitado(
         headers=auth_headers(curador),
     )
     assert resp.status_code == 422
+
+
+async def test_corrigir_lugar_com_horarios_e_o_que_o_curador_faz_na_calcada(
+    client: AsyncClient, criar_usuario: UsuarioFactory
+) -> None:
+    """PATCH com `horarios` estourava 500 e ninguém sabia.
+
+    `body.model_dump()` é recursivo, então `dados["horarios"]` já era lista de
+    dicionários; a rota chamava `.model_dump()` de novo em cada item e levantava
+    `AttributeError`. A tela mostrava "Não deu pra salvar. Tenta de novo.".
+
+    Passou despercebido porque nenhum teste corrigia horário — só criava. E o efeito é
+    grave no caminho que mais importa: **gravar o raio de presença de uma casa já
+    cadastrada** (itens 57/58) manda o formulário inteiro, horários inclusive, então
+    corrigir qualquer lugar com horário era impossível.
+    """
+    curador = await criar_usuario(
+        "Curador Horario", "curador-horario@exemplo.com", papel=PapelUsuario.CURADOR
+    )
+    headers = auth_headers(curador)
+
+    criado = await client.post(
+        "/api/v1/curador/lugares",
+        json={
+            "nome": "Boteco do Horário",
+            "categoria": "boteco",
+            "lat": -23.5441,
+            "lng": -46.6396,
+            "bairro": "República",
+            "horarios": [{"dias": [4, 5], "abre": "18:00", "fecha": "02:00"}],
+        },
+        headers=headers,
+    )
+    assert criado.status_code == 201
+    lugar_id = criado.json()["id"]
+
+    resp = await client.patch(
+        f"/api/v1/curador/lugares/{lugar_id}",
+        json={
+            "horarios": [
+                {"dias": [1, 2, 3], "abre": "17:00", "fecha": "23:00"},
+                {"dias": [4, 5, 6], "abre": "17:00", "fecha": "04:00"},
+            ],
+            "raio_metros": 60,
+        },
+        headers=headers,
+    )
+
+    assert resp.status_code == 200
+    corpo = resp.json()
+    assert corpo["raio_metros"] == 60
+    assert len(corpo["horarios"]) == 2
+    # A faixa que atravessa a meia-noite tem de sobreviver ao ida e volta: é ela que faz
+    # o "aberta agora" acertar às 00h30 de sábado.
+    assert corpo["horarios"][1] == {"dias": [4, 5, 6], "abre": "17:00", "fecha": "04:00"}
+
+    # E a leitura seguinte devolve o mesmo — o JSONB guardou dicionário, não repr de objeto.
+    relido = await client.get(f"/api/v1/curador/lugares/{lugar_id}", headers=headers)
+    assert relido.json()["horarios"] == corpo["horarios"]
