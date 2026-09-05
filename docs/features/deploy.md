@@ -268,6 +268,26 @@ exigiria dois contêineres e troca de tráfego, que não se paga aqui.
    `time_connect` acima de ~0,1 s aponta para um box fora do Brasil, não para a distância
    Campinas–capital. O `ttfb` da home é outra coisa: inclui o SSR e a consulta ao banco.
 
+## No ar desde 05/09/2026
+
+`https://179-199-145-189.sslip.io` — VPS Hostinger KVM 2, datacenter Campinas, IP
+`179.199.145.189`. Certificado do Let's Encrypt emitido para o nome com **traços**; a forma
+com pontos (`179.199.145.189.sslip.io`), que o sslip.io também resolve, **não** está no
+certificado e é recusada no handshake — o erro que aparece no Windows é um
+`SEC_E_INTERNAL_ERROR` do schannel, que não parece nem de longe "nome errado".
+
+Verificado de fora da máquina no dia: `/health` respondendo, home redirecionando para
+`/abertura`, home com bairro renderizando por SSR (o que prova o fetch interno até a api,
+já que em produção não há fixture para mascarar), `/api/v1/descoberta` respondendo `[]`
+com o banco ainda vazio. **Latência: conexão 18 ms, handshake 41 ms, primeiro byte 55 ms**
+— o requisito 3 do ADR está satisfeito com folga, e a ressalva de Campinas fica encerrada.
+
+O que **falta para o R7 fechar**: a curadoria no banco de produção (seção 7) e o backup
+ligado dos dois lados (seção 8). Sem o segundo, o ADR é explícito que o R7 não está
+concluído.
+
+## Registro do teste local
+
 **Este roteiro foi exercitado nesta máquina em 05/09**, com o compose de produção real:
 imagens construídas, os quatro serviços de pé, Caddy roteando `/health` e `/api/v1/*` para
 o backend e o resto para o Next, CSS e `manifest.webmanifest` servidos, SSR renderizando a

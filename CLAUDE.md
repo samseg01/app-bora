@@ -197,7 +197,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Bairro piloto | ✅ | **recorte República** (Arouche / Vieira de Carvalho / Pça. da República); Pinheiros como segundo recorte |
 | Curadoria de campo no piloto | ⚠️ | **2 de 10–15 lugares** no banco (Bar do China, Tokyo); o resto é o R3, e é o gargalo |
 | Roteiro até a primeira conversa com um estabelecimento | ⚠️ | **plano ativo** — 10 passos no topo do `TODO.md` (R1–R10) |
-| Deploy de produção | ⚠️ | **construído em 05/09**: `docker-compose.prod.yml` (4 serviços), `deploy/Caddyfile`, `frontend/Dockerfile` + `output: "standalone"`, segredos por ambiente, 5432 fora da host, backup nos dois lados. Stack exercitado nesta máquina ponta a ponta. **Falta rodar no servidor** — roteiro em `docs/features/deploy.md`, é o R7 |
+| Deploy de produção | ⚠️ | **no ar desde 05/09: `https://179-199-145-189.sslip.io`** — VPS em Campinas, 4 contêineres (postgres+api+web+Caddy), TLS do Let's Encrypt, 18 ms de latência. Falta o **backup ligado** (sem ele o ADR não considera o R7 concluído) e a curadoria no banco de produção, que está vazio. Roteiro em `docs/features/deploy.md` |
 | Cron de expiração de rolê / decaimento de sinalização | ❌ | previsto na arquitetura acordada, não construído — frescor hoje é 100% on-read |
 | Social — aba de Conexões: UI | ⚠️ | design pronto, mas a rota mostra "em construção": sem backend não há o que exibir sem inventar |
 | Social — aba de Conexões: backend | ❌ | `Conexao`, check-in com escopo e salvos compartilhados — itens 27–30 do `TODO.md` |
