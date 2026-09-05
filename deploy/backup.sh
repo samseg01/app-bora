@@ -8,7 +8,11 @@
 #
 # Instalação (ver docs/features/deploy.md):
 #   sudo crontab -e
-#   17 4 * * * /opt/bora-roles/deploy/backup.sh >> /var/log/boraroles-backup.log 2>&1
+#   17 4 * * * /CAMINHO/DO/REPO/deploy/backup.sh >> /var/log/boraroles-backup.log 2>&1
+#
+# O script descobre sozinho onde o repositório está, a partir da própria localização —
+# não existe caminho fixo aqui. Clonar em /opt, em ~/docker ou em qualquer outro lugar
+# não muda nada; a única coisa que precisa estar certa é o caminho na linha do cron.
 #
 # ATENÇÃO — isto sozinho NÃO fecha o requisito. O dump cai no disco da MESMA máquina:
 # protege contra "apaguei a tabela", não contra "o box morreu". O que fecha é puxar o
@@ -16,7 +20,9 @@
 
 set -eu
 
-RAIZ=${RAIZ_APP:-/opt/bora-roles}
+# A raiz do repo é o diretório acima deste script. `cd -P` resolve link simbólico, que é
+# como o cron costuma entregar o caminho.
+RAIZ=${RAIZ_APP:-$(cd -P "$(dirname "$0")/.." && pwd)}
 DESTINO=${BACKUP_DIR:-/var/backups/boraroles}
 DIAS=${BACKUP_RETENCAO_DIAS:-14}
 

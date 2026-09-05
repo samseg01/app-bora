@@ -119,6 +119,12 @@ git clone git@github.com:samseg01/app-bora.git bora-roles
 cd /opt/bora-roles
 ```
 
+**O diretório é escolha sua.** `/opt/bora-roles` é só a convenção usada no resto deste
+documento; clonar em `~/docker/bora-roles` ou onde já houver uma pasta de containers no
+servidor funciona igual. O compose só usa caminhos relativos (`./backend`, `./frontend`,
+`./deploy/Caddyfile`) e o `backup.sh` descobre a raiz a partir da própria localização.
+Onde aparecer `/opt/bora-roles` daqui pra frente, leia "onde você clonou".
+
 ### 5. Os segredos
 
 ```sh
@@ -184,7 +190,8 @@ docker compose exec -T postgres pg_dump -U boraroles -d boraroles --no-owner --n
 scp dump.sql.gz root@SEU-IP:/tmp/
 
 # no servidor
-zcat /tmp/dump.sql.gz | docker compose -f /opt/bora-roles/docker-compose.prod.yml exec -T postgres psql -U boraroles -d boraroles
+cd /CAMINHO/DO/REPO
+zcat /tmp/dump.sql.gz | docker compose -f docker-compose.prod.yml exec -T postgres psql -U boraroles -d boraroles
 ```
 
 Promover um curador em produção segue manual (ADR-0007):
@@ -202,9 +209,11 @@ vive num disco só.
 
 ```sh
 crontab -e
-# 17 4 * * * /opt/bora-roles/deploy/backup.sh >> /var/log/boraroles-backup.log 2>&1
+# 17 4 * * * /CAMINHO/DO/REPO/deploy/backup.sh >> /var/log/boraroles-backup.log 2>&1
 
-/opt/bora-roles/deploy/backup.sh      # rodar uma vez à mão para conferir
+# O caminho na linha do cron é o único que precisa ser absoluto e correto — o script
+# deduz a raiz do repositório a partir de onde ele mesmo está. `pwd` no repo te dá.
+./deploy/backup.sh                    # rodar uma vez à mão para conferir
 ls -la /var/backups/boraroles/
 ```
 
@@ -224,7 +233,7 @@ descartável local e confira que os lugares estão lá.
 
 ```sh
 ssh root@SEU-IP
-cd /opt/bora-roles && git pull && docker compose -f docker-compose.prod.yml up -d --build
+cd /CAMINHO/DO/REPO && git pull && docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 O `--build` reconstrói o que mudou; migrations aplicam sozinhas no start da api. Há alguns
