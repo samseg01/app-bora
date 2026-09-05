@@ -413,9 +413,12 @@ contradisserem, o ADR ganha.
   sinalização, então o anonimato do sinal não é quebrado na home; (iii) a auth é preguiçosa —
   entra-se quando a ação exige, não na porta. O enunciado original segue em
   `docs/plano-frontend.md`, que **não foi reescrito** e ainda descreve o estado antigo.
-- **Nenhum estado vazio foi desenhado** — as 8 telas hi-fi pressupõem a Vila Madalena cheia. Com
-  República tendo 2 lugares e poucos rolês, é exatamente o estado que a demo do R10 vai mostrar,
-  e não há design pra seguir.
+- **O hi-fi não desenhou estado vazio** — as 8 telas pressupõem a Vila Madalena cheia. **Mas o
+  código tem**, nas duas partições (`views/mobile/home.tsx` e `views/desktop/home.tsx`,
+  `VazioDescoberta`): "Ainda não tem nada aqui / Um rolê só aparece depois que alguém foi até lá
+  e viu", com o convite a sugerir lugar. O texto assume a promessa em vez de pedir desculpa, que
+  é o que a demo do R10 precisa. O contador de achados some quando é zero, de propósito — "0
+  achados" anuncia o vazio em vez de tratá-lo.
 - **O seed existe (`scripts/seed.py`, idempotente por nome) mas nunca foi a via principal** — os
   lugares de República entraram pelo painel do curador, e `seed/republica.json` ficou para trás.
   Promover alguém a curador segue manual, por `scripts/promote_role.py` (ADR-0007).
