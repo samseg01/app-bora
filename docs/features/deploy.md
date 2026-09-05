@@ -136,9 +136,15 @@ nano .env
 
 Preencha:
 
-- `DOMINIO` — sem domínio próprio, use **sslip.io**: troque os pontos do IP por traços.
-  IP `203.0.113.10` vira `DOMINIO=203-0-113-10.sslip.io`. Resolve sozinho, sem registrar
-  nada, e o Caddy tira certificado de verdade em cima dele. **HTTPS não é capricho aqui**:
+- `DOMINIO` — sem domínio próprio, use **sslip.io**: pegue **o IP da sua VPS**, troque os
+  pontos por traços e cole `.sslip.io` no fim. Resolve sozinho, sem registrar nada, e o
+  Caddy tira certificado de verdade em cima dele.
+  > Exemplo, e é **só exemplo**: o IP `203.0.113.10` viraria `203-0-113-10.sslip.io`. Esse
+  > endereço não é de ninguém — a faixa `203.0.113.0/24` é reservada pela RFC 5737 para
+  > documentação exatamente para não ser confundida com uma máquina real. Use o IP que o
+  > painel da Hostinger mostra, não este.
+
+  **HTTPS não é capricho aqui**:
   `navigator.geolocation` não existe fora de contexto seguro, então em HTTP a presença
   verificada inteira (ADR-009) cai em "sem-suporte" e o R8 não é executável.
 - `ACME_EMAIL` — seu e-mail. Obrigatório; sem ele o Caddy não sobe.
@@ -187,7 +193,7 @@ hoje no banco da máquina de desenvolvimento, e o `seed/republica.json` está at
 ```sh
 # na máquina de desenvolvimento
 docker compose exec -T postgres pg_dump -U boraroles -d boraroles --no-owner --no-privileges | gzip > dump.sql.gz
-scp dump.sql.gz root@SEU-IP:/tmp/
+scp dump.sql.gz root@SEU-IP:/tmp/     # SEU-IP = o do painel da Hostinger
 
 # no servidor
 cd /CAMINHO/DO/REPO
