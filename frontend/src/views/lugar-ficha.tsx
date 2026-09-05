@@ -6,6 +6,7 @@ import { abertaAgora, faixaLegivel } from "@/lib/horarios";
 import { hora } from "@/lib/tempo";
 import type { LugarDetalhe, RolePin } from "@/lib/types";
 import { corDaCategoria } from "@/lib/categorias";
+import { urlDaFoto } from "@/lib/fotos";
 
 /**
  * A ficha do lugar — o conteúdo da tela `/lugar/[id]`, compartilhado pelas duas
@@ -34,7 +35,9 @@ export function LugarFicha({
   const aberta = abertaAgora(lugar.horarios, new Date(agora));
   const preco = lugar.preco_longneck ? Number(lugar.preco_longneck) : null;
 
-  const foto = lugar.fotos?.[0];
+  // `urlDaFoto` porque o backend guarda caminho relativo (`/fotos/x.jpg`): em produção ele
+  // resolve sozinho, em desenvolvimento precisa da origem da API. Ver lib/fotos.ts.
+  const foto = urlDaFoto(lugar.fotos?.[0]);
 
   return (
     <div className="flex flex-col">

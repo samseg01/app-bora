@@ -19,6 +19,12 @@ services:
     build: .
     env_file:
       - .env
+    environment:
+      # Mesmo caminho de produção, para que o dev não descubra em campo que o diretório
+      # das fotos era outro. O volume é local e separado do de produção.
+      FOTOS_DIR: /dados/fotos
+    volumes:
+      - fotos:/dados/fotos
     depends_on:
       postgres:
         condition: service_healthy
@@ -27,3 +33,4 @@ services:
 
 volumes:
   pgdata:
+  fotos:

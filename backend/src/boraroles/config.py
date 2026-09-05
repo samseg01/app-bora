@@ -26,6 +26,16 @@ class Settings(BaseSettings):
     # de 1500 m e caiu para 700 m no primeiro teste em aparelho real, no mesmo dia.
     presenca_raio_padrao_metros: int = 150
 
+    # Onde as fotos do curador são gravadas (item 45). Em produção é um volume nomeado do
+    # docker-compose.prod.yml, montado aqui — disco de verdade, que sobrevive ao deploy.
+    # Fora do contêiner o default não existe, e é o que se espera: quem roda a API na mão
+    # aponta para outro lugar por variável de ambiente.
+    fotos_dir: str = "/dados/fotos"
+
+    # Teto por arquivo. 8 MB cabe foto de celular sem tratamento e ainda deixa o disco de
+    # 100 GB longe de ser assunto. É conferido enquanto lê, não depois (services/fotos.py).
+    foto_max_bytes: int = 8 * 1024 * 1024
+
     # O fuso em que "hoje à noite" é contado. O banco é todo UTC e continua sendo; isto
     # existe só para decidir onde o dia começa e termina para quem está na rua. Vira
     # configuração, e não constante, porque o produto se expande por cidade.

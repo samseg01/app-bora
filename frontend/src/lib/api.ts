@@ -245,6 +245,9 @@ export const api = {
       preco_longneck?: number | null;
       /** Vocabulário fechado em `lib/tags.ts`. Lista vazia nunca vai: vira null. */
       tags?: string[] | null;
+      /** Caminhos de foto. A primeira é a que a ficha usa no topo. Vem de
+          `enviarFoto`, ou de uma URL colada. */
+      fotos?: string[] | null;
       /** Perímetro de "Tô aqui" desta casa, em metros (ADR-009). Só quem esteve
           lá sabe responder; nulo cai no padrão do servidor. */
       raio_metros?: number | null;
@@ -276,4 +279,45 @@ export const api = {
       lng?: number;
     },
   ) => req<LugarPublic>(`/curador/lugares/${id}`, { token, metodo: "PATCH", corpo }),
+
+  /**
+   * Envia a foto que o curador tirou e devolve o caminho para guardar em `fotos`.
+   *
+   * Não passa por `req` porque `req` é de JSON: aqui o corpo é `multipart/form-data`, e o
+   * **navegador tem que montar o `Content-Type` sozinho** — ele precisa carregar o
+   * `boundary`, que só quem serializa o `FormData` conhece. Definir o cabeçalho na mão é o
+   * erro clássico deste caminho: o servidor recebe um corpo que não consegue separar e
+   * responde 422 sem dizer por quê.
+   *
+   * **Não altera o lugar.** Devolve a URL, e quem grava em `Lugar.fotos` é o
+   * `atualizarLugar`/`criarLugar` de sempre — um caminho de escrita só para aquele campo.
+   */
+  enviarFoto: async (token: string, arquivo: File): Promise<string> => {
+    const formulario = new FormData();
+    formulario.append("arquivo", arquivo);
+
+    let resposta: Response;
+    try {
+      resposta = await fetch(`${BASE}/curador/fotos`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formulario,
+      });
+    } catch (causa) {
+      if (causa && typeof causa === "object" && "digest" in causa) throw causa;
+      throw new ApiOffline(causa);
+    }
+
+    if (!resposta.ok) {
+      const corpo: unknown = await resposta.json().catch(() => null);
+      const detalhe = (corpo as { detail?: unknown } | null)?.detail;
+      throw new ApiError(
+        resposta.status,
+        typeof detalhe === "string" ? detalhe : resposta.statusText,
+      );
+    }
+
+    const { url } = (await resposta.json()) as { url: string };
+    return url;
+  },
 };

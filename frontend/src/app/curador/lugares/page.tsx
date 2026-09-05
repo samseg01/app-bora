@@ -13,6 +13,7 @@ import { useSessao } from "@/lib/auth";
 import { bairroDoCookie, BAIRROS } from "@/lib/bairros";
 import { CATEGORIAS_LUGAR } from "@/lib/categorias";
 import { SeletorTags } from "@/components/ui/seletor-tags";
+import { EnviarFoto } from "@/components/ui/enviar-foto";
 import { EditorHorarios } from "@/components/ui/editor-horarios";
 import { faixaNova } from "@/lib/horarios";
 import type { FaixaHorario } from "@/lib/types";
@@ -92,6 +93,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
   const [programacao, setProgramacao] = useState("");
   const [preco, setPreco] = useState("");
   const [coords, setCoords] = useState("");
+  const [foto, setFoto] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
@@ -147,6 +149,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
         // e o que houve foi ninguem ter marcado.
         tags: tags.length ? tags : null,
         preco_longneck: preco.trim() ? Number(preco.replace(",", ".")) : null,
+        fotos: foto.trim() ? [foto.trim()] : null,
       });
       // Fora do updater de propósito: a função passada ao setState precisa ser pura,
       // e avisar o pai lá dentro é efeito colateral.
@@ -162,6 +165,7 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
       setTags([]);
       setProgramacao("");
       setPreco("");
+      setFoto("");
     } catch (err) {
       setErro(
         err instanceof ApiError && err.status === 403
@@ -254,6 +258,18 @@ function Lugares({ aoContar }: { aoContar: (n: number | null) => void }) {
               placeholder="-23.5441, -46.6396"
               required
             />
+          </label>
+
+          {/* A foto entra AQUI, no cadastro, e não só na correção depois. Deixá-la fora
+              obrigaria a caminhada a ter duas passagens por casa: cadastra na calçada,
+              volta em outra tela para anexar. É o tipo de detalhe que decide se a
+              curadoria de 15 lugares acontece numa noite ou em duas. */}
+          <label className="flex flex-col gap-1.5">
+            <span className="flex items-baseline justify-between">
+              <span className="rotulo text-muted-3">foto do lugar</span>
+              <span className="text-[11px] text-muted-3">opcional</span>
+            </span>
+            <EnviarFoto valor={foto} aoEnviar={setFoto} />
           </label>
 
           {/* A ficha da casa. Tudo opcional: o curador anota na calçada o que conseguiu,

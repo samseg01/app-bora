@@ -38,7 +38,8 @@ bora-roles/                          # repositório git único na raiz (backend 
 │   │                                # ver "Fluxo de trabalho"; não confundir com os ADRs
 │   │   ├── regressivo.md            # o portão em um comando
 │   │   ├── presenca-verificada.md   # "Tô aqui"/"Tô indo", o raio por lugar
-│   │   └── deploy.md                # o roteiro do servidor: do zero ao app no ar, e o backup
+│   │   ├── deploy.md                # o roteiro do servidor: do zero ao app no ar, e o backup
+│   │   └── foto-do-lugar.md         # upload da foto do curador, em disco, servido pela API
 │   ├── front-end-ideias/desktop/    # 5 artboards da partição de tela grande
 │   ├── front-end-ideias/conexoes/   # design da aba de Conexões (sem backend ainda)
 │   └── front-end-ideias/seguir-ideia-da-documenta-o/
@@ -143,7 +144,7 @@ curador/dono_estabelecimento), `Estabelecimento` (plano: organico/destacado), `L
 
 ## Superfície da API (backend, tudo sob `/api/v1`)
 
-27 rotas, todas implementadas e cobertas por teste:
+28 rotas, todas implementadas e cobertas por teste:
 
 | Grupo | Rotas |
 |---|---|
@@ -151,7 +152,7 @@ curador/dono_estabelecimento), `Estabelecimento` (plano: organico/destacado), `L
 | Descoberta | `GET /descoberta`, `GET /roles/{id}` |
 | Mapa | `GET /mapa`, `GET /lugares/{id}`, `GET /lugares/proximos` |
 | Contribuição | `POST/GET /salvos`, `DELETE /salvos/{lugar_id}`, `POST /sinalizacoes`, `GET /sinalizacoes/minhas`, `DELETE /sinalizacoes/{id}`, `POST /comentarios` |
-| Curador (papel=curador) | CRUD completo de `/curador/lugares` (5) e `/curador/roles` (4) |
+| Curador (papel=curador) | CRUD completo de `/curador/lugares` (5) e `/curador/roles` (4), mais `POST /curador/fotos` (upload multipart) |
 | Estabelecimento (dono) | `GET /meus`, `GET /{id}/lugares`, `GET /{id}/engajamento` — só leitura |
 
 `GET /sinalizacoes/minhas` é o que faz o "Tá marcado" sobreviver a sair da tela e voltar; sem ele
@@ -171,7 +172,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Backend: painel do estabelecimento (leitura agregada) | ✅ | inclui `GET /estabelecimento/meus`, que diz ao cliente qual casa é dele |
 | Frontend: painel do estabelecimento (`/estabelecimento`) | ✅ | terceira superfície do produto; sem design prévio — não havia no hi-fi |
 | Backend: serviço de frescor | ✅ | ADR-0001; conta **pessoas distintas**, não linhas (ver issues) |
-| Backend: testes (**56**, contra Postgres/PostGIS real) + ruff/mypy | ✅ | rodam pelo `regressivo`, em banco separado; verde em 02/09 |
+| Backend: testes (**63**, contra Postgres/PostGIS real) + ruff/mypy | ✅ | rodam pelo `regressivo`, em banco separado; verde em 05/09 |
 | Código versionado em git | ✅ | repositório único na raiz, remote em `github.com/samseg01/app-bora` (privado) |
 | Backend: vínculo de `Estabelecimento` | ⚠️ | decidido (ADR-010: curador vincula, sem endpoint isolado); falta o script — hoje só direto no banco |
 | Frontend — plano de implementação | ✅ | `docs/plano-frontend.md` + `frontend/CLAUDE.md` + seção Frontend do `TODO.md` |
@@ -191,6 +192,7 @@ Mais `GET /health` fora do prefixo versionado.
 | Frontend — sistema visual monocromático (camada 1) | ⚠️ | fundação feita em 02/09 (tokens, tipografia, cor, superfície); **aguardando validação**. Composição e densidade são a camada 2, item 61 |
 | Frontend — ficha do lugar (`/lugar/[id]`) | ✅ | foto, descrição, programação, preço datado, Instagram, tags |
 | Frontend — tags do lugar | ✅ | migration 0007; vocabulário em `lib/tags.ts`, editor no painel do curador |
+| Foto do lugar (upload em campo) | ⚠️ | **construída em 05/09** — `POST /curador/fotos`, volume em disco, servida pela API, botão de câmera nos dois formulários do curador. Backup do volume ligado junto. **Nunca usada com câmera de verdade** — depende do R3/R8 |
 | Backend — funcionamento estruturado (`Lugar.horarios`) | ✅ | faixas dia+hora; destrava "aberta agora" |
 | Frontend — busca de bairro por localização | ✅ | `GET /lugares/proximos`; primeira consulta espacial do projeto |
 | Frontend — PWA instalável (manifest, ícones, service worker) | ✅ | o SW cacheia a casca, nunca o dado |
@@ -402,11 +404,12 @@ contradisserem, o ADR ganha.
   em dev. `/`, `/mapa`, `/role/[id]` e `/lugar/[id]` usam a API pública de verdade, caindo em
   exemplo só com o backend fora do ar em dev. Verificado contra o build de produção: zero
   vazamento de exemplo.
-- **O schema alcançou o design.** O que faltava foi entrando: `Role.descricao` (0002),
-  `Lugar.endereco` (0003), preço datado + descrição + Instagram (0004), `programacao` (0005),
-  `horarios` estruturados (0006) e `tags` (0007). O que o design ainda pede e não existe é
-  **foto de verdade** — `Lugar.fotos` guarda URL, mas não há armazenamento de arquivo em lugar
-  nenhum do projeto (item 45, travado no R7).
+- **O schema alcançou o design, e o design foi alcançado.** O que faltava foi entrando:
+  `Role.descricao` (0002), `Lugar.endereco` (0003), preço datado + descrição + Instagram (0004),
+  `programacao` (0005), `horarios` estruturados (0006) e `tags` (0007). **A foto fechou a lista em
+  05/09** (item 45, `docs/features/foto-do-lugar.md`): o curador fotografa a casa do celular, o
+  arquivo vai para um volume em disco e a API o serve em `/fotos/*`. Sem migration — `Lugar.fotos`
+  existia desde o começo; o que faltava era onde pôr o arquivo.
 - **As três contradições design ↔ backend foram decididas e implementadas** (item 4a do
   `TODO.md`): (i) o CTA "Tô indo" fica desabilitado com o motivo dito em voz alta, em vez de dar
   403 mudo (`components/ui/acao-sinalizar.tsx`); (ii) o card social cita comentário, não
@@ -495,6 +498,7 @@ contradisserem, o ADR ganha.
 - **Onde o app roda em produção, e por que não é PaaS + Vercel:**
   `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md` — ADR de raiz, porque decide backend e frontend
   ao mesmo tempo. Tem o desenho do Caddy, as alternativas descartadas e os gatilhos de migração
+- **A foto do lugar, de onde ela vem e onde o arquivo mora:** `docs/features/foto-do-lugar.md`
 - **Como subir o app no servidor, e como publicar uma mudança depois:** `docs/features/deploy.md` —
   o roteiro passo a passo, o que foi verificado e o que não foi, e o backup nos dois lados
 - ADRs do backend em `backend/docs/adr/`. Os quatro mais recentes: `0008` (a casa publica, o app

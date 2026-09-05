@@ -4,6 +4,7 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { useSessao } from "@/lib/auth";
 import { EditorHorarios } from "./editor-horarios";
+import { EnviarFoto } from "./enviar-foto";
 import { SeletorTags } from "./seletor-tags";
 import { faixaNova } from "@/lib/horarios";
 import type { FaixaHorario, LugarPublic } from "@/lib/types";
@@ -172,11 +173,15 @@ export function CorrigirLugar({
       </Campo>
 
       <Campo rotulo="foto do lugar">
+        <EnviarFoto valor={foto} aoEnviar={setFoto} />
+        {/* O campo de texto continua porque nem toda foto nasce aqui: uma imagem que a
+            casa já publicou serve enquanto o curador não passou lá. O upload é o caminho
+            principal; colar URL é a saída. */}
         <input
-          className={CAMPO}
+          className={`${CAMPO} mt-2`}
           value={foto}
           onChange={(e) => setFoto(e.target.value)}
-          placeholder="url da imagem"
+          placeholder="ou cole a url de uma imagem"
         />
       </Campo>
 
