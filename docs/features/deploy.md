@@ -246,6 +246,37 @@ O `--build` reconstrói o que mudou; migrations aplicam sozinhas no start da api
 segundos de indisponibilidade — aceitável para um piloto de um bairro, e resolver isso
 exigiria dois contêineres e troca de tráfego, que não se paga aqui.
 
+### ⚠️ Mudou o `Caddyfile`? O `up -d --build` não basta
+
+```sh
+docker compose -f docker-compose.prod.yml restart caddy
+```
+
+O `Caddyfile` é **bind mount**, e o Caddy o lê **ao subir**. Como a definição do serviço
+`caddy` no compose não muda quando só o conteúdo do arquivo muda, o `up -d` conclui que não
+há nada a fazer e o contêiner segue com a configuração antiga em memória.
+
+Aconteceu em 05/09, com a rota `/fotos/*` da feature de foto: a API subiu com o endpoint
+novo, o Caddy não soube da rota, e `/fotos/x.jpg` caía no Next — que respondia **404 de
+página**. O sintoma engana feio: o upload funciona, o arquivo está no disco, e a foto não
+aparece. Parece bug de upload e é roteamento parado.
+
+Como distinguir em um comando: peça um arquivo que não existe.
+
+```sh
+curl -s -o /dev/null -w '%{http_code}
+' https://SEU-DOMINIO/fotos/naoexiste.jpg
+curl -s https://SEU-DOMINIO/fotos/naoexiste.jpg | head -c 60
+```
+
+Se voltar HTML com `<!DOCTYPE html>`, quem respondeu foi o Next e o Caddy está desatualizado.
+Se voltar `{"detail":"Not Found"}`, quem respondeu foi a API e o roteamento está certo.
+
+É o primo do gotcha inverso que já mordeu este projeto: `docker compose restart` **não** relê
+`env_file` (só `up -d` recria). Aqui é `up -d` que não relê o arquivo montado, e `restart`
+resolve. A regra que vale para os dois: **mudou configuração, confira qual dos dois comandos
+a recarrega — não presuma.**
+
 ## Como verificar que está de pé
 
 1. `https://SEU-DOMINIO/health` responde `{"status":"ok"}` — o backend está vivo.
