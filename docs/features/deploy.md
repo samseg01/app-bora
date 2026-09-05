@@ -60,11 +60,15 @@ publicada e numa VPS seria o banco na internet aberta.
 
 Feito uma vez. Comandos rodam **no servidor**, como root, salvo onde estiver dito.
 
-### 0. Antes de tudo: São Paulo
+### 0. Antes de tudo: onde a máquina está
 
-No painel da Hostinger, confirme que a VPS está no **datacenter de São Paulo**. Se estiver
-em outro, reinstale agora — a decisão inteira gira em torno de latência, e o box em outro
-continente joga fora o motivo de o frontend estar aqui. Anote o **IP**.
+O box precisa estar **no Brasil**, e é isso que a checagem verifica. A VPS deste projeto saiu
+em **Campinas** (05/09), o que serve: o requisito de latência do ADR é a distância entre
+~200 ms de um datacenter europeu e a casa de um dígito daqui, e Campinas está do lado certo
+dessa linha. Se o painel mostrar um datacenter **fora do Brasil**, aí sim reinstale antes de
+seguir — o motivo de o frontend estar no mesmo box vai embora junto.
+
+Anote o **IP**.
 
 ### 1. Acesso e higiene básica
 
@@ -238,6 +242,16 @@ exigiria dois contêineres e troca de tráfego, que não se paga aqui.
 5. `docker compose -f docker-compose.prod.yml ps` mostra os quatro `Up`, e `postgres` sem
    porta publicada na host.
 6. `ls /var/backups/boraroles/` tem um arquivo de hoje.
+7. **A latência é de um dígito ou perto disso**, medida do celular em 4G e não do Wi-Fi de
+   casa — é o requisito 3 do ADR, e é a única forma de confirmá-lo depois de a máquina ter
+   saído em Campinas:
+
+   ```sh
+   curl -o /dev/null -s -w 'conexao=%{time_connect}s  ttfb=%{time_starttransfer}s' https://SEU-DOMINIO/health
+   ```
+
+   `time_connect` acima de ~0,1 s aponta para um box fora do Brasil, não para a distância
+   Campinas–capital. O `ttfb` da home é outra coisa: inclui o SSR e a consulta ao banco.
 
 **Este roteiro foi exercitado nesta máquina em 05/09**, com o compose de produção real:
 imagens construídas, os quatro serviços de pé, Caddy roteando `/health` e `/api/v1/*` para

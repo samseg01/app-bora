@@ -44,6 +44,16 @@ em modo SSR (`output: "standalone"`) e Caddy à frente terminando TLS.
 **Provedor: Hostinger, plano KVM 2, datacenter São Paulo** — 2 vCPU, 8 GB RAM, 100 GB NVMe, 8 TB
 de tráfego. R$ 43,99/mês no plano de 24 meses, R$ 77,99 na renovação.
 
+**Provisionado em Campinas, não na capital (05/09/2026).** A máquina assinada saiu no datacenter de
+Campinas, a ~100 km de São Paulo. **Não invalida a decisão e não justifica reinstalar.** O
+requisito 3 não é o nome da cidade — é não colocar uma volta de internet no caminho crítico do SSR,
+e o número que o define é a distância entre ~200 ms (Falkenstein) e a casa de um dígito. Campinas e
+a capital estão no mesmo eixo de fibra: a ordem de grandeza recusada aqui continua recusada, e o
+dado segue em território nacional, então o argumento de jurisdição também não muda. O que muda é
+que "São Paulo" neste ADR deve ser lido como **região metropolitana estendida**, não como endereço.
+Confirmar com medida real depois que o box subir — do 4G, não do Wi-Fi de casa, que é onde a tese
+do app vive (ver `docs/features/deploy.md`).
+
 A forma, que é o que responde "dá pra publicar os dois?":
 
 ```
