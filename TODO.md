@@ -138,10 +138,13 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       4. **Medir o raio de cada casa curada** e gravar pelo painel (itens 57 e 58). Isto **é** o
          R3: quem está na calçada curando o lugar é quem mede. Fazer as duas coisas em viagens
          diferentes seria andar o bairro duas vezes.
-      5. **Confirmar que o GPS existe pelo túnel.** `navigator.geolocation` **não existe** fora de
-         contexto seguro — em HTTP de rede local a feature inteira cai em "sem-suporte". Precisa
-         do túnel HTTPS do `frontend/CLAUDE.md`, incluindo o segundo túnel (o da API), senão
-         sinalizar nem sai do telefone.
+      5. ~~**Confirmar que o GPS existe pelo túnel.**~~ **Resolvido pelo R7 em 05/09.** A exigência
+         era contexto seguro: `navigator.geolocation` não existe em HTTP, e sem ela a feature
+         inteira cai em "sem-suporte". O app agora tem HTTPS de verdade em
+         `https://179-199-145-189.sslip.io` — **abra essa URL no celular e pronto**. Some o par de
+         túneis, some a instabilidade que derrubou um dia de campo inteiro (três quedas, quatro
+         URLs), e some a armadilha de o segundo túnel, o da API, não estar de pé. O que você testar
+         na rua é o mesmo código que qualquer pessoa vai usar.
       **Faça junto com o R3, na mesma noite.** Depois de 02/09 são a mesma caminhada: o curador
       anda o recorte, cadastra o lugar, mede o raio de pé na porta e testa o "Tô aqui" lá dentro.
 - [ ] R9. **Vincular uma casa já curada ao dono dela** (item 3). **Decisão fechada em 29/08 (ADR-010);
@@ -486,9 +489,17 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        **O que reabre isto:** o curador reclamar de republicar o mesmo rolê toda semana (aí a
        saída é um toque de confirmação no painel, não automação), ou o ADR-008 ser aceito e o dono
        passar a preencher a programação — nesse caso quem afirma é a casa, e a pergunta muda.
-- [!] 45. **Foto do lugar, tirada pelo curador em campo. Bloqueado: destrava com o R7** — o deploy
-       é que decide onde os arquivos moram, e falta conta e chave de armazenamento de objeto
-       (S3/R2). A ficha já **exibe** a foto em primeiro
+- [ ] 45. **Foto do lugar, tirada pelo curador em campo. DESBLOQUEADO em 05/09 pelo R7** — e por um
+       motivo diferente do que este item previa. A hipótese era "vai precisar de conta e chave de
+       S3/R2"; o ADR de raiz 0001 escolheu VPS justamente para não precisar: são **100 GB de NVMe
+       com volume persistente**, e o `docker-compose.prod.yml` já monta volume nomeado. Guardar
+       arquivo em disco deixou de ser problema de infraestrutura.
+       **O que falta agora é código, não decisão:** endpoint de upload no backend (multipart,
+       validação de tipo e tamanho, nome não adivinhável), um volume novo montado na api, uma
+       rota no Caddy servindo `/fotos/*` do disco, e o botão de tirar foto no painel do curador —
+       que é onde ela nasce, com o telefone na mão, na calçada. Objeto (S3/R2) fica como saída
+       futura se o disco apertar, não como pré-requisito.
+       A ficha já **exibe** a foto em primeiro
        plano (`views/lugar-ficha.tsx`, lendo `fotos[0]`), e o formulário de correção aceita a URL.
        Sem foto, cai no bloco de cor do design — que não é provisório, é a escolha visual do
        hi-fi. Falta o **upload**, e é aí que o impedimento continua de pé. Enunciado original: Decidido em 28/08 que a origem é a foto
@@ -496,9 +507,10 @@ invisível** nas duas camadas, embora o backend já calcule o frescor dele.
        existe armazenamento de arquivo em lugar nenhum do projeto**, nem local nem em nuvem.
        `Lugar.fotos` existe como lista de URLs desde a migration inicial, nunca foi usada e nunca
        foi renderizada.
-       Depende do R7: o destino do deploy decide onde os arquivos moram, e a maior parte dos PaaS
-       tem disco efêmero — foto salva em disco some no próximo deploy. Ou entra armazenamento de
-       objeto (S3/R2) desde o começo, o que pede conta e chave. **Não começar antes do R7.**
+       Dependia do R7: o destino do deploy decidia onde os arquivos moram, e a maior parte dos PaaS
+       tem disco efêmero — foto salva em disco some no próximo deploy. **Resolvido:** o box tem
+       disco de verdade, e o `pg_dump` do backup **não** cobre arquivo — quando a foto existir, o
+       backup precisa crescer para incluir o volume, senão ela vira o único dado sem cópia.
 
 - [x] 47. **Tags do lugar, e o pin apagado que parecia inexistente.** Feito em 30/08, os dois juntos
        porque eram a mesma queixa: olhar o mapa e não ver o que existe.
