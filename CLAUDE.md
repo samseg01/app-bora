@@ -442,10 +442,14 @@ contradisserem, o ADR ganha.
   `.value` e quebra em runtime, não em teste de schema.
 - **`jwt_secret` tem default fraco em `config.py`** (`"change-me-to-a-long-random-string"`) — ok
   em dev, mas precisa vir do ambiente antes de qualquer deploy.
-- **O vocabulário de `categoria` não é imposto por nada.** A coluna é `String(60)` livre, e o
-  banco já mostra a deriva: `"forró"` (Bar do China, que é gênero musical, não categoria) e
-  `"Bar"` com maiúscula no Tokyo, contra `"bar"` minúsculo nos fictícios. A UI colore e filtra
-  por categoria, então divergência de caixa vira card sem cor. Item 48 do `TODO.md`.
+- **O vocabulário de `categoria` não é imposto pelo banco** — a coluna é `String(60)` livre, e a
+  deriva já aconteceu: `"forró"` (gênero musical, não categoria) convivendo com `"bar"` e `"Bar"`.
+  **Mas caixa não é o problema:** `lib/categorias.ts` compara com `.trim().toLowerCase()` em cor,
+  gradiente e pin, e não há filtro por categoria em tela nenhuma — `"Bar"` e `"bar"` são o mesmo
+  card colorido. O que fica neutro é valor **fora da lista** (o `"forró"`), e isso é deliberado:
+  inventar cor para o desconhecido seria pior. Quem cadastra pelo painel escolhe de lista fechada
+  desde 02/09, então a porta de entrada da deriva está fechada; o que resta é o dado antigo.
+  Item 48 do `TODO.md`.
 - **`docs/plano-frontend.md` e `docs/arquitetura-backend-frontend.md` estão datados.** Os dois
   descrevem o projeto antes das telas de auth, do painel do estabelecimento e das migrations
   0004–0007. Continuam valendo como registro do raciocínio e do cruzamento tela-a-tela; **não**
