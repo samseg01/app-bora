@@ -183,7 +183,7 @@ Conta manual de teste: usar domínio `@local.dev`. Os fixtures da suíte usam e-
 
 ```
 npm run dev        # http://localhost:3000
-npm test           # 46 testes de lib/ — Vitest, ~1,4 s
+npm test           # 67 testes de lib/ — Vitest, ~2 s
 npm run test:watch # os mesmos, em watch
 npm run build      # valida tipos e prerender
 npm run lint
@@ -377,8 +377,13 @@ barra de expiração do sinal.
 - **`@media (prefers-reduced-motion:reduce){*{animation:none!important}}`** — manter. E note a
   consequência: para quem tem isso ligado, o "agora" perde o pulso e sobra só o branco. É o limite
   conhecido de um sistema que gasta movimento no lugar de cor.
-- **Blocos de cinza no lugar de fotos** — propositais, não provisórios. O item 45 é que traz foto
-  de verdade.
+- **Blocos de cinza no lugar de fotos** — propositais, não provisórios: é o que uma casa **sem**
+  foto mostra, e continua sendo. Desde 05/09 existe foto de verdade (item 45): o curador envia pelo
+  painel e `lib/fotos.ts` resolve o caminho. Ver `../docs/features/foto-do-lugar.md`.
+  ⚠️ **O caminho vem relativo do backend** (`/fotos/x.jpg`) porque em produção front e back são a
+  mesma origem. Em desenvolvimento o navegador está em `:3000` e o arquivo em `:8000` — quem
+  conserta é `urlDaFoto()`. Renderizar `lugar.fotos[0]` direto funciona em produção e **some só na
+  sua máquina**, com um 404 que parece upload quebrado e é roteamento.
 
 ## Convenções
 
