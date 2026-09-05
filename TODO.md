@@ -105,11 +105,15 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       (cron no servidor) e `scripts/puxar-backup.ps1` (tira o dump da máquina — é este que fecha o
       requisito do ADR). O stack inteiro foi **exercitado localmente**: Caddy roteando, SSR
       chegando na api pela rede interna, signup/login e `pg_dump` íntegro.
-      **Falta o que só se faz no servidor**, e é seu: rodar o roteiro de `docs/features/deploy.md`
-      (higiene + swap + Docker + deploy key + `.env` + `up -d --build`), conferir que a VPS está
-      mesmo em **São Paulo**, levar os dois lugares curados para o banco de produção e ligar o
-      cron do backup. Sem domínio próprio o endereço sai por **sslip.io**, que dá TLS de verdade —
-      requisito, porque sem HTTPS o `navigator.geolocation` não existe e o R8 não roda.
+      **O app subiu em 05/09: `https://179-199-145-189.sslip.io`** (VPS em Campinas, TLS do
+      Let's Encrypt). Verificado de fora: `/health`, redirecionamento para a abertura, home
+      renderizando por SSR — o que prova o fetch interno até a api — e latência de **18 ms de
+      conexão**, que encerra a ressalva de Campinas do ADR.
+      **Falta para fechar:** (a) levar a curadoria para o banco de produção, que está vazio — os
+      dois lugares de República só existem no banco desta máquina; (b) promover um curador lá
+      (`scripts/promote_role.py`); (c) **ligar o backup dos dois lados** — cron no servidor mais
+      `scripts/puxar-backup.ps1` aqui. O (c) não é opcional: o ADR diz que sem `pg_dump` saindo
+      da máquina o R7 não está concluído.
 - [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Cresceu muito em 02/09: era
       só a ressalva de altura, e virou o único juiz da feature de presença. **Cinco perguntas, e a
       segunda é a que decide se a feature presta:**
