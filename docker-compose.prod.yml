@@ -1,0 +1,92 @@
+# O compose de produção — os quatro serviços do ADR de raiz 0001, num box só.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# NÃO é o `backend/docker-compose.yml`, que é de desenvolvimento e continua valendo
+# para a máquina local. As diferenças que importam, e que são a decisão:
+#
+#   - o Postgres NÃO publica porta na host (em VPS isso é o banco na internet aberta);
+#   - a api e o web também não publicam: quem fala com a internet é só o Caddy;
+#   - senha e segredo vêm do `.env` da raiz e não têm default — sem eles o compose
+#     recusa subir, em vez de subir com "boraroles"/"change-me" e parecer que deu certo;
+#   - `restart: unless-stopped` em tudo, porque reboot de VPS acontece.
+#
+# O arquivo `.env` fica ao lado deste, na raiz do repo NO SERVIDOR, e não é versionado.
+# Modelo em `.env.producao.example`.
+
+name: boraroles
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?defina POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:?defina POSTGRES_DB no .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env — o default do config.py é público}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRES_MINUTES: 43200
+      ENV: production
+      # Mesma origem: o navegador nunca faz requisição cross-origin aqui. A entrada
+      # existe para o dia em que algo de fora precise chamar a API — hoje é inócua.
+      CORS_ORIGINS: https://${DOMINIO}
+      FRESCOR_LIVE_WINDOW_MINUTES: 30
+      FRESCOR_LIVE_MIN_SINAIS: 3
+      FRESCOR_WARM_WINDOW_MINUTES: 120
+      PRESENCA_RAIO_PADRAO_METROS: ${PRESENCA_RAIO_PADRAO_METROS:-150}
+      FUSO_LOCAL: America/Sao_Paulo
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # Relativo: o navegador pede na própria origem, que o Caddy roteia para a api.
+        NEXT_PUBLIC_API_URL: /api/v1
+        API_URL_INTERNA: http://api:8000/api/v1
+    restart: unless-stopped
+    environment:
+      # O SSR fala com a api pela rede do compose — sem sair para a internet e sem
+      # depender de DNS público. É o que evita o "API fora do ar" descrito em lib/api.ts.
+      API_URL_INTERNA: http://api:8000/api/v1
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMINIO: ${DOMINIO:?defina DOMINIO no .env}
+      ACME_EMAIL: ${ACME_EMAIL:?defina ACME_EMAIL no .env — o Let's Encrypt avisa vencimento nele}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - web
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

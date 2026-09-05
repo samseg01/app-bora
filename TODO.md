@@ -95,16 +95,21 @@ que é o **único motor do `conceito.md` que não depende de já ter usuários**
       degradação para sinal ruim. A caçada está contada no registro de 28/08 mais abaixo.
       ✅ **Confirmado em navegador.** Levou uma caçada: o container `absolute inset-0` resolvia
       para altura 0 e o MapLibre caía num fallback interno de 400x300, sem emitir erro nenhum.
-- [~] R7. **Deploy** (item 12). **Provedor decidido em 03/09** — ver
-      `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md`. O plano antigo (Railway/Fly/Render +
-      Vercel + Postgres gerenciado) foi **descartado**: PostGIS incerto, disco efêmero deixaria o
-      item 45 bloqueado, e o SSR `force-dynamic` de toda rota pagaria uma volta de rede por tela.
-      **Decidido: uma VPS só em São Paulo (Hostinger KVM 2), rodando o `docker compose` inteiro** —
+- [~] R7. **Deploy** (item 12). **Provedor decidido em 03/09** (ADR de raiz 0001) e **a VPS foi
+      assinada em 05/09**. Uma VPS só em São Paulo (Hostinger KVM 2) rodando os quatro serviços:
       Postgres+PostGIS, FastAPI, Next SSR e Caddy à frente. Front e back na mesma origem, sem CORS.
-      Falta executar: `output: "standalone"` e Dockerfile do frontend (não existe), Caddy,
-      `JWT_SECRET`/`POSTGRES_PASSWORD` do ambiente, tirar a porta 5432 do compose, `pg_dump` diário
-      saindo da máquina, swapfile. **Selecionar São Paulo no checkout** — sem isso a decisão inteira
-      se perde.
+      **O que era "falta executar" virou código em 05/09** e está em `docs/features/deploy.md`:
+      `docker-compose.prod.yml` na raiz, `deploy/Caddyfile`, `frontend/Dockerfile` +
+      `output: "standalone"`, `.env.producao.example` (o compose recusa subir sem `JWT_SECRET`,
+      `POSTGRES_PASSWORD`, `DOMINIO` e `ACME_EMAIL`), a **5432 fora** da host, `deploy/backup.sh`
+      (cron no servidor) e `scripts/puxar-backup.ps1` (tira o dump da máquina — é este que fecha o
+      requisito do ADR). O stack inteiro foi **exercitado localmente**: Caddy roteando, SSR
+      chegando na api pela rede interna, signup/login e `pg_dump` íntegro.
+      **Falta o que só se faz no servidor**, e é seu: rodar o roteiro de `docs/features/deploy.md`
+      (higiene + swap + Docker + deploy key + `.env` + `up -d --build`), conferir que a VPS está
+      mesmo em **São Paulo**, levar os dois lugares curados para o banco de produção e ligar o
+      cron do backup. Sem domínio próprio o endereço sai por **sslip.io**, que dá TLS de verdade —
+      requisito, porque sem HTTPS o `navigator.geolocation` não existe e o R8 não roda.
 - [ ] R8. **[campo] Testar no celular de verdade, no bairro, em 4G.** Cresceu muito em 02/09: era
       só a ressalva de altura, e virou o único juiz da feature de presença. **Cinco perguntas, e a
       segunda é a que decide se a feature presta:**
@@ -1034,10 +1039,12 @@ segue o hi-fi.
 
 ## Técnico / infra / testes
 
-- [~] 12. **Deploy de produção.** Hoje só existe `docker compose up -d` local. O plano que estava
-       aqui (Railway/Fly.io/Render + Vercel + Postgres gerenciado, de
-       `docs/arquitetura-backend-frontend.md`) foi substituído em 03/09 por
-       `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md`. Execução acompanhada no R7.
+- [~] 12. **Deploy de produção.** O plano que estava aqui (Railway/Fly.io/Render + Vercel +
+       Postgres gerenciado, de `docs/arquitetura-backend-frontend.md`) foi substituído em 03/09 por
+       `docs/adr/0001-deploy-em-vps-unico-sao-paulo.md`. **Os arquivos existem desde 05/09** —
+       `docker-compose.prod.yml`, `deploy/Caddyfile`, `frontend/Dockerfile`, os dois scripts de
+       backup — e o stack foi verificado nesta máquina. Falta rodar no servidor. Execução
+       acompanhada no R7; o o quê e o como em `docs/features/deploy.md`.
 - [ ] 13. **Decidir se o cron de expiração/decaimento é necessário.** A arquitetura acordada
        previa "cron simples pra expirar rolês e decair sinalizações"; o backend construído não tem
        nenhum — frescor é 100% calculado na leitura (`services/frescor.py`, ADR-0001). Provavelmente
